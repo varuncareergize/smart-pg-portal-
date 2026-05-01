@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-inter: "Inter", sans-serif;
+  
+  /* SmartGP Brand Colors */
+  --color-sg-green: #1AB076;
+  --color-sg-navy: #0B1120; /* Deep Navy from your old project */
+  --color-sg-bg: #F8F9FC;
+  --color-sg-border: #E2E8F0;
+  --color-sg-text-main: #1E293B;
+  --color-sg-text-muted: #64748B;
+  
+  --radius-3xl: 24px;
+  --radius-4xl: 32px;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    @apply font-inter bg-sg-bg text-sg-text-main antialiased overflow-x-hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Professional Typography inspired by your old code */
+  h1, h2, h3, h4 {
+    @apply font-extrabold tracking-tight text-sg-navy;
+  }
+
+  /* Selection & Scrollbar */
+  ::selection {
+    @apply bg-sg-green/20 text-sg-green;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: #1AB076; }
+}
+
+@layer utilities {
+  /* Aligned Containers */
+  .container-custom {
+    @apply w-full max-w-[1440px] mx-auto px-4 md:px-8 lg:px-10;
+  }
+
+  /* Glass Card from your old project but for Light Mode */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    @apply shadow-sm;
+  }
+
+  /* Professional Table Wrapper */
+  .table-container {
+    @apply w-full overflow-x-auto rounded-3xl border border-sg-border bg-white shadow-sm;
+  }
+}
