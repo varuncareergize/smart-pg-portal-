@@ -36,7 +36,7 @@ export default function Sidebar({ isOpen, toggleMenu }) {
           <div className="p-8 flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-black text-sg-navy tracking-tighter">
-                Smart<span className="text-sg-green">GP</span>
+                Smart<span className="text-sg-green">PG</span>
               </h1>
               <p className="text-[10px] font-bold text-sg-green uppercase tracking-widest mt-0.5">Management Portal</p>
             </div>

@@ -8,7 +8,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 const navItems = [
-  { name: 'Dashboard', path: '/', icon: Squares2X2Icon },
+  { name: 'Dashboard', path: '/dashboard', icon: Squares2X2Icon },
 //   { name: 'Properties', path: '/properties', icon: BuildingOfficeIcon },
   { name: 'Rooms', path: '/rooms', icon: KeyIcon },
   { name: 'Tenants', path: '/tenants', icon: UsersIcon },
@@ -92,7 +92,7 @@ function SidebarContent({ closeMenu }) {
     <>
       <div className="p-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-sg-navy">Smart<span className="text-sg-green">GP</span></h1>
+          <h1 className="text-2xl font-bold text-sg-navy">Smart<span className="text-sg-green">PG</span></h1>
           <p className="text-[10px] font-bold text-sg-green tracking-widest uppercase">Portal</p>
         </div>
         {closeMenu && (
