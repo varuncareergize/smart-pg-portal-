@@ -1,5 +1,6 @@
 import React from 'react';
 import { Globe, Rss, Send } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
@@ -21,15 +22,18 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div className="space-y-6">
-            <h5 className="text-[10px] font-black text-[#001D3D] uppercase tracking-widest">Company</h5>
-            <ul className="space-y-4 text-sm font-bold text-slate-400">
-              <li className="hover:text-[#001D3D] cursor-pointer">About Us</li>
-              <li className="hover:text-[#001D3D] cursor-pointer">Terms of Service</li>
-              <li className="hover:text-[#001D3D] cursor-pointer">Privacy Policy</li>
-              <li className="hover:text-[#001D3D] cursor-pointer">Contact</li>
-            </ul>
-          </div>
-
+  <h5 className="text-[10px] font-black text-[#001D3D] uppercase tracking-widest">Company</h5>
+  <ul className="space-y-4 text-sm font-bold text-slate-400">
+    <li>
+      <Link to="/about-us" className="hover:text-[#001D3D] cursor-pointer transition-colors">About Us</Link>
+    </li>
+    <li className="hover:text-[#001D3D] cursor-pointer">Terms of Service</li>
+    <li className="hover:text-[#001D3D] cursor-pointer">Privacy Policy</li>
+    <li>
+      <Link to="/contact" className="hover:text-[#001D3D] cursor-pointer transition-colors">Contact</Link>
+    </li>
+  </ul>
+</div>
           <div className="space-y-6">
             <h5 className="text-[10px] font-black text-[#001D3D] uppercase tracking-widest">Locations</h5>
             <ul className="space-y-4 text-sm font-bold text-slate-400">

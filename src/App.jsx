@@ -10,6 +10,9 @@ import Maintenance from './pages/Maintenance'; // The portal-style maintenance p
 import Login from './pages/Login';
 import Properties from './pages/Properties';
 import Services from './pages/Services';
+import PropertyDetails from './pages/PropertyDetails';
+import About from './pages/About';
+import Contact from './pages/Contact';
 function App() {
   return (
     <Router>
@@ -19,6 +22,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/properties" element={<Properties />} />
         <Route path="/services" element={<Services />} />
+        <Route path="/property/:id" element={<PropertyDetails />} />
+        <Route path="/about-us" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+
         {/* PORTAL ROUTES: Wrapped in Layout (Sidebar/Header) */}
         <Route
           path="/*"

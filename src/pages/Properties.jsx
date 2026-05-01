@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { MapPin, Search, SlidersHorizontal, Star, Zap, ShieldCheck } from 'lucide-react';
@@ -34,11 +35,16 @@ const PROPERTY_DATA = [
     image: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=800',
     tags: ['AC', 'Gym']
   },
-  // Add more properties here...
 ];
 
 export default function Properties() {
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Filtering logic (Basic implementation)
+  const filteredProperties = PROPERTY_DATA.filter(p => 
+    p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    p.location.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -49,7 +55,7 @@ export default function Properties() {
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
           <div>
             <h1 className="text-4xl font-black text-[#001D3D] tracking-tight">Explore Stays</h1>
-            <p className="text-slate-500 font-medium mt-1">Found {PROPERTY_DATA.length} premium properties in your area.</p>
+            <p className="text-slate-500 font-medium mt-1">Found {filteredProperties.length} premium properties in your area.</p>
           </div>
 
           <div className="flex items-center gap-3 w-full md:w-auto">
@@ -70,7 +76,7 @@ export default function Properties() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar Filters - Hidden on mobile, visible on LG */}
+          {/* Sidebar Filters */}
           <aside className="hidden lg:block space-y-8">
             <div>
               <h4 className="text-[10px] font-black text-[#001D3D] uppercase tracking-widest mb-4 ml-1">Stay Type</h4>
@@ -96,7 +102,7 @@ export default function Properties() {
 
           {/* Property Grid */}
           <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8">
-            {PROPERTY_DATA.map((p) => (
+            {filteredProperties.map((p) => (
               <PropertyCard key={p.id} property={p} />
             ))}
           </div>
@@ -109,8 +115,17 @@ export default function Properties() {
 }
 
 function PropertyCard({ property }) {
+  const navigate = useNavigate(); // 2. Initialize navigate in the card
+
+  const handleNavigate = () => {
+    navigate(`/property/${property.id}`);
+  };
+
   return (
-    <div className="bg-white rounded-[40px] overflow-hidden border border-slate-100 group shadow-sm hover:shadow-2xl hover:shadow-[#001D3D]/5 transition-all duration-500">
+    <div 
+      onClick={handleNavigate} // 3. Make the whole card clickable
+      className="bg-white rounded-[40px] overflow-hidden border border-slate-100 group shadow-sm hover:shadow-2xl hover:shadow-[#001D3D]/5 transition-all duration-500 cursor-pointer active:scale-[0.99]"
+    >
       <div className="relative h-72 overflow-hidden">
         <img 
           src={property.image} 
@@ -153,8 +168,14 @@ function PropertyCard({ property }) {
             <span className="text-2xl font-black text-[#001D3D]">₹{property.price}</span>
             <span className="text-xs font-bold text-slate-400"> / month</span>
           </div>
-          <button className="bg-[#001D3D] text-white px-6 py-3 rounded-2xl font-black text-sm hover:bg-[#00C896] hover:scale-105 transition-all active:scale-95 shadow-xl shadow-blue-900/10">
-            Book Now
+          <button 
+            onClick={(e) => {
+              e.stopPropagation(); // Prevents double navigation trigger from the card click
+              handleNavigate();
+            }}
+            className="bg-[#001D3D] text-white px-6 py-3 rounded-2xl font-black text-sm hover:bg-[#00C896] hover:scale-105 transition-all active:scale-95 shadow-xl shadow-blue-900/10"
+          >
+            View Details
           </button>
         </div>
       </div>
