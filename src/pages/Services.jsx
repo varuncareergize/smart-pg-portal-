@@ -107,7 +107,7 @@ export default function Services() {
       {/* Bottom CTA Card */}
       <section className="py-24 text-center px-4">
         <div className="max-w-5xl mx-auto bg-slate-50 rounded-[48px] p-16 border border-slate-100 shadow-sm">
-          <h3 className="text-3xl font-black text-[#001D3D] mb-4">Ready to experience SmartGP?</h3>
+          <h3 className="text-3xl font-black text-[#001D3D] mb-4">Ready to experience SmartPG?</h3>
           <p className="text-slate-500 font-medium mb-10 max-w-lg mx-auto">Whether you're looking for a room or looking to list your property, we're here to help.</p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <button className="bg-[#00C896] text-white px-10 py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:scale-105 transition-all shadow-xl shadow-green-900/10 active:scale-95">
