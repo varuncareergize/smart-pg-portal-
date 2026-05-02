@@ -15,8 +15,10 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import GroceryExpenses from './pages/GroceryExpenses';
 import Visitors from './pages/Visitors';
+
 function App() {
   return (
+   
     <Router>
       <Routes>
         {/* --- PUBLIC WEBSITE ROUTES --- */}
@@ -41,6 +43,7 @@ function App() {
         </Route>
       </Routes>
     </Router>
+
   );
 }
 
