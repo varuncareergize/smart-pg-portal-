@@ -1,16 +1,19 @@
 import { NavLink } from 'react-router-dom';
 import { 
   Squares2X2Icon, BuildingOfficeIcon, KeyIcon, UsersIcon, 
-  UserGroupIcon, CreditCardIcon, WrenchScrewdriverIcon, XMarkIcon
+  UserGroupIcon, CreditCardIcon, WrenchScrewdriverIcon, 
+  XMarkIcon, ShoppingCartIcon, UserPlusIcon
 } from '@heroicons/react/24/outline';
 
 const navItems = [
-  { name: 'Dashboard', path: '/', icon: Squares2X2Icon },
-  { name: 'Properties', path: '/properties', icon: BuildingOfficeIcon },
+  { name: 'Dashboard', path: '/dashboard', icon: Squares2X2Icon },
+  // { name: 'Properties', path: '/properties', icon: BuildingOfficeIcon },
   { name: 'Rooms', path: '/rooms', icon: KeyIcon },
   { name: 'Tenants', path: '/tenants', icon: UsersIcon },
+  { name: 'Visitors', path: '/visitors', icon: UserPlusIcon }, // Added Visitors
   { name: 'Staff', path: '/staff', icon: UserGroupIcon },
   { name: 'Payments', path: '/payments', icon: CreditCardIcon },
+  { name: 'Grocery', path: '/grocery', icon: ShoppingCartIcon }, // Added Grocery
   { name: 'Maintenance', path: '/maintenance', icon: WrenchScrewdriverIcon },
 ];
 
@@ -22,7 +25,6 @@ export default function Sidebar({ isOpen, toggleMenu }) {
 
   return (
     <>
-      {/* Mobile Overlay */}
       {isOpen && (
         <div 
           className="fixed inset-0 z-40 bg-sg-navy/40 backdrop-blur-sm lg:hidden" 
@@ -32,7 +34,6 @@ export default function Sidebar({ isOpen, toggleMenu }) {
 
       <aside className={sidebarClasses}>
         <div className="h-full flex flex-col">
-          {/* Logo Section */}
           <div className="p-8 flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-black text-sg-navy tracking-tighter">
@@ -45,7 +46,6 @@ export default function Sidebar({ isOpen, toggleMenu }) {
             </button>
           </div>
 
-          {/* Navigation */}
           <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
             {navItems.map((item) => (
               <NavLink
@@ -63,13 +63,12 @@ export default function Sidebar({ isOpen, toggleMenu }) {
             ))}
           </nav>
 
-          {/* Profile Section (Bottom) */}
           <div className="p-4 border-t border-sg-border bg-sg-bg/30">
             <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-sg-border">
-              <img src="https://ui-avatars.com/api/?name=Alex+Morgan&background=1AB076&color=fff" className="w-10 h-10 rounded-xl" alt="user" />
+              <img src="https://ui-avatars.com/api/?name=Varun&background=1AB076&color=fff" className="w-10 h-10 rounded-xl" alt="user" />
               <div className="overflow-hidden">
-                <p className="text-sm font-bold text-sg-navy truncate">Alex Morgan</p>
-                <p className="text-[10px] font-bold text-sg-green uppercase">Premium Admin</p>
+                <p className="text-sm font-bold text-sg-navy truncate">Varun</p>
+                <p className="text-[10px] font-bold text-sg-green uppercase">Admin</p>
               </div>
             </div>
           </div>
