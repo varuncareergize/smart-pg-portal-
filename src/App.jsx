@@ -15,6 +15,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import GroceryExpenses from './pages/GroceryExpenses';
 import Visitors from './pages/Visitors';
+import TenantsAdd from './pages/Tenant_add';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path="/payments" element={<Payments />} />
           <Route path="/staff" element={<Staff />} />
           <Route path="/grocery" element={<GroceryExpenses />} />
+          <Route path='/tenants/add' element={<TenantsAdd />} />
         </Route>
       </Routes>
     </Router>
