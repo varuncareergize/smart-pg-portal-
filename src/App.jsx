@@ -16,6 +16,8 @@ import Contact from './pages/Contact';
 import GroceryExpenses from './pages/GroceryExpenses';
 import Visitors from './pages/Visitors';
 import TenantsAdd from './pages/Tenant_add';
+import AddRoom from './pages/AddRoom';
+import AddVisitor from './pages/AddVisitor';
 
 function App() {
   return (
@@ -42,6 +44,8 @@ function App() {
           <Route path="/staff" element={<Staff />} />
           <Route path="/grocery" element={<GroceryExpenses />} />
           <Route path='/tenants/add' element={<TenantsAdd />} />
+          <Route path="/rooms/add" element={<AddRoom />} />
+          <Route path="/visitors/add" element={<AddVisitor />} />
         </Route>
       </Routes>
     </Router>

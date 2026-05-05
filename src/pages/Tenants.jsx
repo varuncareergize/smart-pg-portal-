@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
 import { 
   UsersIcon, 
   CheckCircleIcon, 
@@ -16,7 +17,8 @@ const tenantsData = [
 ];
 
 export default function Tenants() {
-  const [filter, setFilter] = useState('All'); // 'All', 'Paid', 'Unpaid'
+  const navigate = useNavigate(); // 2. Initialize navigate
+  const [filter, setFilter] = useState('All'); 
 
   // Counts
   const paidCount = tenantsData.filter(t => t.rentStatus === 'Paid').length;
@@ -32,7 +34,11 @@ export default function Tenants() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-black text-sg-navy">Tenants</h2>
-        <button className="bg-sg-green text-white p-3 rounded-xl shadow-lg shadow-sg-green/20">
+        {/* 3. Add the onClick handler */}
+        <button 
+          onClick={() => navigate('/tenants/add')} 
+          className="bg-sg-green text-white p-3 rounded-xl shadow-lg shadow-sg-green/20 hover:scale-105 active:scale-95 transition-transform"
+        >
           <PlusIcon className="w-6 h-6 stroke-[3px]" />
         </button>
       </div>
@@ -117,7 +123,7 @@ export default function Tenants() {
 
         {displayTenants.length === 0 && (
           <div className="py-20 text-center bg-white rounded-[32px] border border-dashed border-sg-border">
-             <p className="text-sg-text-muted font-bold">No tenants found in this category.</p>
+              <p className="text-sg-text-muted font-bold">No tenants found in this category.</p>
           </div>
         )}
       </div>

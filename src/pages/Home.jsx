@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { 
@@ -38,7 +38,24 @@ const FEATURED_STAYS = [
 ];
 
 export default function Home() {
-  const navigate = useNavigate(); // 2. Initialize the navigate function
+  const navigate = useNavigate();
+  
+  // --- Search State ---
+  const [location, setLocation] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedStayType, setSelectedStayType] = useState('Stay Type');
+  const stayOptions = ['PG', 'Coliving', 'Hostel', 'Studio Apartment'];
+
+  // --- Search Handler ---
+  const handleSearch = () => {
+    // Construct query parameters
+    const params = new URLSearchParams();
+    if (location) params.append('location', location);
+    if (selectedStayType !== 'Stay Type') params.append('type', selectedStayType);
+
+    // Navigate to properties page with query string (e.g., /properties?location=pune&type=PG)
+    navigate(`/properties?${params.toString()}`);
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -54,24 +71,63 @@ export default function Home() {
             Discover premium PGs and hostels designed for students and professionals. Managed with precision, lived with comfort.
           </p>
 
-          {/* Search Bar */}
+          {/* Search Bar Container */}
           <div className="mt-12 bg-white p-2 rounded-[32px] shadow-2xl shadow-blue-900/5 border border-slate-100 flex flex-col md:flex-row items-center gap-2">
+            
+            {/* Location Input */}
             <div className="flex-1 flex items-center gap-3 px-6 py-4 border-b md:border-b-0 md:border-r border-slate-100 w-full text-left">
               <MapPin className="text-slate-300" size={20} />
               <input 
                 type="text" 
-                placeholder="Location" 
-                className="w-full outline-none font-bold text-[#001D3D] placeholder:text-slate-300" 
+                placeholder="Where do you want to stay?" 
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch()} // Search on Enter key
+                className="w-full outline-none font-bold text-[#001D3D] placeholder:text-slate-300 bg-transparent" 
               />
             </div>
-            <div className="flex-1 flex items-center justify-between px-6 py-4 border-b md:border-b-0 md:border-r border-slate-100 w-full">
-              <div className="flex items-center gap-3">
-                <HomeIcon className="text-slate-300" size={20} />
-                <span className="font-bold text-[#001D3D]">Stay Type</span>
-              </div>
-              <ChevronDown className="text-slate-300" size={18} />
+
+            {/* Stay Type Dropdown */}
+            <div className="flex-1 relative w-full">
+              <button 
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="w-full flex items-center justify-between px-6 py-4 border-b md:border-b-0 md:border-r border-slate-100 hover:bg-slate-50/50 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <HomeIcon className="text-slate-300" size={20} />
+                  <span className={`font-bold ${selectedStayType === 'Stay Type' ? 'text-slate-300' : 'text-[#001D3D]'}`}>
+                    {selectedStayType}
+                  </span>
+                </div>
+                <ChevronDown className={`text-slate-300 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} size={18} />
+              </button>
+
+              {isDropdownOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setIsDropdownOpen(false)}></div>
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-2xl shadow-xl z-20 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                    {stayOptions.map((option) => (
+                      <div 
+                        key={option}
+                        onClick={() => {
+                          setSelectedStayType(option);
+                          setIsDropdownOpen(false);
+                        }}
+                        className="px-6 py-3.5 text-left font-bold text-[#001D3D] hover:bg-slate-50 hover:text-[#00C896] cursor-pointer transition-colors border-b border-slate-50 last:border-0"
+                      >
+                        {option}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
-            <button className="bg-[#00C896] w-full md:w-auto text-white px-10 py-4 rounded-[24px] font-black flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform">
+
+            {/* Search Button */}
+            <button 
+              onClick={handleSearch}
+              className="bg-[#00C896] w-full md:w-auto text-white px-10 py-4 rounded-[24px] font-black flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform active:scale-95 shadow-lg shadow-green-400/20"
+            >
               <Search size={20} strokeWidth={3} /> Search
             </button>
           </div>
@@ -79,7 +135,11 @@ export default function Home() {
           {/* Quick Categories */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-5xl mx-auto">
             {['Student Housing', 'Professional Coliving', 'Luxury Hostels', 'Budget Stays'].map((cat) => (
-              <div key={cat} className="bg-white border border-slate-100 p-5 rounded-2xl flex items-center gap-4 shadow-sm hover:border-[#00C896] cursor-pointer transition-all group">
+              <div 
+                key={cat} 
+                onClick={() => navigate(`/properties?category=${cat.toLowerCase().replace(' ', '-')}`)}
+                className="bg-white border border-slate-100 p-5 rounded-2xl flex items-center gap-4 shadow-sm hover:border-[#00C896] cursor-pointer transition-all group"
+              >
                 <div className="w-2 h-2 rounded-full bg-slate-200 group-hover:bg-[#00C896]" />
                 <span className="font-black text-[#001D3D] text-sm text-left leading-tight">{cat}</span>
               </div>
@@ -106,7 +166,6 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {FEATURED_STAYS.map((p) => (
-              /* 3. Wrap card in onClick and add interactive classes */
               <div 
                 key={p.id} 
                 onClick={() => navigate(`/property/${p.id}`)}
@@ -132,14 +191,11 @@ export default function Home() {
                          <MapPin size={12}/> {p.location}
                       </p>
                     </div>
-                    {/* Added a dynamic hover effect for the price */}
                     <div className="bg-green-50 text-[#00C896] font-black px-3 py-1 rounded-lg text-sm group-hover:bg-[#00C896] group-hover:text-white transition-all">
                       ₹{p.price}/mo
                     </div>
                   </div>
                   <div className="h-[1px] bg-slate-100 w-full mb-6" />
-                  
-                  {/* Visual Amenities Icons (Simulated) */}
                   <div className="flex gap-4 items-center">
                     <div className="flex gap-2">
                        {[1, 2, 3].map((icon) => (
