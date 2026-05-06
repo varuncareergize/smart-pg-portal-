@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
@@ -21,9 +22,10 @@ import AddVisitor from './pages/AddVisitor';
 
 function App() {
   return (
-   
-    <Router>
+    // 👇 VERY IMPORTANT: basename must match your repo name
+    <Router basename="/smart-pg-portal-">
       <Routes>
+
         {/* --- PUBLIC WEBSITE ROUTES --- */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -43,13 +45,13 @@ function App() {
           <Route path="/payments" element={<Payments />} />
           <Route path="/staff" element={<Staff />} />
           <Route path="/grocery" element={<GroceryExpenses />} />
-          <Route path='/tenants/add' element={<TenantsAdd />} />
+          <Route path="/tenants/add" element={<TenantsAdd />} />
           <Route path="/rooms/add" element={<AddRoom />} />
           <Route path="/visitors/add" element={<AddVisitor />} />
         </Route>
+
       </Routes>
     </Router>
-
   );
 }
 
