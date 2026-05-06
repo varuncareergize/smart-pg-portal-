@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -6,7 +6,7 @@ import {
   Shield, Dumbbell, Zap, Brush, Tv, Heart, ArrowRight
 } from 'lucide-react';
 
-// Import the specific UULYV Navbar we created
+// Import the specific UULYV Navbar and Footer
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -71,6 +71,17 @@ const PROPERTY_LIST = [
 
 export default function Home() {
   const navigate = useNavigate();
+  
+  // 1. Create a reference to attach to the Featured Collections section
+  const featuredSectionRef = useRef(null);
+
+  // 2. Define the smooth scroll function
+  const scrollToFeatured = () => {
+    featuredSectionRef.current?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
+  };
 
   return (
     <div className="min-h-screen bg-[#F4F7F9] font-sans overflow-x-hidden">
@@ -133,7 +144,10 @@ export default function Home() {
             >
               Explore Stays <Search size={18} strokeWidth={3}/>
             </button>
-            <button className="bg-white/10 backdrop-blur-md border-2 border-white/20 px-10 py-5 rounded-2xl font-black text-white hover:bg-white/20 transition-all text-sm uppercase tracking-widest">
+            <button 
+              onClick={scrollToFeatured} // Modified to scroll instead of page navigation
+              className="bg-white/10 backdrop-blur-md border-2 border-white/20 px-10 py-5 rounded-2xl font-black text-white hover:bg-white/20 transition-all text-sm uppercase tracking-widest"
+            >
               List Property
             </button>
           </motion.div>
@@ -170,8 +184,9 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* --- NEWLY ADDED LISTINGS --- */}
-      <section className="py-24 px-8 md:px-24 max-w-[1400px] mx-auto">
+      {/* --- FEATURED LISTINGS --- */}
+      {/* 3. Attach the ref to this section container */}
+      <section ref={featuredSectionRef} className="py-24 px-8 md:px-24 max-w-[1400px] mx-auto scroll-mt-28">
         <div className="flex justify-between items-end mb-16">
           <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
             <h2 className="text-4xl font-black text-[#001F3F]">Featured Collections</h2>
@@ -198,6 +213,7 @@ export default function Home() {
               key={p.id} 
               variants={fadeInUp}
               whileHover={{ y: -12 }}
+              onClick={() => navigate(`/property/${p.id}`)}
               className="bg-white rounded-[40px] overflow-hidden shadow-sm border border-slate-100 hover:shadow-2xl transition-all duration-500 cursor-pointer group"
             >
               <div className="relative h-80 overflow-hidden">
@@ -252,7 +268,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* --- CTA SECTION --- */}
+      {/* --- OWN A PROPERTY CTA SECTION --- */}
       <section className="px-8 md:px-24 mb-32">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
@@ -267,6 +283,7 @@ export default function Home() {
             </p>
           </div>
           <motion.button 
+            onClick={scrollToFeatured} // Modified to scroll here as well
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="mt-12 md:mt-0 relative z-10 bg-[#FFC107] text-[#001F3F] px-14 py-6 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] shadow-2xl hover:bg-white transition-colors"
