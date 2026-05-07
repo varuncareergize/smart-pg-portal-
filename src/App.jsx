@@ -1,6 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import Layout from './components/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
+
+// Pages
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Rooms from './pages/Rooms';
@@ -22,11 +25,9 @@ import AddVisitor from './pages/AddVisitor';
 
 function App() {
   return (
-    // 👇 VERY IMPORTANT: basename must match your repo name
     <Router basename="/smart-pg-portal-">
       <Routes>
-
-        {/* --- PUBLIC WEBSITE ROUTES --- */}
+        {/* --- PUBLIC ROUTES --- */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/properties" element={<Properties />} />
@@ -35,8 +36,9 @@ function App() {
         <Route path="/about-us" element={<About />} />
         <Route path="/contact" element={<Contact />} />
 
-        {/* --- MANAGEMENT PORTAL ROUTES (Wrapped in Layout) --- */}
-        <Route element={<Layout />}>
+        {/* --- PROTECTED MANAGEMENT ROUTES --- */}
+        {/* We wrap the Layout inside ProtectedRoute so all sub-routes are secured */}
+        <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/rooms" element={<Rooms />} />
           <Route path="/tenants" element={<Tenants />} />
@@ -50,6 +52,8 @@ function App() {
           <Route path="/visitors/add" element={<AddVisitor />} />
         </Route>
 
+        {/* Handle Unknown Routes */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
