@@ -22,6 +22,7 @@ import Visitors from './pages/Visitors';
 import TenantsAdd from './pages/Tenant_add';
 import AddRoom from './pages/AddRoom';
 import AddVisitor from './pages/AddVisitor';
+import EditRoom from './pages/EditRoom';
 
 function App() {
   return (
@@ -49,7 +50,9 @@ function App() {
           <Route path="/grocery" element={<GroceryExpenses />} />
           <Route path="/tenants/add" element={<TenantsAdd />} />
           <Route path="/rooms/add" element={<AddRoom />} />
+          <Route path="/rooms/edit/:id" element={<EditRoom />} />
           <Route path="/visitors/add" element={<AddVisitor />} />
+
         </Route>
 
         {/* Handle Unknown Routes */}
