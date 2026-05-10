@@ -22,7 +22,7 @@ export default function GroceryExpenses() {
   // 2. FETCH DATA FROM API
   const fetchExpenses = async () => {
     try {
-      const res = await axios.get('http://127.0.0.1:8000/expenses/?property_id=1');
+      const res = await axios.get('https://smart-pg-backend.onrender.com/expenses/?property_id=1');
       setExpenses(res.data);
     } catch (err) {
       console.error("Error fetching groceries:", err);
@@ -49,7 +49,7 @@ export default function GroceryExpenses() {
     if (receipt) data.append('receipt_image', receipt);
 
     try {
-      await axios.post('http://127.0.0.1:8000/expenses/', data, {
+      await axios.post('https://smart-pg-backend.onrender.com/expenses/', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       alert("Expense Recorded Successfully!");

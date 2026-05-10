@@ -37,7 +37,7 @@ export default function TenantsAdd() {
     const fetchRooms = async () => {
       try {
         setRoomsLoading(true);
-        const response = await fetch('http://127.0.0.1:8000/rooms/');
+        const response = await fetch('https://smart-pg-backend.onrender.com/rooms/');
         if (!response.ok) throw new Error('Failed to fetch rooms');
         
         const data = await response.json();
@@ -73,7 +73,7 @@ export default function TenantsAdd() {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/tenants/', {
+      const response = await fetch('https://smart-pg-backend.onrender.com/tenants/', {
         method: 'POST',
         body: uploadData, // Browser handles Content-Type for FormData
       });

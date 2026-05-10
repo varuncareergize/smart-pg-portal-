@@ -19,7 +19,7 @@ export default function PropertyDetails() {
   useEffect(() => {
     const fetchPropertyData = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/properties/${id}/`);
+        const response = await fetch(`https://smart-pg-backend.onrender.com/properties/${id}/`);
         const data = await response.json();
         setProperty(data);
         

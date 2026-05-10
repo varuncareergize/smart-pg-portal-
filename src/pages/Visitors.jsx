@@ -20,7 +20,7 @@ export default function Visitors() {
       setLoading(true);
       // Replace '1' with your dynamic property ID from Context or LocalStorage
       const propertyId = localStorage.getItem('currentPropertyId') || '1';
-      const response = await axios.get(`http://localhost:8000/visitors/?property_id=${propertyId}`);
+      const response = await axios.get(`https://smart-pg-backend.onrender.com/visitors/?property_id=${propertyId}`);
       setVisitorLogs(response.data);
     } catch (error) {
       console.error("Error fetching visitor data:", error);

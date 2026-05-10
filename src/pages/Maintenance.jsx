@@ -21,7 +21,7 @@ export default function Maintenance() {
   const fetchTickets = async () => {
     try {
       // Standardized to your /api/ path
-      const res = await axios.get(`http://127.0.0.1:8000/tickets/?property_id=${activePropertyId}`);
+      const res = await axios.get(`https://smart-pg-backend.onrender.com/tickets/?property_id=${activePropertyId}`);
       setTickets(res.data);
     } catch (err) {
       console.error("Error fetching tickets:", err);
@@ -36,7 +36,7 @@ export default function Maintenance() {
 
   const handleStatusUpdate = async (id, newStatus) => {
     try {
-      await axios.patch(`http://127.0.0.1:8000/api/tickets/${id}/`, { status: newStatus });
+      await axios.patch(`https://smart-pg-backend.onrender.com/api/tickets/${id}/`, { status: newStatus });
       fetchTickets(); 
     } catch (err) {
       alert("Failed to update status");

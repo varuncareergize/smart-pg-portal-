@@ -9,7 +9,7 @@ export default function EditRoom() {
   const [formData, setFormData] = useState(null);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/rooms/${id}/`)
+    fetch(`https://smart-pg-backend.onrender.com/rooms/${id}/`)
       .then(res => res.json())
       .then(data => {
         setFormData(data);
@@ -20,7 +20,7 @@ export default function EditRoom() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://127.0.0.1:8000/rooms/${id}/`, {
+      const response = await fetch(`https://smart-pg-backend.onrender.com/rooms/${id}/`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

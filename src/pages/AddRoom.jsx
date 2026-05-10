@@ -18,7 +18,7 @@ export default function AddRoom() {
 
   // 1. Fetch properties so the dropdown has real data
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/properties/all') // Adjust this to your actual properties endpoint
+    fetch('https://smart-pg-backend.onrender.com/properties/all') // Adjust this to your actual properties endpoint
       .then(res => res.json())
       .then(data => setProperties(data))
       .catch(err => console.error("Error fetching properties:", err));
@@ -29,7 +29,7 @@ export default function AddRoom() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/rooms/', {
+      const response = await fetch('https://smart-pg-backend.onrender.com/rooms/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

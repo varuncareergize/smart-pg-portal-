@@ -20,7 +20,7 @@ export default function Tenants() {
   const fetchTenants = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/tenants/');
+      const response = await fetch('https://smart-pg-backend.onrender.com/tenants/');
       if (!response.ok) throw new Error('Failed to fetch tenants');
       const data = await response.json();
       

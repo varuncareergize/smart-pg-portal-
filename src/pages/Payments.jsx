@@ -14,8 +14,8 @@ export default function PaymentAnalysis() {
     const fetchData = async () => {
       try {
         const [tenantRes, staffRes] = await Promise.all([
-          axios.get('http://127.0.0.1:8000/tenants/'),
-          axios.get('http://127.0.0.1:8000/staff/')
+          axios.get('https://smart-pg-backend.onrender.com/tenants/'),
+          axios.get('https://smart-pg-backend.onrender.com/staff/')
         ]);
         setTenants(tenantRes.data);
         setStaff(staffRes.data);
