@@ -1,27 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, UserPlus, ShieldCheck, Phone, Home, FileText } from 'lucide-react';
+import axios from 'axios';
+import { 
+  ArrowLeft, UserPlus, ShieldCheck, Phone, 
+  Home, FileText, Loader2 
+} from 'lucide-react';
 
 export default function AddVisitor() {
   const navigate = useNavigate();
+  const [rooms, setRooms] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Initialize with the current property ID from your owner's session
+  const currentPropertyId = localStorage.getItem('currentPropertyId') || '1';
+
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    room: '',
+    full_name: '',
+    phone_number: '',
+    room: '', // Must be the ID of the room
+    property: currentPropertyId, 
     purpose: 'Relative',
-    residentName: ''
+    resident_name: '',
+    status: 'Checked-In'
   });
 
-  const handleSubmit = (e) => {
+  // Fetch rooms for the current property so the user can select one
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/rooms/?property_id=${currentPropertyId}`);
+        setRooms(response.data);
+      } catch (error) {
+        console.error("Failed to load rooms:", error);
+      }
+    };
+    fetchRooms();
+  }, [currentPropertyId]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic to save visitor goes here
-    console.log("Visitor Registered:", formData);
-    navigate('/visitors'); // Redirect back to logs
+    setIsSubmitting(true);
+
+    try {
+      // POST directly to your visitors endpoint
+      await axios.post('http://localhost:8000/visitors/', formData);
+      navigate('/visitors'); 
+    } catch (error) {
+      console.error("Registration Error:", error.response?.data || error.message);
+      alert("Registration failed. Please check your inputs.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="p-8 max-w-2xl mx-auto">
-      {/* Header */}
       <button 
         onClick={() => navigate(-1)}
         className="flex items-center gap-2 text-slate-400 hover:text-[#001D3D] transition-colors mb-6"
@@ -38,11 +71,10 @@ export default function AddVisitor() {
             </div>
             <h1 className="text-2xl font-black italic">New Visitor</h1>
           </div>
-          <p className="text-white/60 text-xs font-bold uppercase tracking-widest">Security Entry Gate-01</p>
+          <p className="text-white/60 text-xs font-bold uppercase tracking-widest">Security Gate Entry</p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
-          {/* Visitor Name */}
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
               <FileText size={12} /> Full Name
@@ -52,12 +84,11 @@ export default function AddVisitor() {
               type="text"
               placeholder="Enter visitor name"
               className="w-full bg-slate-50 border-none rounded-2xl p-4 font-bold text-[#001D3D] focus:ring-2 focus:ring-[#00C896] transition-all"
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              onChange={(e) => setFormData({...formData, full_name: e.target.value})}
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Phone */}
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
                 <Phone size={12} /> Phone Number
@@ -67,26 +98,27 @@ export default function AddVisitor() {
                 type="tel"
                 placeholder="+91 00000 00000"
                 className="w-full bg-slate-50 border-none rounded-2xl p-4 font-bold text-[#001D3D] focus:ring-2 focus:ring-[#00C896] transition-all"
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                onChange={(e) => setFormData({...formData, phone_number: e.target.value})}
               />
             </div>
 
-            {/* Room */}
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-                <Home size={12} /> Room No.
+                <Home size={12} /> Target Room
               </label>
-              <input 
+              <select 
                 required
-                type="text"
-                placeholder="e.g. 402-B"
-                className="w-full bg-slate-50 border-none rounded-2xl p-4 font-bold text-[#001D3D] focus:ring-2 focus:ring-[#00C896] transition-all"
+                className="w-full bg-slate-50 border-none rounded-2xl p-4 font-bold text-[#001D3D] focus:ring-2 focus:ring-[#00C896] transition-all appearance-none"
                 onChange={(e) => setFormData({...formData, room: e.target.value})}
-              />
+              >
+                <option value="">Select Room</option>
+                {rooms.map(r => (
+                  <option key={r.id} value={r.id}>{r.room_number}</option>
+                ))}
+              </select>
             </div>
           </div>
 
-          {/* Resident Name */}
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
               Resident To Visit
@@ -96,11 +128,10 @@ export default function AddVisitor() {
               type="text"
               placeholder="Who are they visiting?"
               className="w-full bg-slate-50 border-none rounded-2xl p-4 font-bold text-[#001D3D] focus:ring-2 focus:ring-[#00C896] transition-all"
-              onChange={(e) => setFormData({...formData, residentName: e.target.value})}
+              onChange={(e) => setFormData({...formData, resident_name: e.target.value})}
             />
           </div>
 
-          {/* Purpose */}
           <div className="space-y-2">
             <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Purpose of Visit</label>
             <div className="flex flex-wrap gap-2">
@@ -122,14 +153,12 @@ export default function AddVisitor() {
           <div className="pt-4">
             <button 
               type="submit"
-              className="w-full bg-[#00C896] text-white py-5 rounded-[24px] font-black text-lg shadow-lg shadow-emerald-500/20 hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+              disabled={isSubmitting}
+              className="w-full bg-[#00C896] text-white py-5 rounded-[24px] font-black text-lg shadow-lg shadow-emerald-500/20 hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-70"
             >
-              <ShieldCheck size={24} />
-              Verify & Check In
+              {isSubmitting ? <Loader2 className="animate-spin" /> : <ShieldCheck size={24} />}
+              {isSubmitting ? 'Registering...' : 'Verify & Check In'}
             </button>
-            <p className="text-center text-[10px] font-bold text-slate-400 mt-4 uppercase tracking-widest">
-              Automated Check-in time will be recorded
-            </p>
           </div>
         </form>
       </div>
