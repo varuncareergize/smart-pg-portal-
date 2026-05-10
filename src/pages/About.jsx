@@ -34,7 +34,7 @@ export default function AboutUs() {
               Making rentals <span className="text-[#00C896]">transparent</span> and human.
             </h1>
             <p className="text-xl text-slate-500 leading-relaxed font-medium">
-              SmartPG is a direct-to-customer rental platform designed to bridge the gap 
+              UULYV is a direct-to-customer rental platform designed to bridge the gap 
               between property owners and seekers. No brokers, no hidden fees—just 
               one-to-one connections.
             </p>

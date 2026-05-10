@@ -21,7 +21,7 @@ export default function AddTicket() {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const res = await axios.get('http://127.0.0.1:8000/staff/'); 
+        const res = await axios.get('https://smart-pg-backend.onrender.com/staff/'); 
         setStaffList(res.data);
         // Automatically select the first staff member if available
         if (res.data.length > 0) {
@@ -38,7 +38,7 @@ export default function AddTicket() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post('http://127.0.0.1:8000/tickets/', formData);
+      await axios.post('https://smart-pg-backend.onrender.com/tickets/', formData);
       navigate('/maintenance'); 
     } catch (err) {
       console.error("DJANGO ERROR:", err.response?.data);

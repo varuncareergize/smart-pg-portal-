@@ -79,7 +79,7 @@ export default function PropertyDetails() {
               />
               <div className="absolute bottom-8 left-8 bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl flex items-center gap-2">
                 <CheckCircle className="text-[#00C896]" size={20} />
-                <span className="font-black text-[#001D3D] text-sm uppercase tracking-widest">SmartPG Verified</span>
+                <span className="font-black text-[#001D3D] text-sm uppercase tracking-widest">UULYV Verified</span>
               </div>
             </div>
 

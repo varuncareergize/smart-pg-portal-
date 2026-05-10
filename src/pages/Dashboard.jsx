@@ -62,7 +62,7 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex flex-col gap-1 pt-8">
         <h2 className="text-3xl font-black text-[#001D3D] italic">Executive Overview</h2>
-        <p className="text-slate-400 font-medium uppercase text-[10px] tracking-tighter">SmartPG Administrative Gateway</p>
+        <p className="text-slate-400 font-medium uppercase text-[10px] tracking-tighter">UULYV Administrative Gateway</p>
       </div>
 
       {/* Stats Grid */}
