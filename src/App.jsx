@@ -24,6 +24,7 @@ import AddRoom from './pages/AddRoom';
 import AddVisitor from './pages/AddVisitor';
 import EditRoom from './pages/EditRoom';
 import AddStaff from './pages/AddStaff'
+import AddTicket from './pages/AddTicket';
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
           <Route path="/rooms/edit/:id" element={<EditRoom />} />
           <Route path="/visitors/add" element={<AddVisitor />} />
           <Route path="/staff/add" element={<AddStaff />} />
+          <Route path="/maintenance/new" element={<AddTicket />} />
 
         </Route>
 
