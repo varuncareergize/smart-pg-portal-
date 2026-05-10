@@ -36,7 +36,7 @@ export default function Visitors() {
   // 2. Handle Check-Out (API Update)
   const handleCheckOut = async (id) => {
     try {
-      await axios.patch(`http://localhost:8000/visitors/${id}/`, {
+      await axios.patch(`https://smart-pg-backend.onrender.com/visitors/${id}/`, {
         status: 'Checked-Out',
         exit_time: new Date().toISOString()
       });

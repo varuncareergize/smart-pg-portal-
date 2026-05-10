@@ -26,7 +26,7 @@ export default function Staff() {
     try {
       setLoading(true);
       const propertyId = localStorage.getItem('currentPropertyId') || '1';
-      const response = await axios.get(`http://localhost:8000/staff/?property_id=${propertyId}`);
+      const response = await axios.get(`https://smart-pg-backend.onrender.com/staff/?property_id=${propertyId}`);
       setStaffData(response.data);
     } catch (error) {
       console.error("Error fetching team directory:", error);
@@ -42,7 +42,7 @@ export default function Staff() {
   // 2. Handle Payment Status Toggle (Updates Django Model)
   const handlePayment = async (id, currentPaidStatus) => {
     try {
-      await axios.patch(`http://localhost:8000/staff/${id}/`, {
+      await axios.patch(`https://smart-pg-backend.onrender.com/staff/${id}/`, {
         is_paid: !currentPaidStatus,
         last_paid_date: new Date().toISOString().split('T')[0]
       });

@@ -28,7 +28,7 @@ export default function AddVisitor() {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/rooms/?property_id=${currentPropertyId}`);
+        const response = await axios.get(`https://smart-pg-backend.onrender.com/rooms/?property_id=${currentPropertyId}`);
         setRooms(response.data);
       } catch (error) {
         console.error("Failed to load rooms:", error);
@@ -43,7 +43,7 @@ export default function AddVisitor() {
 
     try {
       // POST directly to your visitors endpoint
-      await axios.post('http://localhost:8000/visitors/', formData);
+      await axios.post('https://smart-pg-backend.onrender.com/visitors/', formData);
       navigate('/visitors'); 
     } catch (error) {
       console.error("Registration Error:", error.response?.data || error.message);

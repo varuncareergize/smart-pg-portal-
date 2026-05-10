@@ -29,7 +29,7 @@ export default function AddStaff() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post('http://localhost:8000/staff/', formData);
+      await axios.post('https://smart-pg-backend.onrender.com/staff/', formData);
       navigate('/staff'); // Redirect back to directory
     } catch (error) {
       console.error("Error adding staff:", error.response?.data || error.message);
