@@ -7,7 +7,8 @@ import {
   PhoneIcon,
   ArrowPathIcon,
   UserIcon,
-  MagnifyingGlassIcon 
+  MagnifyingGlassIcon,
+  ChatBubbleLeftRightIcon 
 } from '@heroicons/react/24/outline';
 
 export default function Tenants() {
@@ -24,7 +25,6 @@ export default function Tenants() {
       if (!response.ok) throw new Error('Failed to fetch tenants');
       const data = await response.json();
       
-      // Handle Django Rest Framework pagination if applicable
       const tenantList = Array.isArray(data) ? data : data.results || [];
       setTenants(tenantList);
     } catch (error) {
@@ -38,7 +38,6 @@ export default function Tenants() {
     fetchTenants();
   }, []);
 
-  // ✅ UPDATED: Now uses the is_paid boolean from your Django Model
   const getRentStatus = (tenant) => {
     return tenant.is_paid ? 'Paid' : 'Unpaid';
   };
@@ -149,6 +148,9 @@ export default function Tenants() {
         ) : (
           displayTenants.map((tenant) => {
             const status = getRentStatus(tenant);
+            // Remove non-numeric characters for WhatsApp link
+            const cleanPhone = tenant.phone ? tenant.phone.replace(/\D/g, '') : '';
+
             return (
               <div 
                 key={tenant.id} 
@@ -175,7 +177,7 @@ export default function Tenants() {
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 md:gap-4">
                   <div className="hidden md:flex flex-col items-end">
                     <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
                       tenant.is_paid ? 'bg-green-50 text-[#00C896]' : 'bg-red-50 text-red-500'
@@ -185,10 +187,22 @@ export default function Tenants() {
                     <p className="text-[10px] font-bold text-slate-400 mt-1">{tenant.phone}</p>
                   </div>
 
+                  {/* CHAT BUTTON (WhatsApp) */}
+                  <a 
+                    href={`https://wa.me/${cleanPhone}`} 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()} 
+                    className="p-3 bg-slate-50 rounded-2xl text-[#00C896] hover:bg-[#00C896] hover:text-white transition-all"
+                  >
+                    <ChatBubbleLeftRightIcon className="w-5 h-5" />
+                  </a>
+
+                  {/* CALL BUTTON */}
                   <a 
                     href={`tel:${tenant.phone}`} 
                     onClick={(e) => e.stopPropagation()} 
-                    className="p-3 bg-slate-50 rounded-2xl text-[#001D3D] hover:bg-[#00C896] hover:text-white transition-all"
+                    className="p-3 bg-slate-50 rounded-2xl text-[#001D3D] hover:bg-[#001D3D] hover:text-white transition-all"
                   >
                     <PhoneIcon className="w-5 h-5" />
                   </a>

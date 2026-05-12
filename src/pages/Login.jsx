@@ -54,7 +54,7 @@ export default function Login() {
       <div className="absolute top-0 left-0 w-full h-1/2 bg-[#001D3D] z-0" />
       <div className="relative z-10 w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-black text-white tracking-tighter mb-2">UULYV</h1>
+          <h1 className="text-3xl font-black text-white tracking-tighter mb-2">LivZZ</h1>
         </div>
 
         <div className="bg-white rounded-[40px] shadow-2xl shadow-blue-900/20 p-10 border border-slate-100">

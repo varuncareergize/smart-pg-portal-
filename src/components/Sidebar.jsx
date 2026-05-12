@@ -2,18 +2,18 @@ import { NavLink } from 'react-router-dom';
 import { 
   Squares2X2Icon, BuildingOfficeIcon, KeyIcon, UsersIcon, 
   UserGroupIcon, CreditCardIcon, WrenchScrewdriverIcon, 
-  XMarkIcon, ShoppingCartIcon, UserPlusIcon
+  XMarkIcon, ShoppingCartIcon, UserPlusIcon,
+  ChatBubbleLeftRightIcon // 1. Import the Chat Icon
 } from '@heroicons/react/24/outline';
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: Squares2X2Icon },
-  // { name: 'Properties', path: '/properties', icon: BuildingOfficeIcon },
   { name: 'Rooms', path: '/rooms', icon: KeyIcon },
   { name: 'Tenants', path: '/tenants', icon: UsersIcon },
-  { name: 'Visitors', path: '/visitors', icon: UserPlusIcon }, // Added Visitors
-  { name: 'Staff', path: '/staff', icon: UserGroupIcon },
+  { name: 'Visitors', path: '/visitors', icon: UserPlusIcon },
+  { name: 'Staff', path: '/staff', icon: UserGroupIcon },// 2. Added Messages
   { name: 'Payments', path: '/payments', icon: CreditCardIcon },
-  { name: 'Grocery', path: '/grocery', icon: ShoppingCartIcon }, // Added Grocery
+  { name: 'Grocery', path: '/grocery', icon: ShoppingCartIcon }, 
   { name: 'Maintenance', path: '/maintenance', icon: WrenchScrewdriverIcon },
 ];
 
@@ -37,7 +37,7 @@ export default function Sidebar({ isOpen, toggleMenu }) {
           <div className="p-8 flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-black text-sg-navy tracking-tighter">
-                Smart<span className="text-sg-green">PG</span>
+              LIV<span className="text-sg-green">ZZ</span>
               </h1>
               <p className="text-[10px] font-bold text-sg-green uppercase tracking-widest mt-0.5">Management Portal</p>
             </div>
@@ -63,15 +63,7 @@ export default function Sidebar({ isOpen, toggleMenu }) {
             ))}
           </nav>
 
-          <div className="p-4 border-t border-sg-border bg-sg-bg/30">
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-sg-border">
-              <img src="https://ui-avatars.com/api/?name=Varun&background=1AB076&color=fff" className="w-10 h-10 rounded-xl" alt="user" />
-              <div className="overflow-hidden">
-                <p className="text-sm font-bold text-sg-navy truncate">Varun</p>
-                <p className="text-[10px] font-bold text-sg-green uppercase">Admin</p>
-              </div>
-            </div>
-          </div>
+          
         </div>
       </aside>
     </>
