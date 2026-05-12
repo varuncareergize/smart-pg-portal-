@@ -50,7 +50,7 @@ export default function Navbar() {
             <span className={`text-3xl font-black tracking-tighter transition-colors duration-300 ${
               scrolled ? 'text-[#001F3F]' : 'text-white'
             }`}>
-              UULYV
+              LIVZZ
             </span>
           </Link>
 
