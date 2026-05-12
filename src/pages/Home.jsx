@@ -129,7 +129,7 @@ export default function Home() {
             transition={{ delay: 0.5, duration: 0.8 }}
             className="text-lg text-slate-300 mb-10 leading-relaxed max-w-xl"
           >
-            UULYV connects you with verified, high-end properties featuring modern amenities and professional management across India's top tech hubs.
+            LIVZZ connects you with verified, high-end properties featuring modern amenities and professional management across India's top tech hubs.
           </motion.p>
           
           <motion.div 
@@ -157,7 +157,7 @@ export default function Home() {
       {/* --- EXPLORE BY SPACES --- */}
       <section className="py-32 bg-white text-center">
         <motion.div initial="initial" whileInView="animate" viewport={{ once: true }} variants={fadeInUp}>
-          <h2 className="text-4xl font-black text-[#001F3F] mb-4">Explore UULYV Spaces</h2>
+          <h2 className="text-4xl font-black text-[#001F3F] mb-4">Explore LIVZZ Spaces</h2>
           <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mb-16">Curated living environments for every lifestyle</p>
         </motion.div>
 
@@ -279,7 +279,7 @@ export default function Home() {
           <div className="relative z-10 text-center md:text-left">
             <h2 className="text-5xl font-black text-white mb-6 tracking-tighter">Maximize Your Asset.</h2>
             <p className="text-slate-400 text-lg font-medium max-w-lg">
-              List your property with UULYV and access our premium network of corporate professionals and students.
+              List your property with LIVZZ and access our premium network of corporate professionals and students.
             </p>
           </div>
           <motion.button 
