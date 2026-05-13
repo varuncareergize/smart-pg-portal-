@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
+
 // Pages
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
@@ -24,12 +25,13 @@ import AddVisitor from './pages/AddVisitor';
 import EditRoom from './pages/EditRoom';
 import AddStaff from './pages/AddStaff';
 import AddTicket from './pages/AddTicket';
-import Notifications from './pages/Notifications'; // Add this import
+import Notifications from './pages/Notifications';
 
 function App() {
   return (
-    <Router basename="/smart-pg-portal-">
+    <Router>
       <Routes>
+
         {/* --- PUBLIC ROUTES --- */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -55,12 +57,12 @@ function App() {
           <Route path="/visitors/add" element={<AddVisitor />} />
           <Route path="/staff/add" element={<AddStaff />} />
           <Route path="/maintenance/new" element={<AddTicket />} />
-          {/* NEW ROUTE */}
           <Route path="/notifications" element={<Notifications />} />
         </Route>
 
         {/* Handle Unknown Routes */}
         <Route path="*" element={<Navigate to="/" replace />} />
+
       </Routes>
     </Router>
   );
