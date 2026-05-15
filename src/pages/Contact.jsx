@@ -39,7 +39,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Email Us</p>
-                  <p className="text-lg font-bold text-[#001D3D]">hello@smartgp.com</p>
+                  <p className="text-lg font-bold text-[#001D3D]">info@Livzz.com</p>
                 </div>
               </div>
 
@@ -49,7 +49,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Call Us</p>
-                  <p className="text-lg font-bold text-[#001D3D]">+91 80 4567 8901</p>
+                  <p className="text-lg font-bold text-[#001D3D]">+91 6282744675</p>
                 </div>
               </div>
 

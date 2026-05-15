@@ -10,9 +10,10 @@ export default function Footer() {
           
           {/* Brand Info */}
           <div className="col-span-2 lg:col-span-2 space-y-6">
-            <h4 className="text-2xl font-black text-[#001D3D]">SmartGP</h4>
+            <h4 className="text-2xl font-black text-[#001D3D]">LivZZ</h4>
             <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
-              © 2024 SmartGP. Reliable Property Management. Designed for comfort, managed with precision.
+              © 2026 Livzz | Powerd by Careergize.LLP. Reliable Property Management. Designed for comfort, managed with precision.
+             
             </p>
             <div className="flex gap-4 text-slate-300">
               <Globe size={20} className="hover:text-[#00C896] cursor-pointer" />
@@ -38,9 +39,7 @@ export default function Footer() {
             <h5 className="text-[10px] font-black text-[#001D3D] uppercase tracking-widest">Locations</h5>
             <ul className="space-y-4 text-sm font-bold text-slate-400">
               <li className="hover:text-[#001D3D] cursor-pointer">Bangalore</li>
-              <li className="hover:text-[#001D3D] cursor-pointer">Gurgaon</li>
-              <li className="hover:text-[#001D3D] cursor-pointer">Pune</li>
-              <li className="hover:text-[#001D3D] cursor-pointer">Hyderabad</li>
+              <li className="hover:text-[#001D3D] cursor-pointer">Chennai</li>
             </ul>
           </div>
 

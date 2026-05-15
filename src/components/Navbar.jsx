@@ -9,7 +9,6 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Handle scroll effect for that premium "sticky" feel
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -31,20 +30,23 @@ export default function Navbar() {
     <nav 
       className={`fixed top-0 w-full z-[100] transition-all duration-500 ${
         scrolled 
-          ? 'bg-white/90 backdrop-blur-xl border-b border-slate-100 py-3 shadow-sm' 
-          : 'bg-transparent py-6'
+          ? 'bg-white/95 backdrop-blur-xl border-b border-slate-100 py-3 shadow-md' 
+          // FIXED: Changed from bg-transparent to solid Deep Navy for visibility
+          : 'bg-[#001F3F] py-5 shadow-2xl' 
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8">
         <div className="flex justify-between items-center h-16">
           
-          {/* 1. Brand Logo - Updated to UULYV */}
+          {/* 1. Brand Logo */}
           <Link 
             to="/" 
             className="flex items-center gap-3 group"
             onClick={() => setIsOpen(false)}
           >
-            <div className="w-12 h-12 bg-[#001F3F] rounded-2xl flex items-center justify-center text-[#FFC107] shadow-2xl shadow-blue-900/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-xl ${
+              scrolled ? 'bg-[#001F3F] text-[#FFC107]' : 'bg-[#FFC107] text-[#001F3F]'
+            } group-hover:scale-110 group-hover:rotate-3`}>
               <Zap size={26} fill="currentColor" strokeWidth={0} />
             </div>
             <span className={`text-3xl font-black tracking-tighter transition-colors duration-300 ${
@@ -68,7 +70,6 @@ export default function Navbar() {
                   }`}
                 >
                   {link.name}
-                  {/* Premium indicator for active state */}
                   <span className={`absolute -bottom-1 left-4 right-4 h-0.5 bg-[#FFC107] transition-transform duration-500 ${
                     isActive(link.path) ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
                   }`} />
@@ -80,7 +81,7 @@ export default function Navbar() {
               onClick={() => navigate('/login')}
               className={`px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.15em] transition-all active:scale-95 shadow-xl ${
                 scrolled 
-                ? 'bg-[#001F3F] text-white hover:bg-[#FFC107] hover:text-[#001F3F] shadow-blue-900/10' 
+                ? 'bg-[#001F3F] text-white hover:bg-[#FFC107] hover:text-[#001F3F]' 
                 : 'bg-[#FFC107] text-[#001F3F] hover:bg-white'
               }`}
             >
@@ -93,7 +94,7 @@ export default function Navbar() {
             <button 
               onClick={() => setIsOpen(!isOpen)}
               className={`p-4 rounded-2xl transition-all active:scale-90 ${
-                scrolled ? 'bg-slate-50 text-[#001F3F]' : 'bg-white/10 text-white backdrop-blur-md'
+                scrolled ? 'bg-slate-100 text-[#001F3F]' : 'bg-white/10 text-white'
               }`}
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -130,7 +131,7 @@ export default function Navbar() {
               <div className="pt-8">
                 <button 
                   onClick={() => { navigate('/login'); setIsOpen(false); }}
-                  className="w-full bg-[#001F3F] text-white py-6 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-blue-900/30 active:scale-95 transition-transform"
+                  className="w-full bg-[#001F3F] text-white py-6 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-blue-900/30 transition-transform active:scale-95"
                 >
                   Member Login
                 </button>
