@@ -20,7 +20,6 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Features', path: '/features', hasDropdown: true },
     { name: 'Portfolio', path: '/portfolio', hasDropdown: true },
-    { name: 'Smart Meter', path: '/smart-meter' },
     { name: 'About Us', path: '/about-us' },
     { name: 'Resources', path: '/resources' },
     { name: 'Contact Us', path: '/contact' },
