@@ -111,7 +111,7 @@ export default function TenantsAdd() {
         </button>
         <div className="text-right">
           <h2 className="text-3xl font-black text-[#001D3D] italic">Onboard Resident</h2>
-          <p className="text-slate-400 text-xs font-bold uppercase tracking-tighter">UULY Management System</p>
+          <p className="text-slate-400 text-xs font-bold uppercase tracking-tighter">LivZZ Management System</p>
         </div>
       </div>
 

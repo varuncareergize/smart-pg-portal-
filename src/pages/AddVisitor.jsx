@@ -65,12 +65,12 @@ export default function AddVisitor() {
 
       <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden">
         <div className="bg-[#001D3D] p-8 text-white">
-          <div className="flex items-center gap-4 mb-2">
+          {/* <div className="flex items-center gap-4 mb-2">
             <div className="p-3 bg-white/10 rounded-2xl">
               <UserPlus className="text-[#00C896]" size={24} />
             </div>
             <h1 className="text-2xl font-black italic">New Visitor</h1>
-          </div>
+          </div> */}
           <p className="text-white/60 text-xs font-bold uppercase tracking-widest">Security Gate Entry</p>
         </div>
 

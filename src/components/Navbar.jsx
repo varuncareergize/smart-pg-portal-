@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Menu, X, Home, ChevronRight, Zap } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
@@ -11,81 +11,63 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isActive = (path) => location.pathname === path;
-
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Properties', path: '/properties' },
+    { name: 'Features', path: '/features', hasDropdown: true },
+    { name: 'Portfolio', path: '/portfolio', hasDropdown: true },
+    { name: 'Smart Meter', path: '/smart-meter' },
     { name: 'About Us', path: '/about-us' },
-    { name: 'Contact', path: '/contact' },
+    { name: 'Resources', path: '/resources' },
+    { name: 'Contact Us', path: '/contact' },
   ];
 
   return (
     <nav 
-      className={`fixed top-0 w-full z-[100] transition-all duration-500 ${
+      className={`fixed top-0 w-full z-[100] transition-all duration-300 ${
         scrolled 
-          ? 'bg-white/95 backdrop-blur-xl border-b border-slate-100 py-3 shadow-md' 
-          // FIXED: Changed from bg-transparent to solid Deep Navy for visibility
-          : 'bg-[#001F3F] py-5 shadow-2xl' 
+          ? 'bg-[#0B0A12]/90 backdrop-blur-md border-b border-white/5 py-4' 
+          : 'bg-transparent py-6'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-8">
-        <div className="flex justify-between items-center h-16">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <div className="flex justify-between items-center h-12">
           
-          {/* 1. Brand Logo */}
-          <Link 
-            to="/" 
-            className="flex items-center gap-3 group"
-            onClick={() => setIsOpen(false)}
-          >
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-xl ${
-              scrolled ? 'bg-[#001F3F] text-[#FFC107]' : 'bg-[#FFC107] text-[#001F3F]'
-            } group-hover:scale-110 group-hover:rotate-3`}>
-              <Zap size={26} fill="currentColor" strokeWidth={0} />
-            </div>
-            <span className={`text-3xl font-black tracking-tighter transition-colors duration-300 ${
-              scrolled ? 'text-[#001F3F]' : 'text-white'
-            }`}>
-              LIVZZ
+          {/* 1. Brand Logo (Matches clean lowercase font) */}
+          <Link to="/" className="flex items-center" onClick={() => setIsOpen(false)}>
+            <span className="text-white text-3xl font-extrabold tracking-tight lowercase">
+              livzz<span className="text-indigo-500 font-black">.</span>
             </span>
           </Link>
 
           {/* 2. Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-2">
-            <div className="flex items-center gap-4 mr-8">
+          <div className="hidden md:flex items-center gap-8">
+            <div className="flex items-center gap-6">
               {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`relative px-4 py-2 text-[11px] font-black uppercase tracking-[0.2em] transition-all group ${
-                    isActive(link.path) 
-                      ? 'text-[#FFC107]' 
-                      : scrolled ? 'text-slate-500 hover:text-[#001F3F]' : 'text-white/80 hover:text-white'
-                  }`}
-                >
-                  {link.name}
-                  <span className={`absolute -bottom-1 left-4 right-4 h-0.5 bg-[#FFC107] transition-transform duration-500 ${
-                    isActive(link.path) ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
-                  }`} />
-                </Link>
+                <div key={link.name} className="relative group">
+                  <Link
+                    to={link.path}
+                    className="flex items-center gap-1 text-sm font-medium text-slate-300 hover:text-white transition-colors duration-200"
+                  >
+                    {link.name}
+                    {link.hasDropdown && (
+                      <ChevronDown size={14} className="text-slate-400 group-hover:text-white transition-transform duration-200 group-hover:rotate-180" />
+                    )}
+                  </Link>
+                </div>
               ))}
             </div>
             
+            {/* Sign-In Button (Elegant, small padding pill shape) */}
             <button 
               onClick={() => navigate('/login')}
-              className={`px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.15em] transition-all active:scale-95 shadow-xl ${
-                scrolled 
-                ? 'bg-[#001F3F] text-white hover:bg-[#FFC107] hover:text-[#001F3F]' 
-                : 'bg-[#FFC107] text-[#001F3F] hover:bg-white'
-              }`}
+              className="px-5 py-2.5 bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 hover:border-indigo-500 text-white rounded-lg text-sm font-medium transition-all duration-200 active:scale-95 shadow-lg shadow-indigo-600/10"
             >
-              Sign In
+              Sign-In
             </button>
           </div>
 
@@ -93,9 +75,7 @@ export default function Navbar() {
           <div className="md:hidden">
             <button 
               onClick={() => setIsOpen(!isOpen)}
-              className={`p-4 rounded-2xl transition-all active:scale-90 ${
-                scrolled ? 'bg-slate-100 text-[#001F3F]' : 'bg-white/10 text-white'
-              }`}
+              className="p-2 text-white hover:text-indigo-400 transition-colors"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -107,33 +87,29 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden absolute w-full bg-white border-b border-slate-100 shadow-2xl overflow-hidden"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden absolute w-full bg-[#0B0A12] border-b border-white/5 shadow-2xl overflow-hidden"
           >
-            <div className="px-8 pt-6 pb-12 space-y-3">
+            <div className="px-6 py-6 space-y-4">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   to={link.path}
                   onClick={() => setIsOpen(false)}
-                  className={`flex items-center justify-between w-full px-8 py-5 rounded-[24px] font-black text-xs uppercase tracking-widest transition-all ${
-                    isActive(link.path) 
-                      ? 'bg-[#FFC107]/10 text-[#001F3F]' 
-                      : 'text-slate-500 hover:bg-slate-50'
-                  }`}
+                  className="block w-full text-base font-medium text-slate-300 hover:text-white transition-colors py-2"
                 >
                   {link.name}
-                  <ChevronRight size={18} className={isActive(link.path) ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'} />
                 </Link>
               ))}
-              <div className="pt-8">
+              <div className="pt-4 border-t border-white/5">
                 <button 
                   onClick={() => { navigate('/login'); setIsOpen(false); }}
-                  className="w-full bg-[#001F3F] text-white py-6 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-blue-900/30 transition-transform active:scale-95"
+                  className="w-full bg-indigo-600 text-white py-3 rounded-lg text-sm font-medium text-center shadow-xl transition-transform active:scale-95"
                 >
-                  Member Login
+                  Sign-In
                 </button>
               </div>
             </div>
