@@ -56,7 +56,7 @@ export default function PropertyCard({ id = "1", image, title, location, rating,
           <div className="flex flex-col items-end gap-2">
             <div className="text-right">
               <p className="font-extrabold text-neutral-900 text-lg leading-tight">
-                ${price.toLocaleString()}
+                ₹{price.toLocaleString()}
               </p>
               <p className="text-[10px] text-gray-400">per month</p>
             </div>
