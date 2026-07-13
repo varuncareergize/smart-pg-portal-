@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
+import ExploreProperties from './components/ExploreProperties';
 
 // Pages
 import Home from './pages/Home';

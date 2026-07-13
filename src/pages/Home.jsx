@@ -2,7 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import PropertyGrid from '../components/PropertyGrid';
-
+import ExploreProperties from '../components/ExploreProperties';
+import Footer from '../components/Footer';
+import WhyChooseUs from '../components/WhyChooseUs';
 // 1. Import your local video file from your assets directory
 import heroVideo from '../assets/hero-bg.mp4'; 
 
@@ -160,8 +162,13 @@ export default function Home() {
 
       <main className="space-y-6">
         <PropertyGrid title="Browse the Starter Houses" listings={starterHouses} />
+       
         <PropertyGrid title="Exclusive Selection Units" listings={exclusiveUnits} />
+         <ExploreProperties />
+         <WhyChooseUs />
       </main>
+
+      <Footer />
     </div>
   );
 }
