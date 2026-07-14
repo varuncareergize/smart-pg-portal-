@@ -1,16 +1,19 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import {
+  ShieldCheck,
+  Briefcase,
+  Handshake,
+  Map,
+} from 'lucide-react';
 import Navbar from '../components/Navbar';
 import PropertyGrid from '../components/PropertyGrid';
 import ExploreProperties from '../components/ExploreProperties';
 import Footer from '../components/Footer';
 import WhyChooseUs from '../components/WhyChooseUs';
 // 1. Import your local video file from your assets directory
-import heroVideo from '../assets/hero-bg.mp4'; 
+import heroVideo from '../assets/hero-bg.mp4';
 
 export default function Home() {
-  const navigate = useNavigate();
-
   const starterHouses = [
     {
       title: "Tranquil Oasis Suites",
@@ -59,22 +62,18 @@ export default function Home() {
     }
   ];
 
-  const handleSearchRedirect = () => {
-    navigate('/properties');
-  };
-
   return (
     <div className="bg-neutral-50 min-h-screen antialiased text-neutral-800 pb-12">
       <Navbar />
-      
+
       <section className="relative min-h-[90vh] flex flex-col justify-center items-center px-4 pt-24 pb-32 overflow-hidden">
-        
+
         {/* 2. Pass the imported video variable to the source tag */}
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
           className="absolute top-0 left-0 w-full h-full object-cover z-0"
         >
           <source src={heroVideo} type="video/mp4" />
@@ -93,76 +92,57 @@ export default function Home() {
             Watch Showcase
           </button>
         </div>
+      </section>
 
-        {/* Floating Forms Stack Overlay Box */}
-        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-full max-w-5xl px-4 flex flex-col gap-4 z-30">
-          
-          <div className="bg-white rounded-full shadow-xl p-3 flex flex-col md:flex-row items-center justify-between gap-4 border border-gray-100">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full px-4 text-left">
-              <div className="flex items-center gap-2 text-gray-500 text-sm">
-                <span className="text-gray-400">📍</span>
-                <span className="font-medium text-gray-800">Location</span>
+      {/* Feature Strip — sits below the video, above the listings */}
+      <div className="relative z-30 w-full max-w-5xl mx-auto px-4 -mt-4 md:-mt-10 flex flex-col gap-4">
+
+          <div className="bg-white rounded-3xl md:rounded-[2rem] shadow-lg p-4 md:p-6 border border-gray-100 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 items-center">
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-5 h-5 text-neutral-700" />
               </div>
-              <div className="flex items-center gap-2 text-gray-500 text-sm">
-                <span className="text-gray-400">👤</span>
-                <span className="font-medium text-gray-800">Property Type</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-500 text-sm">
-                <span className="text-gray-400">💰</span>
-                <span className="font-medium text-gray-800">Price Range</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-500 text-sm">
-                <span className="text-gray-400">🏠</span>
-                <span className="font-medium text-gray-800">Bedrooms</span>
-              </div>
-            </div>
-            <button 
-              onClick={handleSearchRedirect}
-              className="w-full md:w-auto bg-neutral-900 text-white font-medium px-8 py-3 rounded-full hover:bg-neutral-800 transition shadow-md whitespace-nowrap"
-            >
-              Search Now
-            </button>
-          </div>
-          
-          <div className="bg-white rounded-[2rem] shadow-lg p-6 border border-gray-100 grid grid-cols-2 md:grid-cols-4 gap-6 items-center">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-xl">🛡️</div>
               <div>
-                <h4 className="font-bold text-gray-900 text-sm">Secure Booking</h4>
+                <h4 className="font-bold text-gray-900 text-sm">Secure booking</h4>
                 <p className="text-xs text-gray-400">All properties verified</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-xl">💼</div>
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                <Briefcase className="w-5 h-5 text-neutral-700" />
+              </div>
               <div>
-                <h4 className="font-bold text-gray-900 text-sm">Home Listing</h4>
+                <h4 className="font-bold text-gray-900 text-sm">Home listing</h4>
                 <p className="text-xs text-gray-400">Total support included</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-xl">🤝</div>
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                <Handshake className="w-5 h-5 text-neutral-700" />
+              </div>
               <div>
-                <h4 className="font-bold text-gray-900 text-sm">Smart Agent</h4>
+                <h4 className="font-bold text-gray-900 text-sm">Smart agent</h4>
                 <p className="text-xs text-gray-400">Hassle-free visits</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-xl">🗺️</div>
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                <Map className="w-5 h-5 text-neutral-700" />
+              </div>
               <div>
-                <h4 className="font-bold text-gray-900 text-sm">Premium Map</h4>
+                <h4 className="font-bold text-gray-900 text-sm">Premium map</h4>
                 <p className="text-xs text-gray-400">Find filter properties</p>
               </div>
             </div>
           </div>
 
-        </div>
-      </section>
+      </div>
 
-      <div className="h-44 md:h-28"></div>
+      <div className="h-10 md:h-12"></div>
 
       <main className="space-y-6">
         <PropertyGrid title="Browse the Starter Houses" listings={starterHouses} />
-       
+
         <PropertyGrid title="Exclusive Selection Units" listings={exclusiveUnits} />
          <ExploreProperties />
          <WhyChooseUs />
