@@ -6,11 +6,16 @@
   
   /* SmartGP Brand Colors */
   --color-sg-green: #1AB076;
-  --color-sg-navy: #0B1120; /* Deep Navy from your old project */
+  --color-sg-navy: #0B1120;
   --color-sg-bg: #F8F9FC;
   --color-sg-border: #E2E8F0;
   --color-sg-text-main: #1E293B;
   --color-sg-text-muted: #64748B;
+
+  /* LivZZ Marketplace Brand */
+  --color-livzz-navy: #001F3F;
+  --color-livzz-yellow: #FFC107;
+  --color-livzz-white: #FFFFFF;
   
   --radius-3xl: 24px;
   --radius-4xl: 32px;
@@ -64,5 +69,35 @@
   /* Professional Table Wrapper */
   .table-container {
     @apply w-full overflow-x-auto rounded-3xl border border-sg-border bg-white shadow-sm;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .livzz-glass {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 31, 63, 0.06);
+    box-shadow: 0 4px 24px -4px rgba(0, 31, 63, 0.08);
+  }
+
+  .livzz-glass-dark {
+    background: rgba(0, 31, 63, 0.95);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 193, 7, 0.1);
+    box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.2);
+  }
+
+  .chip-active {
+    @apply bg-[#001F3F] text-[#FFC107] shadow-md;
+  }
+
+  .chip-inactive {
+    @apply bg-white text-slate-600 border border-slate-200 hover:border-[#FFC107]/50 hover:bg-[#FFC107]/5;
   }
 }

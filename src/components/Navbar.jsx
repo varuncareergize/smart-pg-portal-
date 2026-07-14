@@ -1,80 +1,147 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, Search, Heart, User, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getSavedProperties } from '../utils/propertyHelpers';
 
-export default function Navbar() {
+export default function Navbar({ variant = 'default' }) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [savedCount, setSavedCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
+  const isMarketplace = variant === 'marketplace';
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'Features', path: '/features', hasDropdown: true },
-    { name: 'Portfolio', path: '/portfolio', hasDropdown: true },
-    { name: 'About Us', path: '/about-us' },
-    { name: 'Resources', path: '/resources' },
-    { name: 'Contact Us', path: '/contact' },
-  ];
+  useEffect(() => {
+    if (isMarketplace) {
+      setSavedCount(getSavedProperties().length);
+      const interval = setInterval(() => setSavedCount(getSavedProperties().length), 2000);
+      return () => clearInterval(interval);
+    }
+  }, [isMarketplace, location]);
+
+  const navLinks = isMarketplace
+    ? [
+        { name: 'Browse', path: '/properties' },
+        { name: 'About Us', path: '/about-us' },
+        { name: 'Services', path: '/services' },
+        { name: 'Contact', path: '/contact' },
+      ]
+    : [
+        { name: 'Features', path: '/features', hasDropdown: true },
+        { name: 'Portfolio', path: '/portfolio', hasDropdown: true },
+        { name: 'About Us', path: '/about-us' },
+        { name: 'Resources', path: '/resources' },
+        { name: 'Contact Us', path: '/contact' },
+      ];
+
+  const navClasses = isMarketplace
+    ? scrolled
+      ? 'livzz-glass-dark py-3 shadow-lg'
+      : 'bg-[#001F3F]/95 backdrop-blur-md py-4'
+    : scrolled
+      ? 'bg-[#0B0A12]/90 backdrop-blur-md border-b border-white/5 py-4'
+      : 'bg-transparent py-6';
 
   return (
-    <nav 
-      className={`fixed top-0 w-full z-[100] transition-all duration-300 ${
-        scrolled 
-          ? 'bg-[#0B0A12]/90 backdrop-blur-md border-b border-white/5 py-4' 
-          : 'bg-transparent py-6'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+    <nav className={`fixed top-0 w-full z-[100] transition-all duration-500 ${navClasses}`}>
+      <div className="max-w-[1600px] mx-auto px-4 md:px-8">
         <div className="flex justify-between items-center h-12">
-          
-          {/* 1. Brand Logo (Matches clean lowercase font) */}
-          <Link to="/" className="flex items-center" onClick={() => setIsOpen(false)}>
-            <span className="text-white text-3xl font-extrabold tracking-tight lowercase">
-              livzz<span className="text-indigo-500 font-black">.</span>
-            </span>
+          <Link to="/" className="flex items-center gap-1" onClick={() => setIsOpen(false)}>
+            {isMarketplace ? (
+              <span className="text-2xl md:text-3xl font-black tracking-tight">
+                <span className="text-white">Liv</span>
+                <span className="text-[#FFC107]">ZZ</span>
+              </span>
+            ) : (
+              <span className="text-white text-3xl font-extrabold tracking-tight lowercase">
+                livzz<span className="text-indigo-500 font-black">.</span>
+              </span>
+            )}
           </Link>
 
-          {/* 2. Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            <div className="flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-6">
+            <div className="flex items-center gap-5">
               {navLinks.map((link) => (
                 <div key={link.name} className="relative group">
                   <Link
                     to={link.path}
-                    className="flex items-center gap-1 text-sm font-medium text-slate-300 hover:text-white transition-colors duration-200"
+                    className={`flex items-center gap-1 text-sm font-semibold transition-colors duration-200 ${
+                      isMarketplace
+                        ? location.pathname === link.path
+                          ? 'text-[#FFC107]'
+                          : 'text-white/80 hover:text-[#FFC107]'
+                        : 'text-slate-300 hover:text-white'
+                    }`}
                   >
                     {link.name}
                     {link.hasDropdown && (
-                      <ChevronDown size={14} className="text-slate-400 group-hover:text-white transition-transform duration-200 group-hover:rotate-180" />
+                      <ChevronDown size={14} className="opacity-60 group-hover:rotate-180 transition-transform duration-200" />
                     )}
                   </Link>
                 </div>
               ))}
             </div>
-            
-            {/* Sign-In Button (Elegant, small padding pill shape) */}
-            <button 
-              onClick={() => navigate('/login')}
-              className="px-5 py-2.5 bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 hover:border-indigo-500 text-white rounded-lg text-sm font-medium transition-all duration-200 active:scale-95 shadow-lg shadow-indigo-600/10"
-            >
-              Sign-In
-            </button>
+
+            {isMarketplace && (
+              <>
+                <button
+                  onClick={() => navigate('/properties')}
+                  className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white text-sm font-semibold transition-all"
+                >
+                  <Search size={16} />
+                  Search
+                </button>
+
+                <button
+                  onClick={() => navigate('/properties')}
+                  className="relative p-2.5 bg-white/10 hover:bg-white/20 rounded-xl text-white transition-all"
+                >
+                  <Heart size={18} />
+                  {savedCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#FFC107] text-[#001F3F] text-[10px] font-black rounded-full flex items-center justify-center">
+                      {savedCount}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => navigate('/login')}
+                  className="p-2.5 bg-white/10 hover:bg-white/20 rounded-xl text-white transition-all"
+                >
+                  <User size={18} />
+                </button>
+
+                <button
+                  onClick={() => navigate('/login')}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-[#FFC107] text-[#001F3F] font-black rounded-xl text-sm hover:shadow-lg hover:shadow-[#FFC107]/30 transition-all active:scale-95"
+                >
+                  <Plus size={16} />
+                  List Property
+                </button>
+              </>
+            )}
+
+            {!isMarketplace && (
+              <button
+                onClick={() => navigate('/login')}
+                className="px-5 py-2.5 bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 hover:border-indigo-500 text-white rounded-lg text-sm font-medium transition-all duration-200 active:scale-95 shadow-lg shadow-indigo-600/10"
+              >
+                Sign-In
+              </button>
+            )}
           </div>
 
-          {/* 3. Mobile Menu Toggle */}
           <div className="md:hidden">
-            <button 
+            <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 text-white hover:text-indigo-400 transition-colors"
+              className={`p-2 transition-colors ${isMarketplace ? 'text-white' : 'text-white hover:text-indigo-400'}`}
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -82,15 +149,16 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* 4. Mobile Menu Overlay */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden absolute w-full bg-[#0B0A12] border-b border-white/5 shadow-2xl overflow-hidden"
+            className={`md:hidden absolute w-full shadow-2xl overflow-hidden ${
+              isMarketplace ? 'bg-[#001F3F] border-b border-[#FFC107]/10' : 'bg-[#0B0A12] border-b border-white/5'
+            }`}
           >
             <div className="px-6 py-6 space-y-4">
               {navLinks.map((link) => (
@@ -98,19 +166,31 @@ export default function Navbar() {
                   key={link.name}
                   to={link.path}
                   onClick={() => setIsOpen(false)}
-                  className="block w-full text-base font-medium text-slate-300 hover:text-white transition-colors py-2"
+                  className={`block w-full text-base font-semibold py-2 transition-colors ${
+                    isMarketplace ? 'text-white/80 hover:text-[#FFC107]' : 'text-slate-300 hover:text-white'
+                  }`}
                 >
                   {link.name}
                 </Link>
               ))}
-              <div className="pt-4 border-t border-white/5">
-                <button 
+              {isMarketplace && (
+                <button
                   onClick={() => { navigate('/login'); setIsOpen(false); }}
-                  className="w-full bg-indigo-600 text-white py-3 rounded-lg text-sm font-medium text-center shadow-xl transition-transform active:scale-95"
+                  className="w-full bg-[#FFC107] text-[#001F3F] py-3 rounded-xl text-sm font-black text-center"
                 >
-                  Sign-In
+                  List Property
                 </button>
-              </div>
+              )}
+              {!isMarketplace && (
+                <div className="pt-4 border-t border-white/5">
+                  <button
+                    onClick={() => { navigate('/login'); setIsOpen(false); }}
+                    className="w-full bg-indigo-600 text-white py-3 rounded-lg text-sm font-medium text-center"
+                  >
+                    Sign-In
+                  </button>
+                </div>
+              )}
             </div>
           </motion.div>
         )}

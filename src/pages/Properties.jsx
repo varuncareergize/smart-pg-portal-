@@ -1,40 +1,91 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Search, Star, ShieldCheck, ArrowRight, Loader2, XCircle, Filter } from 'lucide-react';
+import { Filter, Map, X, GitCompareArrows, SlidersHorizontal } from 'lucide-react';
 
-import Navbar from '../components/Navbar'; 
+import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import SearchBar from '../components/properties/SearchBar';
+import QuickFilters from '../components/properties/QuickFilters';
+import FilterSidebar from '../components/properties/FilterSidebar';
+import PropertyCard from '../components/properties/PropertyCard';
+import MapView from '../components/properties/MapView';
+import CompareDrawer from '../components/properties/CompareDrawer';
+import AIRecommendation from '../components/properties/AIRecommendation';
+import EmptyState from '../components/properties/EmptyState';
+import SkeletonCard from '../components/properties/SkeletonCard';
+import TrustSignals from '../components/properties/TrustSignals';
+import {
+  enrichProperty,
+  filterAndSortProperties,
+  toggleSavedProperty,
+  getSavedProperties,
+  addRecentSearch,
+} from '../utils/propertyHelpers';
 
-// Animation Variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { 
-    opacity: 1, 
-    transition: { staggerChildren: 0.1 } 
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
-};
+const PAGE_SIZE = 6;
 
 export default function Properties() {
-  const [properties, setProperties] = useState([]); 
-  const [loading, setLoading] = useState(true);    
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedType, setSelectedType] = useState('All Stays');
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
+  // Search bar state
+  const [location, setLocation] = useState('');
+  const [moveInDate, setMoveInDate] = useState('');
+  const [flexibleDate, setFlexibleDate] = useState(false);
+  const [minBudget, setMinBudget] = useState(5000);
+  const [maxBudget, setMaxBudget] = useState(25000);
+  const [propertyType, setPropertyType] = useState('');
+  const [gender, setGender] = useState('');
+  const [sharingType, setSharingType] = useState('');
+
+  // Quick filters
+  const [quickFilters, setQuickFilters] = useState([]);
+
+  // Sidebar filters
+  const [propertyTypes, setPropertyTypes] = useState([]);
+  const [genders, setGenders] = useState([]);
+  const [roomTypes, setRoomTypes] = useState([]);
+  const [minPrice, setMinPrice] = useState(5000);
   const [maxPrice, setMaxPrice] = useState(30000);
+  const [distance, setDistance] = useState('');
+  const [amenities, setAmenities] = useState([]);
+  const [minRating, setMinRating] = useState('any');
+  const [trustFilters, setTrustFilters] = useState([]);
+  const [sortBy, setSortBy] = useState('recommended');
+
+  // UI state
+  const [savedIds, setSavedIds] = useState([]);
+  const [compareIds, setCompareIds] = useState([]);
+  const [highlightedId, setHighlightedId] = useState(null);
+  const [showMap, setShowMap] = useState(true);
+  const [showFilterDrawer, setShowFilterDrawer] = useState(false);
+  const [showCompare, setShowCompare] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  const loadMoreRef = useRef(null);
+  const searchBarRef = useRef(null);
 
   useEffect(() => {
+    const check = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+    };
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  useEffect(() => {
+    setSavedIds(getSavedProperties());
     const fetchProperties = async () => {
       try {
         const response = await fetch('https://smart-pg-backend.onrender.com/properties/all/');
         const data = await response.json();
-        setProperties(data);
+        setProperties(data.map((p, i) => enrichProperty(p, i)));
       } catch (error) {
-        console.error("Error fetching properties:", error);
+        console.error('Error fetching properties:', error);
       } finally {
         setLoading(false);
       }
@@ -42,214 +93,384 @@ export default function Properties() {
     fetchProperties();
   }, []);
 
-  const filteredProperties = useMemo(() => {
-    return properties.filter(p => {
-      const matchesSearch = 
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        p.address.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesType = selectedType === 'All Stays' || p.property_type === selectedType;
-      const priceVal = parseFloat(p.price);
-      const matchesPrice = priceVal === 0 || priceVal <= maxPrice;
+  const handleSearch = () => {
+    if (location) addRecentSearch(location);
+    setVisibleCount(PAGE_SIZE);
+    searchBarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
-      return matchesSearch && matchesType && matchesPrice;
+  const toggleQuickFilter = (id) => {
+    setQuickFilters((prev) =>
+      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
+    );
+    setVisibleCount(PAGE_SIZE);
+  };
+
+  const resetFilters = () => {
+    setLocation('');
+    setPropertyType('');
+    setGender('');
+    setSharingType('');
+    setQuickFilters([]);
+    setPropertyTypes([]);
+    setGenders([]);
+    setRoomTypes([]);
+    setMinPrice(5000);
+    setMaxPrice(30000);
+    setDistance('');
+    setAmenities([]);
+    setMinRating('any');
+    setTrustFilters([]);
+    setSortBy('recommended');
+    setVisibleCount(PAGE_SIZE);
+  };
+
+  const handleToggleSave = (id) => {
+    const next = toggleSavedProperty(id);
+    setSavedIds(next);
+  };
+
+  const handleToggleCompare = (id) => {
+    setCompareIds((prev) => {
+      if (prev.includes(id)) return prev.filter((c) => c !== id);
+      if (prev.length >= 4) return prev;
+      return [...prev, id];
     });
-  }, [properties, searchTerm, selectedType, maxPrice]);
+    setShowCompare(true);
+  };
+
+  const enrichedFilters = useMemo(() => ({
+    searchTerm: location,
+    location,
+    selectedType: propertyType,
+    propertyTypes: propertyType ? [propertyType, ...propertyTypes] : propertyTypes,
+    gender,
+    sharingType,
+    minPrice: Math.min(minPrice, minBudget),
+    maxPrice: Math.max(maxPrice, maxBudget),
+    quickFilters,
+    roomTypes,
+    genders: gender ? [gender, ...genders] : genders,
+    distance,
+    amenities,
+    trustFilters,
+    sortBy,
+  }), [location, propertyType, propertyTypes, gender, sharingType, minPrice, maxPrice, minBudget, maxBudget, quickFilters, roomTypes, genders, distance, amenities, trustFilters, sortBy]);
+
+  const filteredProperties = useMemo(() => {
+    let result = filterAndSortProperties(properties, enrichedFilters);
+    if (minRating !== 'any') {
+      const min = parseFloat(minRating);
+      result = result.filter((p) => p.rating >= min);
+    }
+    return result;
+  }, [properties, enrichedFilters, minRating]);
+
+  const visibleProperties = filteredProperties.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredProperties.length;
+
+  const compareProperties = useMemo(
+    () => properties.filter((p) => compareIds.includes(p.id)),
+    [properties, compareIds]
+  );
+
+  const similarProperties = useMemo(() => {
+    if (filteredProperties.length > 0) return filteredProperties.slice(0, 8);
+    return [...properties].sort((a, b) => b.aiMatch - a.aiMatch).slice(0, 8);
+  }, [filteredProperties, properties]);
+
+  const loadMore = useCallback(() => {
+    setVisibleCount((c) => c + PAGE_SIZE);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading) loadMore();
+      },
+      { threshold: 0.1 }
+    );
+    if (loadMoreRef.current) observer.observe(loadMoreRef.current);
+    return () => observer.disconnect();
+  }, [hasMore, loading, loadMore]);
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [filteredProperties.length]);
+
+  const showSidebar = !isMobile && !isTablet;
+  const showMapPanel = showMap && !isMobile;
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <Navbar />
+      <Navbar variant="marketplace" />
 
-      <main className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
-        
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-8">
-          <div className="max-w-2xl">
-            <motion.h1 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="text-4xl md:text-6xl font-black text-[#001F3F] leading-tight"
-            >
-              Find Your <span className="text-[#FFC107]">Perfect</span> Space.
-            </motion.h1>
-            <p className="text-slate-500 mt-4 font-medium text-lg">
-              {loading ? "Discovering spaces..." : `Showing ${filteredProperties.length} curated stays based on your filters.`}
-            </p>
-          </div>
-
-          {/* Enhanced Search Bar */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="w-full md:w-[400px] relative group"
-          >
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#001F3F] transition-colors" size={22} />
-            <input 
-              type="text" 
-              placeholder="Search area, building or city..."
-              className="w-full pl-16 pr-8 py-6 bg-white rounded-3xl outline-none shadow-lg shadow-slate-200/50 border border-transparent focus:border-[#FFC107] focus:ring-4 focus:ring-[#FFC107]/5 transition-all font-bold text-[#001F3F]"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </motion.div>
+      {/* Sticky Search Bar */}
+      <div ref={searchBarRef} className="sticky top-[60px] md:top-[68px] z-40 bg-slate-50/95 backdrop-blur-sm pt-20 md:pt-24 pb-2 px-4 md:px-8">
+        <div className="max-w-[1600px] mx-auto">
+          <SearchBar
+            location={location}
+            setLocation={setLocation}
+            moveInDate={moveInDate}
+            setMoveInDate={setMoveInDate}
+            flexibleDate={flexibleDate}
+            setFlexibleDate={setFlexibleDate}
+            minBudget={minBudget}
+            setMinBudget={setMinBudget}
+            maxBudget={maxBudget}
+            setMaxBudget={setMaxBudget}
+            propertyType={propertyType}
+            setPropertyType={setPropertyType}
+            gender={gender}
+            setGender={setGender}
+            sharingType={sharingType}
+            setSharingType={setSharingType}
+            onSearch={handleSearch}
+          />
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
-          
-          {/* Sidebar: Glassmorphism Design */}
-          <aside className="lg:sticky lg:top-32 h-fit space-y-8 bg-white/60 backdrop-blur-md p-8 rounded-[32px] border border-white shadow-xl shadow-slate-200/40">
-            {/* <div className="flex items-center gap-3 text-[#001F3F] mb-4">
-               <Filter size={18} className="text-[#FFC107]" />
-               <h3 className="font-black uppercase tracking-widest text-sm">Filters</h3>
-            </div> */}
+      <main className="px-4 md:px-8 pb-24 max-w-[1600px] mx-auto">
+        {/* Quick Filters */}
+        <QuickFilters activeFilters={quickFilters} onToggle={toggleQuickFilter} />
 
-            <div>
-              <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Stay Category</h4>
-              <div className="flex flex-wrap lg:flex-col gap-3">
-                {['All Stays', 'PG', 'Hostel', 'Coliving'].map(type => (
-                  <button 
-                    key={type}
-                    onClick={() => setSelectedType(type)}
-                    className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all text-left ${
-                      selectedType === type 
-                      ? 'bg-[#001F3F] text-[#FFC107] shadow-lg shadow-blue-900/20 translate-x-2' 
-                      : 'bg-white text-slate-500 hover:bg-slate-100 border border-slate-100'
-                    }`}
-                  >
-                    {type}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-slate-100">
-              <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Budget: ₹{maxPrice.toLocaleString()}</h4>
-              <input 
-                type="range" 
-                min="5000" 
-                max="50000" 
-                step="500" 
-                value={maxPrice} 
-                onChange={(e) => setMaxPrice(parseInt(e.target.value))}
-                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#FFC107]"
-              />
-              <div className="flex justify-between mt-3 text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
-                <span>Min ₹5k</span>
-                <span>Max ₹50k</span>
-              </div>
-            </div>
-          </aside>
-
-          {/* Content Area */}
-          <div className="lg:col-span-3">
-            {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                {[1, 2, 3, 4].map(i => <div key={i} className="h-[500px] bg-slate-200 rounded-[40px] animate-pulse" />)}
-              </div>
-            ) : (
-              <motion.div 
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="grid grid-cols-1 md:grid-cols-2 gap-10"
+        {/* Toolbar */}
+        <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+          <p className="text-sm font-semibold text-slate-500">
+            {loading ? 'Discovering spaces...' : (
+              <><span className="font-black text-[#001F3F]">{filteredProperties.length}</span> properties found</>
+            )}
+          </p>
+          <div className="flex items-center gap-2">
+            {compareIds.length > 0 && (
+              <button
+                onClick={() => setShowCompare(true)}
+                className="flex items-center gap-1.5 px-3 py-2 bg-[#001F3F] text-[#FFC107] rounded-xl text-xs font-bold"
               >
-                <AnimatePresence>
-                  {filteredProperties.length > 0 ? (
-                    filteredProperties.map((p) => (
-                      <PropertyCard key={p.id} property={p} />
-                    ))
-                  ) : (
-                    <motion.div 
-                      initial={{ opacity: 0 }} 
-                      animate={{ opacity: 1 }} 
-                      className="col-span-full py-32 flex flex-col items-center text-center"
-                    >
-                      <div className="bg-slate-100 p-8 rounded-full mb-6">
-                        <XCircle size={64} className="text-slate-300" />
-                      </div>
-                      <h3 className="text-2xl font-black text-[#001F3F]">No stays found in this range</h3>
-                      <p className="text-slate-400 mt-2 font-medium">Try adjusting your filters or search term.</p>
-                      <button 
-                        onClick={() => {setSearchTerm(''); setSelectedType('All Stays'); setMaxPrice(50000)}}
-                        className="mt-8 text-[#FFC107] font-black border-b-2 border-[#FFC107] hover:text-[#001F3F] hover:border-[#001F3F] transition-all pb-1"
-                      >
-                        Reset All Filters
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
+                <GitCompareArrows size={14} />
+                Compare ({compareIds.length})
+              </button>
+            )}
+            {(isMobile || isTablet) && (
+              <button
+                onClick={() => setShowFilterDrawer(true)}
+                className="flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#001F3F]"
+              >
+                <SlidersHorizontal size={14} />
+                Filters
+              </button>
+            )}
+            {!isMobile && (
+              <button
+                onClick={() => setShowMap(!showMap)}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+                  showMap ? 'bg-[#001F3F] text-[#FFC107]' : 'bg-white border border-slate-200 text-[#001F3F]'
+                }`}
+              >
+                <Map size={14} />
+                {showMap ? 'Hide Map' : 'Show Map'}
+              </button>
             )}
           </div>
         </div>
+
+        {/* Three-column layout */}
+        <div className={`grid gap-6 ${showMapPanel ? 'lg:grid-cols-[260px_1fr_380px]' : showSidebar ? 'lg:grid-cols-[260px_1fr]' : 'grid-cols-1'}`}>
+          {/* Filter Sidebar — Desktop */}
+          {showSidebar && (
+            <FilterSidebar
+              propertyTypes={propertyTypes}
+              setPropertyTypes={setPropertyTypes}
+              genders={genders}
+              setGenders={setGenders}
+              roomTypes={roomTypes}
+              setRoomTypes={setRoomTypes}
+              minPrice={minPrice}
+              setMinPrice={setMinPrice}
+              maxPrice={maxPrice}
+              setMaxPrice={setMaxPrice}
+              distance={distance}
+              setDistance={setDistance}
+              amenities={amenities}
+              setAmenities={setAmenities}
+              minRating={minRating}
+              setMinRating={setMinRating}
+              trustFilters={trustFilters}
+              setTrustFilters={setTrustFilters}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              onReset={resetFilters}
+              collapsed={false}
+            />
+          )}
+
+          {/* Property Listings — Center */}
+          <div className="min-w-0">
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {[1, 2, 3, 4].map((i) => <SkeletonCard key={i} />)}
+              </div>
+            ) : (
+              <>
+                <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <AnimatePresence mode="popLayout">
+                    {visibleProperties.length > 0 ? (
+                      visibleProperties.map((p) => (
+                        <PropertyCard
+                          key={p.id}
+                          property={p}
+                          isSaved={savedIds.includes(p.id)}
+                          isCompared={compareIds.includes(p.id)}
+                          isHighlighted={highlightedId === p.id}
+                          onToggleSave={handleToggleSave}
+                          onToggleCompare={handleToggleCompare}
+                          onHover={setHighlightedId}
+                          onLeave={() => setHighlightedId(null)}
+                        />
+                      ))
+                    ) : (
+                      <EmptyState
+                        recommendations={similarProperties}
+                        savedIds={savedIds}
+                        compareIds={compareIds}
+                        onToggleSave={handleToggleSave}
+                        onToggleCompare={handleToggleCompare}
+                      />
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+
+                {hasMore && (
+                  <div ref={loadMoreRef} className="flex justify-center py-8">
+                    <div className="w-8 h-8 border-3 border-[#FFC107] border-t-transparent rounded-full animate-spin" />
+                  </div>
+                )}
+              </>
+            )}
+
+            {!loading && filteredProperties.length > 0 && (
+              <AIRecommendation
+                similarProperties={similarProperties}
+                budget={minBudget}
+                maxBudget={maxBudget}
+              />
+            )}
+
+            <TrustSignals />
+          </div>
+
+          {/* Map — Right */}
+          {showMapPanel && !loading && (
+            <div className="hidden lg:block sticky top-36 h-fit">
+              <MapView
+                properties={visibleProperties}
+                highlightedId={highlightedId}
+                onMarkerHover={setHighlightedId}
+                onMarkerLeave={() => setHighlightedId(null)}
+              />
+            </div>
+          )}
+        </div>
       </main>
+
+      {/* Mobile Map Toggle FAB */}
+      {isMobile && !loading && (
+        <button
+          onClick={() => setShowMap(!showMap)}
+          className="fixed bottom-20 right-4 z-50 w-12 h-12 bg-[#001F3F] text-[#FFC107] rounded-full shadow-xl flex items-center justify-center"
+        >
+          <Map size={20} />
+        </button>
+      )}
+
+      {/* Mobile Map Overlay */}
+      {isMobile && showMap && !loading && (
+        <div className="fixed inset-0 z-[90] bg-white pt-16">
+          <button
+            onClick={() => setShowMap(false)}
+            className="absolute top-20 right-4 z-50 p-2 bg-white rounded-full shadow-lg"
+          >
+            <X size={20} />
+          </button>
+          <MapView
+            properties={visibleProperties}
+            highlightedId={highlightedId}
+            onMarkerHover={setHighlightedId}
+            onMarkerLeave={() => setHighlightedId(null)}
+          />
+        </div>
+      )}
+
+      {/* Filter Drawer — Mobile/Tablet */}
+      <AnimatePresence>
+        {showFilterDrawer && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/40 z-[150]"
+              onClick={() => setShowFilterDrawer(false)}
+            />
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25 }}
+              className="fixed bottom-0 left-0 right-0 z-[160] bg-white rounded-t-3xl max-h-[85vh] overflow-auto p-5"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-black text-[#001F3F] flex items-center gap-2">
+                  <Filter size={18} className="text-[#FFC107]" /> Filters
+                </h3>
+                <button onClick={() => setShowFilterDrawer(false)} className="p-2 hover:bg-slate-100 rounded-full">
+                  <X size={20} />
+                </button>
+              </div>
+              <FilterSidebar
+                propertyTypes={propertyTypes}
+                setPropertyTypes={setPropertyTypes}
+                genders={genders}
+                setGenders={setGenders}
+                roomTypes={roomTypes}
+                setRoomTypes={setRoomTypes}
+                minPrice={minPrice}
+                setMinPrice={setMinPrice}
+                maxPrice={maxPrice}
+                setMaxPrice={setMaxPrice}
+                distance={distance}
+                setDistance={setDistance}
+                amenities={amenities}
+                setAmenities={setAmenities}
+                minRating={minRating}
+                setMinRating={setMinRating}
+                trustFilters={trustFilters}
+                setTrustFilters={setTrustFilters}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
+                onReset={resetFilters}
+                collapsed={false}
+              />
+              <button
+                onClick={() => setShowFilterDrawer(false)}
+                className="w-full mt-4 py-3 bg-[#FFC107] text-[#001F3F] font-black rounded-xl"
+              >
+                Show {filteredProperties.length} Properties
+              </button>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Compare Drawer */}
+      <CompareDrawer
+        properties={compareProperties}
+        onRemove={(id) => setCompareIds((prev) => prev.filter((c) => c !== id))}
+        onClose={() => setShowCompare(false)}
+        isOpen={showCompare && compareIds.length > 0}
+      />
+
       <Footer />
     </div>
-  );
-}
-
-function PropertyCard({ property }) {
-  const navigate = useNavigate();
-
-  return (
-    <motion.div 
-      layout
-      variants={itemVariants}
-      whileHover={{ y: -15 }}
-      onClick={() => navigate(`/property/${property.id}`)}
-      className="group bg-white rounded-[44px] overflow-hidden border border-slate-100 shadow-sm hover:shadow-[0_40px_80px_-20px_rgba(0,31,63,0.15)] transition-all duration-500 cursor-pointer"
-    >
-      <div className="relative h-[320px] overflow-hidden m-4 rounded-[32px]">
-        <img 
-          src={property.image} 
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
-          alt={property.name} 
-        />
-        <div className="absolute top-6 left-6">
-          <div className="bg-[#001F3F]/90 backdrop-blur-md text-white text-[11px] font-black px-5 py-2.5 rounded-2xl flex items-center gap-2 border border-white/20">
-            <ShieldCheck size={16} className="text-[#FFC107]" /> {property.property_type}
-          </div>
-        </div>
-      </div>
-
-      <div className="px-10 pb-10 pt-4">
-        <div className="flex justify-between items-start mb-6">
-          <div className="max-w-[70%]">
-            <h3 className="text-2xl font-black text-[#001F3F] line-clamp-1 group-hover:text-[#FFC107] transition-colors">{property.name}</h3>
-            <p className="text-sm font-bold text-slate-400 mt-2 flex items-center gap-2 truncate">
-              <MapPin size={16} className="text-[#FFC107] shrink-0" /> {property.city}, {property.state}
-            </p>
-          </div>
-          <div className="flex items-center gap-1.5 bg-[#FFC107] text-[#001F3F] px-4 py-2 rounded-2xl text-xs font-black shadow-lg shadow-[#FFC107]/20">
-            <Star size={14} fill="#001F3F" /> {property.rating || "4.5"}
-          </div>
-        </div>
-
-        <div className="flex gap-2 mb-8 overflow-x-auto no-scrollbar">
-          {property.tags && property.tags.map(tag => (
-            <span key={tag} className="text-[10px] font-black bg-slate-50 text-slate-500 px-4 py-2 rounded-xl uppercase border border-slate-100 whitespace-nowrap">
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        <div className="flex items-center justify-between pt-8 border-t border-slate-100">
-          <div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Starting from</p>
-            <span className="text-3xl font-black text-[#001F3F]">
-                {parseFloat(property.price) > 0 ? `₹${parseFloat(property.price).toLocaleString()}` : "Contact"}
-            </span>
-            {parseFloat(property.price) > 0 && <span className="text-sm font-bold text-slate-400 ml-1">/mo</span>}
-          </div>
-          <motion.div 
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="w-16 h-16 bg-[#001F3F] rounded-2xl flex items-center justify-center text-[#FFC107] shadow-xl hover:bg-[#FFC107] hover:text-[#001F3F] transition-all"
-          >
-            <ArrowRight size={24} />
-          </motion.div>
-        </div>
-      </div>
-    </motion.div>
   );
 }
