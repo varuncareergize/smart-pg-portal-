@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ShieldCheck,
@@ -9,9 +9,9 @@ import {
   MapPin,
   Home as HomeIcon,
   DollarSign,
-  Sparkles,
-  ArrowRight,
-  Play
+  Loader2,
+  AlertCircle,
+  RefreshCw
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import PropertyGrid from '../components/PropertyGrid';
@@ -21,6 +21,13 @@ import WhyChooseUs from '../components/WhyChooseUs';
 import Travelchatbot from '../components/Travelchatbot';
 import heroVideo from '../assets/hero-bg.mp4';
 
+// High-quality fallback image when backend returns image: null
+const DEFAULT_PROPERTY_IMAGE = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600&auto=format&fit=crop";
+const BASE_URL = "http://127.0.0.1:8000";
+
+// Hardcoded Auth Token (Or replace with localStorage.getItem('token') when dynamic auth is ready)
+const AUTH_TOKEN = "6288a3edf900378478ea833b695615e6d4c8dd71";
+
 export default function Home() {
   const navigate = useNavigate();
 
@@ -29,58 +36,101 @@ export default function Home() {
   const [propertyType, setPropertyType] = useState('all');
   const [priceRange, setPriceRange] = useState('all');
 
+  // API State
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch properties from Django Backend
+  const fetchProperties = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Construct headers including Token Authentication
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${AUTH_TOKEN}`
+      };
+
+      let response;
+
+      // Try 127.0.0.1 first to bypass IPv6 localhost resolution mismatch
+      try {
+        response = await fetch('http://127.0.0.1:8000/owner/properties/', {
+          method: 'GET',
+          headers: headers,
+        });
+      } catch (primaryErr) {
+        console.warn("127.0.0.1 fetch failed, trying localhost...", primaryErr);
+        // Fallback to localhost if 127.0.0.1 fails
+        response = await fetch('http://localhost:8000/owner/properties/', {
+          method: 'GET',
+          headers: headers,
+        });
+      }
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          throw new Error(`Authentication Failed (HTTP ${response.status}): The provided Token is either invalid or expired.`);
+        }
+        if (response.status === 500) {
+          throw new Error(`Django Server Error (HTTP 500): Check your Django terminal console for Python traceback errors.`);
+        }
+        throw new Error(`Server returned HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      if (result.success && Array.isArray(result.data)) {
+        // Process and normalize response data
+        const formattedData = result.data
+          .filter((item) => item.is_active !== false) // Filter for active properties
+          .map((item) => {
+            // Construct human-readable location
+            const hasValidCity = item.city && item.city !== "undefined" && item.city !== "null";
+            const formattedLocation = hasValidCity
+              ? `${item.location_name}, ${item.city}`
+              : item.location_name || "Location N/A";
+
+            let formattedImage = DEFAULT_PROPERTY_IMAGE;
+            if (item.image) {
+              formattedImage = item.image.startsWith('http')
+                ? item.image
+                : `${BASE_URL}${item.image}`;
+            }
+
+            return {
+              id: item.id,
+              title: item.name,
+              location: formattedLocation,
+              rating: item.rating ? parseFloat(item.rating) : 4.0,
+              price: item.price ? parseFloat(item.price) : 0,
+              image: formattedImage,
+              propertyType: item.property_type
+            };
+          });
+
+        setProperties(formattedData);
+      } else {
+        setProperties([]);
+      }
+    } catch (err) {
+      console.error("Exact React Fetch Error:", err);
+      setError(err.message || "Failed to establish a connection with the server.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
   const handleSearch = (e) => {
     e.preventDefault();
     navigate(`/properties?location=${encodeURIComponent(location)}&type=${propertyType}&price=${priceRange}`);
   };
-
-  const starterHouses = [
-    {
-      title: "Tranquil Oasis Suites",
-      location: "Midtown Manhattan, NY",
-      rating: 4.8,
-      price: 2700,
-      image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=600&auto=format&fit=crop"
-    },
-    {
-      title: "Superb Luxury Townhouse",
-      location: "Beverly Hills, California",
-      rating: 4.9,
-      price: 4900,
-      image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=600&auto=format&fit=crop"
-    },
-    {
-      title: "Stylish Penthouse Studio",
-      location: "Downtown Chicago, IL",
-      rating: 4.7,
-      price: 3200,
-      image: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=600&auto=format&fit=crop"
-    }
-  ];
-
-  const exclusiveUnits = [
-    {
-      title: "Terrace Horizon Condo",
-      location: "Miami Beach, Florida",
-      rating: 4.6,
-      price: 3500,
-      image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=600&auto=format&fit=crop"
-    },
-    {
-      title: "Minimalist Modern Space",
-      location: "Austin, Texas",
-      rating: 4.9,
-      price: 2400,
-      image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600&auto=format&fit=crop"
-    },
-    {
-      title: "Harmonious Living Suite",
-      location: "Seattle, Washington",
-      rating: 4.5,
-      price: 2900,
-      image: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=600&auto=format&fit=crop"
-    }
-  ];
 
   const featureBadges = [
     {
@@ -128,30 +178,20 @@ export default function Home() {
           Your browser does not support the video tag.
         </video>
 
-        {/* Gradient Overlay for Depth & Readability */}
+        {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70 z-10" />
 
         {/* Hero Content */}
         <div className="relative z-20 text-center max-w-4xl mx-auto px-4 flex flex-col items-center">
-          
-          {/* Badge */}
-          
-
-          {/* Heading */}
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] mb-6 drop-shadow-sm">
             Browse Homes, Apartments<br className="hidden sm:inline" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-200 to-neutral-400">
-            & Rentals with Ease
+              & Rentals with Ease
             </span>
           </h1>
-
-
-         
-          {/* Watch Showcase Button */}
-        
         </div>
 
-        {/* Integrated Floating Search Bar Component */}
+        {/* Floating Search Bar */}
         <div className="relative z-30 w-full max-w-5xl mx-auto px-4 -mb-36 sm:-mb-28 mt-12">
           <form 
             onSubmit={handleSearch}
@@ -164,7 +204,7 @@ export default function Home() {
                 <label className="block text-[10px] uppercase font-bold tracking-wider text-neutral-400">Location</label>
                 <input
                   type="text"
-                  placeholder="e.g. Manhattan, NY"
+                  placeholder="e.g. Kadugodi"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   className="w-full bg-transparent text-sm font-semibold text-neutral-800 focus:outline-none placeholder:text-neutral-400 placeholder:font-normal truncate"
@@ -183,11 +223,10 @@ export default function Home() {
                   className="w-full bg-transparent text-sm font-semibold text-neutral-800 focus:outline-none cursor-pointer"
                 >
                   <option value="all">All Types</option>
+                  <option value="Co-living">Co-living</option>
                   <option value="apartment">Apartment</option>
                   <option value="townhouse">PG</option>
-                  <option value="penthouse">CO-Live</option>
                   <option value="villa">Villa</option>
-                  
                 </select>
               </div>
             </div>
@@ -250,22 +289,43 @@ export default function Home() {
       {/* Main Content Sections */}
       <main className="space-y-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         
-        {/* Starter Houses Section */}
+        {/* Dynamic API Properties Section */}
         <section className="space-y-4">
-          <PropertyGrid title="Browse the Starter Houses" listings={starterHouses} />
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-3 text-neutral-500">
+              <Loader2 className="w-8 h-8 animate-spin text-neutral-800" />
+              <p className="text-sm font-medium">Fetching available properties...</p>
+            </div>
+          ) : error ? (
+            <div className="flex flex-col items-center justify-center p-8 bg-red-50/90 rounded-3xl border border-red-200 text-center max-w-2xl mx-auto shadow-sm">
+              <AlertCircle className="w-10 h-10 text-red-500 mb-3" />
+              <h3 className="font-bold text-neutral-900 mb-1">Backend Connection Issue</h3>
+              <p className="text-xs text-red-600 max-w-md mb-4 font-mono bg-red-100/60 p-3 rounded-xl border border-red-200 break-words">
+                {error}
+              </p>
+              <button
+                onClick={fetchProperties}
+                className="px-5 py-2.5 bg-neutral-900 hover:bg-black text-white text-xs font-semibold rounded-xl transition flex items-center gap-2 shadow-sm active:scale-95"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Retry Connection</span>
+              </button>
+            </div>
+          ) : properties.length === 0 ? (
+            <div className="text-center py-16 text-neutral-500 text-sm bg-neutral-100/50 rounded-3xl border border-dashed border-neutral-200">
+              No properties available right now.
+            </div>
+          ) : (
+            <PropertyGrid title="Featured Properties" listings={properties} />
+          )}
         </section>
 
-        {/* Exclusive Units Section */}
-        <section className="space-y-4">
-          <PropertyGrid title="Exclusive Selection Units" listings={exclusiveUnits} />
-        </section>
-
-        {/* Explore Properties */}
+        {/* Explore Properties Section */}
         <section className="pt-4">
           <ExploreProperties />
         </section>
 
-        {/* Why Choose Us */}
+        {/* Why Choose Us Section */}
         <section className="pt-4">
           <WhyChooseUs />
         </section>
