@@ -1,19 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   ShieldCheck,
   Briefcase,
   Handshake,
   Map,
+  Search,
+  MapPin,
+  Home as HomeIcon,
+  DollarSign,
+  Sparkles,
+  ArrowRight,
+  Play
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import PropertyGrid from '../components/PropertyGrid';
 import ExploreProperties from '../components/ExploreProperties';
 import Footer from '../components/Footer';
 import WhyChooseUs from '../components/WhyChooseUs';
-// 1. Import your local video file from your assets directory
+import Travelchatbot from '../components/Travelchatbot';
 import heroVideo from '../assets/hero-bg.mp4';
 
 export default function Home() {
+  const navigate = useNavigate();
+
+  // Search Bar State
+  const [location, setLocation] = useState('');
+  const [propertyType, setPropertyType] = useState('all');
+  const [priceRange, setPriceRange] = useState('all');
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate(`/properties?location=${encodeURIComponent(location)}&type=${propertyType}&price=${priceRange}`);
+  };
+
   const starterHouses = [
     {
       title: "Tranquil Oasis Suites",
@@ -27,7 +47,7 @@ export default function Home() {
       location: "Beverly Hills, California",
       rating: 4.9,
       price: 4900,
-      image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=600&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=600&auto=format&fit=crop"
     },
     {
       title: "Stylish Penthouse Studio",
@@ -62,13 +82,41 @@ export default function Home() {
     }
   ];
 
+  const featureBadges = [
+    {
+      icon: ShieldCheck,
+      title: "Secure Booking",
+      subtitle: "100% verified listings",
+      color: "bg-emerald-50 text-emerald-600"
+    },
+    {
+      icon: Briefcase,
+      title: "Full-Service Listing",
+      subtitle: "End-to-end support",
+      color: "bg-blue-50 text-blue-600"
+    },
+    {
+      icon: Handshake,
+      title: "Smart Agent Matching",
+      subtitle: "Hassle-free visits",
+      color: "bg-purple-50 text-purple-600"
+    },
+    {
+      icon: Map,
+      title: "Interactive Maps",
+      subtitle: "Filter by neighborhood",
+      color: "bg-amber-50 text-amber-600"
+    }
+  ];
+
   return (
-    <div className="bg-neutral-50 min-h-screen antialiased text-neutral-800 pb-12">
+    <div className="bg-neutral-50/50 min-h-screen antialiased text-neutral-800 font-sans selection:bg-neutral-900 selection:text-white">
       <Navbar />
 
-      <section className="relative min-h-[90vh] flex flex-col justify-center items-center px-4 pt-24 pb-32 overflow-hidden">
+      {/* Hero Section */}
+      <section className="relative min-h-[85vh] lg:min-h-[90vh] flex flex-col justify-center items-center px-4 pt-28 pb-36 overflow-hidden">
 
-        {/* 2. Pass the imported video variable to the source tag */}
+        {/* Video Background */}
         <video
           autoPlay
           loop
@@ -80,74 +128,153 @@ export default function Home() {
           Your browser does not support the video tag.
         </video>
 
-        {/* Dark Overlay/Tint */}
-        <div className="absolute top-0 left-0 w-full h-full bg-black/40 z-10" />
+        {/* Gradient Overlay for Depth & Readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70 z-10" />
 
-        {/* Main Banner Typography */}
-        <div className="text-center max-w-4xl mx-auto z-20 text-white mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight mb-6 text-white">
-            Browse Homes, Apartments <br />& Rentals with Ease
+        {/* Hero Content */}
+        <div className="relative z-20 text-center max-w-4xl mx-auto px-4 flex flex-col items-center">
+          
+          {/* Badge */}
+          
+
+          {/* Heading */}
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] mb-6 drop-shadow-sm">
+            Browse Homes, Apartments<br className="hidden sm:inline" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-200 to-neutral-400">
+            & Rentals with Ease
+            </span>
           </h1>
-          <button className="inline-flex items-center bg-white/10 backdrop-blur-md text-white border border-white/30 px-6 py-2.5 rounded-full text-sm font-medium hover:bg-white/20 transition">
-            Watch Showcase
-          </button>
+
+
+         
+          {/* Watch Showcase Button */}
+        
+        </div>
+
+        {/* Integrated Floating Search Bar Component */}
+        <div className="relative z-30 w-full max-w-5xl mx-auto px-4 -mb-36 sm:-mb-28 mt-12">
+          <form 
+            onSubmit={handleSearch}
+            className="bg-white/95 backdrop-blur-xl rounded-3xl p-3 sm:p-4 shadow-2xl border border-neutral-200/80 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-center"
+          >
+            {/* Location Input */}
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-neutral-50 border border-neutral-200/60 focus-within:border-neutral-800 transition">
+              <MapPin className="w-5 h-5 text-neutral-400 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <label className="block text-[10px] uppercase font-bold tracking-wider text-neutral-400">Location</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Manhattan, NY"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="w-full bg-transparent text-sm font-semibold text-neutral-800 focus:outline-none placeholder:text-neutral-400 placeholder:font-normal truncate"
+                />
+              </div>
+            </div>
+
+            {/* Property Type Dropdown */}
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-neutral-50 border border-neutral-200/60 focus-within:border-neutral-800 transition">
+              <HomeIcon className="w-5 h-5 text-neutral-400 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <label className="block text-[10px] uppercase font-bold tracking-wider text-neutral-400">Property Type</label>
+                <select
+                  value={propertyType}
+                  onChange={(e) => setPropertyType(e.target.value)}
+                  className="w-full bg-transparent text-sm font-semibold text-neutral-800 focus:outline-none cursor-pointer"
+                >
+                  <option value="all">All Types</option>
+                  <option value="apartment">Apartment</option>
+                  <option value="townhouse">PG</option>
+                  <option value="penthouse">CO-Live</option>
+                  <option value="villa">Villa</option>
+                  
+                </select>
+              </div>
+            </div>
+
+            {/* Price Range Dropdown */}
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-neutral-50 border border-neutral-200/60 focus-within:border-neutral-800 transition">
+              <DollarSign className="w-5 h-5 text-neutral-400 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <label className="block text-[10px] uppercase font-bold tracking-wider text-neutral-400">Budget Range</label>
+                <select
+                  value={priceRange}
+                  onChange={(e) => setPriceRange(e.target.value)}
+                  className="w-full bg-transparent text-sm font-semibold text-neutral-800 focus:outline-none cursor-pointer"
+                >
+                  <option value="all">Any Price</option>
+                  <option value="5000-10000">₹5,000 - ₹10,000 / mo</option>
+                  <option value="10000-15000">₹10,000 - ₹15,000 / mo</option>
+                  <option value="15000+">₹15,000+ / mo</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Search Submit Button */}
+            <button
+              type="submit"
+              className="w-full h-full min-h-[52px] bg-neutral-900 hover:bg-black text-white font-semibold rounded-2xl px-6 flex items-center justify-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.99]"
+            >
+              <Search className="w-4 h-4" />
+              <span>Search Stay</span>
+            </button>
+          </form>
         </div>
       </section>
 
-      {/* Feature Strip — sits below the video, above the listings */}
-      <div className="relative z-30 w-full max-w-5xl mx-auto px-4 -mt-4 md:-mt-10 flex flex-col gap-4">
-
-          <div className="bg-white rounded-3xl md:rounded-[2rem] shadow-lg p-4 md:p-6 border border-gray-100 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 items-center">
-            <div className="flex items-center gap-2 md:gap-3">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
-                <ShieldCheck className="w-5 h-5 text-neutral-700" />
-              </div>
-              <div>
-                <h4 className="font-bold text-gray-900 text-sm">Secure booking</h4>
-                <p className="text-xs text-gray-400">All properties verified</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 md:gap-3">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
-                <Briefcase className="w-5 h-5 text-neutral-700" />
-              </div>
-              <div>
-                <h4 className="font-bold text-gray-900 text-sm">Home listing</h4>
-                <p className="text-xs text-gray-400">Total support included</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 md:gap-3">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
-                <Handshake className="w-5 h-5 text-neutral-700" />
-              </div>
-              <div>
-                <h4 className="font-bold text-gray-900 text-sm">Smart agent</h4>
-                <p className="text-xs text-gray-400">Hassle-free visits</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 md:gap-3">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
-                <Map className="w-5 h-5 text-neutral-700" />
-              </div>
-              <div>
-                <h4 className="font-bold text-gray-900 text-sm">Premium map</h4>
-                <p className="text-xs text-gray-400">Find filter properties</p>
-              </div>
-            </div>
+      {/* Feature Strip Section */}
+      <section className="relative z-20 pt-44 pb-12 px-4 max-w-6xl mx-auto">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-neutral-100">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featureBadges.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <div 
+                  key={index} 
+                  className="flex items-center gap-4 p-3 rounded-2xl hover:bg-neutral-50 transition duration-200 group"
+                >
+                  <div className={`w-12 h-12 rounded-2xl ${item.color} flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 shadow-sm`}>
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-neutral-900 text-sm leading-snug">{item.title}</h4>
+                    <p className="text-xs text-neutral-400 font-medium mt-0.5">{item.subtitle}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
+        </div>
+      </section>
 
-      </div>
+      {/* Main Content Sections */}
+      <main className="space-y-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        
+        {/* Starter Houses Section */}
+        <section className="space-y-4">
+          <PropertyGrid title="Browse the Starter Houses" listings={starterHouses} />
+        </section>
 
-      <div className="h-10 md:h-12"></div>
+        {/* Exclusive Units Section */}
+        <section className="space-y-4">
+          <PropertyGrid title="Exclusive Selection Units" listings={exclusiveUnits} />
+        </section>
 
-      <main className="space-y-6">
-        <PropertyGrid title="Browse the Starter Houses" listings={starterHouses} />
+        {/* Explore Properties */}
+        <section className="pt-4">
+          <ExploreProperties />
+        </section>
 
-        <PropertyGrid title="Exclusive Selection Units" listings={exclusiveUnits} />
-         <ExploreProperties />
-         <WhyChooseUs />
+        {/* Why Choose Us */}
+        <section className="pt-4">
+          <WhyChooseUs />
+        </section>
       </main>
 
+      {/* Floating Chatbot Widget */}
+      <Travelchatbot />
+
+      {/* Footer */}
       <Footer />
     </div>
   );
