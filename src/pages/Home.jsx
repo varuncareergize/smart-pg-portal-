@@ -20,13 +20,10 @@ import Footer from '../components/Footer';
 import WhyChooseUs from '../components/WhyChooseUs';
 import Travelchatbot from '../components/Travelchatbot';
 import heroVideo from '../assets/hero-bg.mp4';
+import { apiFetch, BASE_URL } from '../api';
 
 // High-quality fallback image when backend returns image: null
 const DEFAULT_PROPERTY_IMAGE = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600&auto=format&fit=crop";
-const BASE_URL = "http://127.0.0.1:8000";
-
-// Hardcoded Auth Token (Or replace with localStorage.getItem('token') when dynamic auth is ready)
-const AUTH_TOKEN = "6288a3edf900378478ea833b695615e6d4c8dd71";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -47,28 +44,7 @@ export default function Home() {
       setLoading(true);
       setError(null);
 
-      // Construct headers including Token Authentication
-      const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${AUTH_TOKEN}`
-      };
-
-      let response;
-
-      // Try 127.0.0.1 first to bypass IPv6 localhost resolution mismatch
-      try {
-        response = await fetch('http://127.0.0.1:8000/owner/properties/', {
-          method: 'GET',
-          headers: headers,
-        });
-      } catch (primaryErr) {
-        console.warn("127.0.0.1 fetch failed, trying localhost...", primaryErr);
-        // Fallback to localhost if 127.0.0.1 fails
-        response = await fetch('http://localhost:8000/owner/properties/', {
-          method: 'GET',
-          headers: headers,
-        });
-      }
+      const response = await apiFetch('/owner/properties/', { method: 'GET' });
 
       if (!response.ok) {
         if (response.status === 401 || response.status === 403) {

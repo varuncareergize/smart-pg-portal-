@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiFetch } from '../api';
 import { 
   ArrowLeft, 
   Save, 
@@ -37,7 +38,7 @@ export default function TenantsAdd() {
     const fetchRooms = async () => {
       try {
         setRoomsLoading(true);
-        const response = await fetch('https://smart-pg-backend.onrender.com/rooms/');
+const response = await apiFetch('/rooms/');
         if (!response.ok) throw new Error('Failed to fetch rooms');
         
         const data = await response.json();
@@ -73,7 +74,7 @@ export default function TenantsAdd() {
     }
 
     try {
-      const response = await fetch('https://smart-pg-backend.onrender.com/tenants/', {
+const response = await apiFetch('/tenants/', {
         method: 'POST',
         body: uploadData, // Browser handles Content-Type for FormData
       });

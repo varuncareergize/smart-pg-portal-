@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiAxios from '../api';
 import { 
   CurrencyRupeeIcon, CheckCircleIcon, ClockIcon, 
   UserGroupIcon, WalletIcon, ArrowTrendingUpIcon
@@ -14,8 +14,8 @@ export default function PaymentAnalysis() {
     const fetchData = async () => {
       try {
         const [tenantRes, staffRes] = await Promise.all([
-          axios.get('https://smart-pg-backend.onrender.com/tenants/'),
-          axios.get('https://smart-pg-backend.onrender.com/staff/')
+          apiAxios.get('/tenants/'),
+          apiAxios.get('/staff/')
         ]);
         setTenants(tenantRes.data);
         setStaff(staffRes.data);

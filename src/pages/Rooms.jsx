@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiFetch } from '../api';
 import { 
   KeyIcon, 
   PlusIcon,
@@ -21,7 +22,7 @@ export default function Rooms() {
   const fetchRooms = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://smart-pg-backend.onrender.com/rooms/');
+      const response = await apiFetch('/rooms/');
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
       setRooms(data);

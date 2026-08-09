@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiAxios from '../api';
 import { ArrowLeftIcon, UserIcon, WrenchIcon, MapPinIcon } from '@heroicons/react/24/outline';
 
 export default function AddTicket() {
@@ -21,7 +21,7 @@ export default function AddTicket() {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const res = await axios.get('https://smart-pg-backend.onrender.com/staff/'); 
+        const res = await apiAxios.get('/staff/'); 
         setStaffList(res.data);
         // Automatically select the first staff member if available
         if (res.data.length > 0) {
@@ -38,7 +38,7 @@ export default function AddTicket() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post('https://smart-pg-backend.onrender.com/tickets/', formData);
+      await apiAxios.post('/tickets/', formData);
       navigate('/maintenance'); 
     } catch (err) {
       console.error("DJANGO ERROR:", err.response?.data);

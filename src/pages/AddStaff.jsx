@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiAxios from '../api';
 import { 
   ArrowLeftIcon, 
   UserPlusIcon, 
@@ -29,7 +29,7 @@ export default function AddStaff() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post('https://smart-pg-backend.onrender.com/staff/', formData);
+      await apiAxios.post('/staff/', formData);
       navigate('/staff'); // Redirect back to directory
     } catch (error) {
       console.error("Error adding staff:", error.response?.data || error.message);

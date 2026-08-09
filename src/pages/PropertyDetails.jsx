@@ -6,9 +6,8 @@ import {
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { apiFetch, BASE_URL } from '../api';
 
-const BASE_URL = "http://127.0.0.1:8000";
-const AUTH_TOKEN = "6288a3edf900378478ea833b695615e6d4c8dd71";
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=800&auto=format&fit=crop";
 
 export default function PropertyDetails() {
@@ -25,18 +24,7 @@ export default function PropertyDetails() {
       setLoading(true);
       setError(null);
 
-      const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${AUTH_TOKEN}`
-      };
-
-      let response;
-      try {
-        response = await fetch(`${BASE_URL}/owner/properties/${id}/`, { method: 'GET', headers });
-      } catch (err) {
-        // Fallback attempt with localhost
-        response = await fetch(`http://localhost:8000/owner/properties/${id}/`, { method: 'GET', headers });
-      }
+      const response = await apiFetch(`/owner/properties/${id}/`, { method: 'GET' });
 
       if (!response.ok) {
         throw new Error(`Server returned HTTP ${response.status}: ${response.statusText}`);

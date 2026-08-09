@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BellIcon, BanknotesIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
+import { apiFetch } from '../api';
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
@@ -7,7 +8,7 @@ export default function Notifications() {
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/notifications/');
+      const response = await apiFetch('/notifications/');
       const data = await response.json();
       setNotifications(data);
       setLoading(false);
@@ -22,7 +23,7 @@ export default function Notifications() {
   }, []);
 
   const markAllRead = async () => {
-    await fetch('http://127.0.0.1:8000/notifications/', { method: 'POST' });
+      await apiFetch('/notifications/', { method: 'POST' });
     fetchNotifications(); // Refresh list
   };
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiAxios from '../api';
 import { 
   PlusIcon, 
   WrenchScrewdriverIcon,
@@ -21,7 +21,7 @@ export default function Maintenance() {
   const fetchTickets = async () => {
     try {
       // Standardized to your /api/ path
-      const res = await axios.get(`https://smart-pg-backend.onrender.com/tickets/?property_id=${activePropertyId}`);
+      const res = await apiAxios.get(`/tickets/?property_id=${activePropertyId}`);
       setTickets(res.data);
     } catch (err) {
       console.error("Error fetching tickets:", err);
@@ -36,7 +36,7 @@ export default function Maintenance() {
 
   const handleStatusUpdate = async (id, newStatus) => {
     try {
-      await axios.patch(`https://smart-pg-backend.onrender.com/api/tickets/${id}/`, { status: newStatus });
+      await apiAxios.patch(`/api/tickets/${id}/`, { status: newStatus });
       fetchTickets(); 
     } catch (err) {
       alert("Failed to update status");

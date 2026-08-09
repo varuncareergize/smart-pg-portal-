@@ -25,8 +25,8 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         const [tRes, rRes] = await Promise.all([
-          fetch('https://smart-pg-backend.onrender.com/tenants/'),
-          fetch('https://smart-pg-backend.onrender.com/rooms/')
+          apiFetch('/tenants/'),
+          apiFetch('/rooms/')
         ]);
         
         const tData = await tRes.json();

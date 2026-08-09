@@ -5,6 +5,7 @@ import { MapPin, Search, Star, ShieldCheck, ArrowRight, Loader2, XCircle, Filter
 
 import Navbar from '../components/Navbar'; 
 import Footer from '../components/Footer';
+import { apiFetch } from '../api';
 
 // Animation Variants
 const containerVariants = {
@@ -30,7 +31,7 @@ export default function Properties() {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await fetch('https://smart-pg-backend.onrender.com/properties/all/');
+        const response = await apiFetch('/properties/all/');
         const data = await response.json();
         setProperties(data);
       } catch (error) {

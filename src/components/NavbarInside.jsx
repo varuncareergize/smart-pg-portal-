@@ -15,11 +15,9 @@
     // Fetch unread notifications
     const fetchUnread = async () => {
       try {
-        // Changed to local URL if testing locally, keep Render URL if live
-        const response = await fetch('http://127.0.0.1:8000/notifications/');
+        const response = await apiFetch('/notifications/');
         if (response.ok) {
           const data = await response.json();
-          // Count items where is_read is false
           const unread = data.filter(note => !note.is_read).length;
           setUnreadCount(unread);
         }
