@@ -226,12 +226,12 @@ export default function PropertyDetails() {
                         <img 
                           src={roomImg} 
                           className="w-full h-32 object-cover rounded-[24px] mb-4" 
-                          alt={config.room_type_display} 
+                          alt={config.room_type} 
                         />
                         <div className="px-4 pb-4">
-                          <h4 className="font-black text-[#001D3D]">{config.room_type_display}</h4>
+                          <h4 className="font-black text-[#001D3D]">{config.room_type}</h4>
                           <p className="text-2xl font-black text-[#00C896] mt-1">
-                            ₹{parseInt(config.price_per_bed || 0).toLocaleString()}
+                            ₹{parseInt(config.rent || 0).toLocaleString()}
                             <span className="text-xs text-slate-400 font-bold">/mo</span>
                           </p>
                           <p className="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-wide">
