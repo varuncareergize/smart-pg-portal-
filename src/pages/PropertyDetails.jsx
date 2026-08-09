@@ -315,8 +315,8 @@ export default function PropertyDetails() {
                       <p className="font-bold text-sm">
                         {property.owner?.name && property.owner.name.trim() !== "" 
                           ? property.owner.name 
-                          : "UULYV Resident Desk"}
-                      </p>
+                          : "LIVZZ Resident Desk"}
+                      </p>UULYV Resident Desk
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
