@@ -332,7 +332,7 @@ export default function Home() {
       </main>
 
       {/* Floating Chatbot Widget */}
-      <Travelchatbot />
+      {/* <Travelchatbot /> */}
 
       {/* Footer */}
       <Footer />
