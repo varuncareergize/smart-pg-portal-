@@ -45,9 +45,7 @@ export default function Navbar({ variant = 'default' }) {
     ? scrolled
       ? 'livzz-glass-dark py-3 shadow-lg'
       : 'bg-[#001F3F]/95 backdrop-blur-md py-4'
-    : scrolled
-      ? 'bg-[#0B0A12]/90 backdrop-blur-md border-b border-white/5 py-4'
-      : 'bg-transparent py-6';
+    : 'bg-[#090909] border-b border-white/10 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.18)]';
 
   return (
     <nav className={`fixed top-0 w-full z-[100] transition-all duration-500 ${navClasses}`}>
@@ -60,7 +58,7 @@ export default function Navbar({ variant = 'default' }) {
                 <span className="text-[#FFC107]">ZZ</span>
               </span>
             ) : (
-              <span className="text-white text-3xl font-extrabold tracking-tight lowercase">
+              <span className="text-white text-2xl font-black tracking-[-0.06em] lowercase md:text-3xl">
                 livzz<span className="text-indigo-500 font-black">.</span>
               </span>
             )}
@@ -72,12 +70,12 @@ export default function Navbar({ variant = 'default' }) {
                 <div key={link.name} className="relative group">
                   <Link
                     to={link.path}
-                    className={`flex items-center gap-1 text-sm font-semibold transition-colors duration-200 ${
+                    className={`flex items-center gap-1 text-[11px] font-black uppercase tracking-[0.14em] transition-colors duration-200 ${
                       isMarketplace
                         ? location.pathname === link.path
                           ? 'text-[#FFC107]'
                           : 'text-white/80 hover:text-[#FFC107]'
-                        : 'text-slate-300 hover:text-white'
+                        : 'text-white/65 hover:text-white'
                     }`}
                   >
                     {link.name}
@@ -131,7 +129,7 @@ export default function Navbar({ variant = 'default' }) {
             {!isMarketplace && (
               <button
                 onClick={() => navigate('/login')}
-                className="px-5 py-2.5 bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 hover:border-indigo-500 text-white rounded-lg text-sm font-medium transition-all duration-200 active:scale-95 shadow-lg shadow-indigo-600/10"
+                className="rounded-full bg-white px-5 py-2.5 text-[11px] font-black uppercase tracking-[0.12em] text-black transition-all duration-200 hover:bg-neutral-200 active:scale-95"
               >
                 Sign-In
               </button>
