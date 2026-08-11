@@ -36,6 +36,7 @@ export default function Navbar({ variant = 'default' }) {
     : [
         { name: 'About Us', path: '/about-us' },
         { name: 'Contact Us', path: '/contact' },
+        { name: 'Services', path: '/services' },
       ];
 
   const navClasses = isMarketplace
