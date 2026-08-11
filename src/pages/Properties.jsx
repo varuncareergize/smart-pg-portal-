@@ -21,6 +21,7 @@ import {
   getSavedProperties,
   addRecentSearch,
 } from '../utils/propertyHelpers';
+import { apiFetch } from '../api';
 
 const PAGE_SIZE = 6;
 
@@ -81,7 +82,7 @@ export default function Properties() {
     setSavedIds(getSavedProperties());
     const fetchProperties = async () => {
       try {
-        const response = await fetch('https://smart-pg-backend.onrender.com/properties/all/');
+        const response = await apiFetch('/properties/all/');
         const data = await response.json();
         setProperties(data.map((p, i) => enrichProperty(p, i)));
       } catch (error) {

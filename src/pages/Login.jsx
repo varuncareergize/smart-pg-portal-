@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Eye, EyeOff, Lock, User, ArrowRight, ShieldCheck, ShieldAlert, Loader2 
 } from 'lucide-react';
+import { BASE_URL } from '../api';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,7 +18,7 @@ export default function Login() {
     setError(null);
 
     try {
-      const response = await fetch('https://smart-pg-backend.onrender.com/accounts/login/', {
+      const response = await fetch(`${BASE_URL}/accounts/login/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -26,10 +27,10 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // --- KEY ADDITION: STORE AUTH STATE ---
-        // Save the access token from your Django backend
-        localStorage.setItem('token', data.access || 'true'); 
-        // Optional: Store user info if needed
+        const authToken = data.token || data.access;
+        if (authToken) {
+          localStorage.setItem('token', authToken);
+        }
         localStorage.setItem('user', JSON.stringify(data.user || formData.username));
         
         navigate('/dashboard');

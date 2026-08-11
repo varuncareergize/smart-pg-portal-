@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiFetch } from '../api';
 import { 
   CheckCircleIcon, 
   ExclamationCircleIcon, 
@@ -21,7 +22,7 @@ export default function Tenants() {
   const fetchTenants = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://smart-pg-backend.onrender.com/tenants/');
+      const response = await apiFetch('/tenants/');
       if (!response.ok) throw new Error('Failed to fetch tenants');
       const data = await response.json();
       

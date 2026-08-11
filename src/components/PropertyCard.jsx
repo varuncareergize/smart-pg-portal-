@@ -6,12 +6,12 @@ export default function PropertyCard({ id = "1", image, title, location, rating,
 
   const handleVisitClick = (e) => {
     e.stopPropagation(); // Prevents triggering any outer card click events
-    navigate(`/property/${id}`); // Navigates to your existing dynamic property details route
+    navigate(`/owner/property/${id}`); // Navigates to your existing dynamic property details route
   };
 
   return (
     <div 
-      onClick={() => navigate(`/property/${id}`)}
+      onClick={() => navigate(`/owner/property/${id}`)}
       className="bg-white rounded-2xl overflow-hidden group cursor-pointer border border-gray-100 shadow-sm hover:shadow-md transition duration-300"
     >
       {/* Image Wrapper */}

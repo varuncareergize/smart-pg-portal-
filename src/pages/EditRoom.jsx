@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeftIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { apiFetch } from '../api';
 
 export default function EditRoom() {
   const { id } = useParams();
@@ -9,7 +10,7 @@ export default function EditRoom() {
   const [formData, setFormData] = useState(null);
 
   useEffect(() => {
-    fetch(`https://smart-pg-backend.onrender.com/rooms/${id}/`)
+    apiFetch(`/rooms/${id}/`)
       .then(res => res.json())
       .then(data => {
         setFormData(data);
@@ -20,9 +21,8 @@ export default function EditRoom() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`https://smart-pg-backend.onrender.com/rooms/${id}/`, {
+      const response = await apiFetch(`/rooms/${id}/`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
       if (response.ok) navigate('/rooms');

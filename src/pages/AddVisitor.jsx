@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiAxios from '../api';
 import { 
   ArrowLeft, UserPlus, ShieldCheck, Phone, 
   Home, FileText, Loader2 
@@ -28,7 +28,7 @@ export default function AddVisitor() {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const response = await axios.get(`https://smart-pg-backend.onrender.com/rooms/?property_id=${currentPropertyId}`);
+        const response = await apiAxios.get(`/rooms/?property_id=${currentPropertyId}`);
         setRooms(response.data);
       } catch (error) {
         console.error("Failed to load rooms:", error);
@@ -43,7 +43,7 @@ export default function AddVisitor() {
 
     try {
       // POST directly to your visitors endpoint
-      await axios.post('https://smart-pg-backend.onrender.com/visitors/', formData);
+      await apiAxios.post('/visitors/', formData);
       navigate('/visitors'); 
     } catch (error) {
       console.error("Registration Error:", error.response?.data || error.message);

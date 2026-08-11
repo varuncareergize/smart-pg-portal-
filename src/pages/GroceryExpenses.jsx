@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiAxios from '../api';
 import { 
   Calendar, ShoppingBag, BarChart3, Plus, Search, 
   ArrowUpRight, UploadCloud, FileText, ShieldCheck 
@@ -22,7 +22,7 @@ export default function GroceryExpenses() {
   // 2. FETCH DATA FROM API
   const fetchExpenses = async () => {
     try {
-      const res = await axios.get('https://smart-pg-backend.onrender.com/expenses/?property_id=1');
+      const res = await apiAxios.get('/expenses/?property_id=1');
       setExpenses(res.data);
     } catch (err) {
       console.error("Error fetching groceries:", err);
@@ -49,7 +49,7 @@ export default function GroceryExpenses() {
     if (receipt) data.append('receipt_image', receipt);
 
     try {
-      await axios.post('https://smart-pg-backend.onrender.com/expenses/', data, {
+      await apiAxios.post('/expenses/', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       alert("Expense Recorded Successfully!");

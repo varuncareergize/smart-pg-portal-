@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiAxios from '../api';
 import { 
   Users, Clock, LogIn, ArrowRight, Home, XCircle, 
   Loader2, Search, UserCheck
@@ -20,7 +20,7 @@ export default function Visitors() {
       setLoading(true);
       // Replace '1' with your dynamic property ID from Context or LocalStorage
       const propertyId = localStorage.getItem('currentPropertyId') || '1';
-      const response = await axios.get(`https://smart-pg-backend.onrender.com/visitors/?property_id=${propertyId}`);
+      const response = await apiAxios.get(`/visitors/?property_id=${propertyId}`);
       setVisitorLogs(response.data);
     } catch (error) {
       console.error("Error fetching visitor data:", error);
@@ -36,7 +36,7 @@ export default function Visitors() {
   // 2. Handle Check-Out (API Update)
   const handleCheckOut = async (id) => {
     try {
-      await axios.patch(`https://smart-pg-backend.onrender.com/visitors/${id}/`, {
+      await apiAxios.patch(`/visitors/${id}/`, {
         status: 'Checked-Out',
         exit_time: new Date().toISOString()
       });
