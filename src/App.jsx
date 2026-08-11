@@ -1,37 +1,39 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import ExploreProperties from './components/ExploreProperties';
 
-// Pages
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import Rooms from './pages/Rooms';
-import Payments from './pages/Payments';
-import Tenants from './pages/Tenants';
-import Staff from './pages/Staff';
-import Maintenance from './pages/Maintenance';
-import Login from './pages/Login';
-import Properties from './pages/Properties';
-import Services from './pages/Services';
-import PropertyDetails from './pages/PropertyDetails';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import GroceryExpenses from './pages/GroceryExpenses';
-import Visitors from './pages/Visitors';
-import TenantsAdd from './pages/Tenant_add';
-import AddRoom from './pages/AddRoom';
-import AddVisitor from './pages/AddVisitor';
-import EditRoom from './pages/EditRoom';
-import AddStaff from './pages/AddStaff';
-import AddTicket from './pages/AddTicket';
-import Notifications from './pages/Notifications';
+// Route-level chunks keep the first page load lean; pages load only when visited.
+const Home = lazy(() => import('./pages/Home'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Rooms = lazy(() => import('./pages/Rooms'));
+const Payments = lazy(() => import('./pages/Payments'));
+const Tenants = lazy(() => import('./pages/Tenants'));
+const Staff = lazy(() => import('./pages/Staff'));
+const Maintenance = lazy(() => import('./pages/Maintenance'));
+const Login = lazy(() => import('./pages/Login'));
+const Properties = lazy(() => import('./pages/Properties'));
+const Services = lazy(() => import('./pages/Services'));
+const PropertyDetails = lazy(() => import('./pages/PropertyDetails'));
+const About = lazy(() => import('./pages/About'));
+const Contact = lazy(() => import('./pages/Contact'));
+const GroceryExpenses = lazy(() => import('./pages/GroceryExpenses'));
+const Visitors = lazy(() => import('./pages/Visitors'));
+const TenantsAdd = lazy(() => import('./pages/Tenant_add'));
+const AddRoom = lazy(() => import('./pages/AddRoom'));
+const AddVisitor = lazy(() => import('./pages/AddVisitor'));
+const EditRoom = lazy(() => import('./pages/EditRoom'));
+const AddStaff = lazy(() => import('./pages/AddStaff'));
+const AddTicket = lazy(() => import('./pages/AddTicket'));
+const Notifications = lazy(() => import('./pages/Notifications'));
 
 function App() {
   return (
     <Router>
-      <Routes>
+      <Suspense fallback={<div className="min-h-screen bg-neutral-50" />}>
+        <Routes>
 
         {/* --- PUBLIC ROUTES --- */}
         <Route path="/" element={<Home />} />
@@ -64,7 +66,8 @@ function App() {
         {/* Handle Unknown Routes */}
         <Route path="*" element={<Navigate to="/" replace />} />
 
-      </Routes>
+        </Routes>
+      </Suspense>
     </Router>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ShieldCheck,
@@ -18,12 +18,21 @@ import PropertyGrid from '../components/PropertyGrid';
 import ExploreProperties from '../components/ExploreProperties';
 import Footer from '../components/Footer';
 import WhyChooseUs from '../components/WhyChooseUs';
-import Travelchatbot from '../components/Travelchatbot';
-import heroVideo from '../assets/hero-bg.mp4';
 import { apiFetch, BASE_URL } from '../api';
+import image1 from '../assets/image1.jpeg';
+import image2 from '../assets/image2.jpeg';
+import image3 from '../assets/image3.jpeg';
+import image4 from '../assets/image4.jpeg';
 
 // High-quality fallback image when backend returns image: null
 const DEFAULT_PROPERTY_IMAGE = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600&auto=format&fit=crop";
+
+const galleryImages = [
+  { src: image1, alt: 'Open-plan dining and living space', position: 'center center' },
+  { src: image2, alt: 'Curved wood feature wall and lounge chair', position: 'center center' },
+  { src: image3, alt: 'Living room with expansive mountain view', position: 'center center' },
+  { src: image4, alt: 'Modern interior with sculptural staircase', position: 'center 58%' },
+];
 
 export default function Home() {
   const navigate = useNavigate();
@@ -140,39 +149,40 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative min-h-[85vh] lg:min-h-[90vh] flex flex-col justify-center items-center px-4 pt-28 pb-36 overflow-hidden">
+      <section className="relative h-screen h-[100dvh] max-h-[100dvh] overflow-hidden bg-[#f4f0e8]">
+        <div className="relative h-full overflow-hidden rounded-b-[2rem] bg-[#151515] shadow-[0_25px_60px_-30px_rgba(0,0,0,0.45)] sm:rounded-b-[3rem]">
+          {/* Four supplied images, clipped together as one curved gallery. */}
+          <div className="absolute inset-x-0 bottom-0 h-[62%] overflow-hidden">
+            <div className="grid h-full grid-cols-2 gap-px bg-white md:grid-cols-4">
+              {galleryImages.map((image) => (
+                <div key={image.src} className="h-full min-h-0 overflow-hidden">
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    className="block h-full w-full object-cover"
+                    style={{ objectPosition: image.position }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-black/35 via-transparent to-black/10" />
 
-        {/* Video Background */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute top-0 left-0 w-full h-full object-cover z-0"
-        >
-          <source src={heroVideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+          {/* Curved white editorial panel */}
+          <div className="absolute inset-x-0 top-0 z-10 h-[55%] bg-[#fdfbf6] [clip-path:ellipse(108%_88%_at_50%_0%)] sm:h-[57%]" />
+          <div className="absolute inset-x-0 top-0 z-20 flex h-[39%] translate-y-6 flex-col items-center justify-center px-5 pt-14 text-center sm:h-[41%] sm:translate-y-8 sm:px-12 sm:pt-12">
+            <h1 className="max-w-5xl text-[clamp(2.15rem,5.8vw,6.25rem)] font-black tracking-[-0.075em] leading-[0.88] text-[#111111]">
+              Browse Homes, Apartments<br className="hidden sm:inline" />
+              <span className="block">& Rentals with Ease</span>
+            </h1>
+          </div>
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70 z-10" />
-
-        {/* Hero Content */}
-        <div className="relative z-20 text-center max-w-4xl mx-auto px-4 flex flex-col items-center">
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] mb-6 drop-shadow-sm">
-            Browse Homes, Apartments<br className="hidden sm:inline" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-200 to-neutral-400">
-              & Rentals with Ease
-            </span>
-          </h1>
-        </div>
-
-        {/* Floating Search Bar */}
-        <div className="relative z-30 w-full max-w-5xl mx-auto px-4 -mb-36 sm:-mb-28 mt-12">
-          <form 
-            onSubmit={handleSearch}
-            className="bg-white/95 backdrop-blur-xl rounded-3xl p-3 sm:p-4 shadow-2xl border border-neutral-200/80 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-center"
-          >
+          {/* Floating search panel */}
+          <div className="absolute inset-x-0 bottom-[5%] z-30 mx-auto w-[calc(100%-1.5rem)] max-w-7xl sm:w-[calc(100%-4rem)]">
+            <form
+              onSubmit={handleSearch}
+              className="grid grid-cols-1 items-center gap-2 rounded-[1.4rem] border border-white/70 bg-white/95 p-3 shadow-[0_20px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:grid-cols-2 sm:gap-3 sm:rounded-[1.75rem] sm:p-4 lg:grid-cols-4 lg:rounded-[2rem]"
+            >
             {/* Location Input */}
             <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-neutral-50 border border-neutral-200/60 focus-within:border-neutral-800 transition">
               <MapPin className="w-5 h-5 text-neutral-400 shrink-0" />
@@ -228,17 +238,18 @@ export default function Home() {
             {/* Search Submit Button */}
             <button
               type="submit"
-              className="w-full h-full min-h-[52px] bg-neutral-900 hover:bg-black text-white font-semibold rounded-2xl px-6 flex items-center justify-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.99]"
+              className="w-full h-full min-h-[52px] bg-[#111111] hover:bg-[#2a2a2a] text-white font-semibold rounded-2xl px-6 flex items-center justify-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.99]"
             >
               <Search className="w-4 h-4" />
               <span>Search Stay</span>
             </button>
           </form>
+          </div>
         </div>
       </section>
 
       {/* Feature Strip Section */}
-      <section className="relative z-20 pt-44 pb-12 px-4 max-w-6xl mx-auto">
+      <section className="relative z-20 pb-12 px-4 max-w-6xl mx-auto">
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-neutral-100">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featureBadges.map((item, index) => {
