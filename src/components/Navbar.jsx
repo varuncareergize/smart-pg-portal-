@@ -34,10 +34,7 @@ export default function Navbar({ variant = 'default' }) {
         { name: 'Contact', path: '/contact' },
       ]
     : [
-        { name: 'Features', path: '/features', hasDropdown: true },
-        { name: 'Portfolio', path: '/portfolio', hasDropdown: true },
         { name: 'About Us', path: '/about-us' },
-        { name: 'Resources', path: '/resources' },
         { name: 'Contact Us', path: '/contact' },
       ];
 
