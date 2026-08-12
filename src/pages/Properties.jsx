@@ -78,21 +78,22 @@ export default function Properties() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  useEffect(() => {
-    setSavedIds(getSavedProperties());
-    const fetchProperties = async () => {
-      try {
-        const response = await apiFetch('/owner/properties/');
-        const data = await response.json();
-        setProperties(data.map((p, i) => enrichProperty(p, i)));
-      } catch (error) {
-        console.error('Error fetching properties:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProperties();
-  }, []);
+ useEffect(() => {
+  setSavedIds(getSavedProperties());
+  const fetchProperties = async () => {
+    try {
+      const response = await apiFetch('/owner/properties/');
+      const json = await response.json();
+      const list = Array.isArray(json) ? json : (json.data || []); // <-- unwrap {success, data}
+      setProperties(list.map((p, i) => enrichProperty(p, i)));
+    } catch (error) {
+      console.error('Error fetching properties:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchProperties();
+}, []);
 
   const handleSearch = () => {
     if (location) addRecentSearch(location);
