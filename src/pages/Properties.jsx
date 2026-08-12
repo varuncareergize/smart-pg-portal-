@@ -82,7 +82,7 @@ export default function Properties() {
     setSavedIds(getSavedProperties());
     const fetchProperties = async () => {
       try {
-        const response = await apiFetch('/properties/all/');
+        const response = await apiFetch('/owner/properties/');
         const data = await response.json();
         setProperties(data.map((p, i) => enrichProperty(p, i)));
       } catch (error) {
