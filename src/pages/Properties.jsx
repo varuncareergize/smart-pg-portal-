@@ -28,6 +28,7 @@ const PAGE_SIZE = 6;
 export default function Properties() {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   // Search bar state
@@ -78,22 +79,25 @@ export default function Properties() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
- useEffect(() => {
-  setSavedIds(getSavedProperties());
-  const fetchProperties = async () => {
-    try {
-      const response = await apiFetch('/owner/properties/');
-      const json = await response.json();
-      const list = Array.isArray(json) ? json : (json.data || []); // <-- unwrap {success, data}
-      setProperties(list.map((p, i) => enrichProperty(p, i)));
-    } catch (error) {
-      console.error('Error fetching properties:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchProperties();
-}, []);
+  useEffect(() => {
+    setSavedIds(getSavedProperties());
+    const fetchProperties = async () => {
+      try {
+        const response = await apiFetch('/owner/properties/');
+        const json = await response.json();
+        // API wraps the array as { success, data: [...] } — unwrap it.
+        const list = Array.isArray(json) ? json : (json.data || []);
+        setProperties(list.map((p, i) => enrichProperty(p, i)));
+        setLoadError(false);
+      } catch (error) {
+        console.error('Error fetching properties:', error);
+        setLoadError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProperties();
+  }, []);
 
   const handleSearch = () => {
     if (location) addRecentSearch(location);
@@ -275,6 +279,12 @@ export default function Properties() {
             )}
           </div>
         </div>
+
+        {loadError && !loading && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 font-semibold">
+            Couldn't load properties right now. Please refresh or try again shortly.
+          </div>
+        )}
 
         {/* Three-column layout */}
         <div className={`grid gap-6 ${showMapPanel ? 'lg:grid-cols-[260px_1fr_380px]' : showSidebar ? 'lg:grid-cols-[260px_1fr]' : 'grid-cols-1'}`}>
