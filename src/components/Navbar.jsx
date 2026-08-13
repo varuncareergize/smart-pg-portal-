@@ -11,6 +11,7 @@ export default function Navbar({ variant = 'default' }) {
   const navigate = useNavigate();
   const location = useLocation();
   const isMarketplace = variant === 'marketplace';
+  const isHero = variant === 'hero';
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -44,7 +45,11 @@ export default function Navbar({ variant = 'default' }) {
     ? scrolled
       ? 'livzz-glass-dark py-3 shadow-lg'
       : 'bg-[#001F3F]/95 backdrop-blur-md py-4'
-    : 'bg-[#090909] border-b border-white/10 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.18)]';
+    : isHero
+      ? scrolled
+        ? 'bg-[#b7d9ec]/90 backdrop-blur-xl py-3 shadow-[0_8px_30px_rgba(23,52,72,0.12)]'
+        : 'bg-transparent py-5'
+      : 'bg-[#090909] border-b border-white/10 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.18)]';
 
   return (
     <nav className={`fixed top-0 w-full z-[100] transition-all duration-500 ${navClasses}`}>
@@ -57,8 +62,8 @@ export default function Navbar({ variant = 'default' }) {
                 <span className="text-[#FFC107]">ZZ</span>
               </span>
             ) : (
-              <span className="text-white text-2xl font-black tracking-[-0.06em] lowercase md:text-3xl">
-                livzz<span className="text-indigo-500 font-black">.</span>
+              <span className={`text-2xl font-black tracking-[-0.06em] lowercase md:text-3xl ${isHero ? 'text-[#122332]' : 'text-white'}`}>
+                livzz<span className={`${isHero ? 'text-[#497e9c]' : 'text-indigo-500'} font-black`}>.</span>
               </span>
             )}
           </Link>
@@ -74,7 +79,7 @@ export default function Navbar({ variant = 'default' }) {
                         ? location.pathname === link.path
                           ? 'text-[#FFC107]'
                           : 'text-white/80 hover:text-[#FFC107]'
-                        : 'text-white/65 hover:text-white'
+                        : isHero ? 'text-[#203846]/80 hover:text-[#102733]' : 'text-white/65 hover:text-white'
                     }`}
                   >
                     {link.name}
@@ -128,7 +133,7 @@ export default function Navbar({ variant = 'default' }) {
             {!isMarketplace && (
               <button
                 onClick={() => navigate('/login')}
-                className="rounded-full bg-white px-5 py-2.5 text-[11px] font-black uppercase tracking-[0.12em] text-black transition-all duration-200 hover:bg-neutral-200 active:scale-95"
+                className={`rounded-full px-5 py-2.5 text-[11px] font-black uppercase tracking-[0.12em] transition-all duration-200 active:scale-95 ${isHero ? 'bg-[#183343] text-white hover:bg-[#244b60]' : 'bg-white text-black hover:bg-neutral-200'}`}
               >
                 Sign-In
               </button>
@@ -138,7 +143,7 @@ export default function Navbar({ variant = 'default' }) {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`p-2 transition-colors ${isMarketplace ? 'text-white' : 'text-white hover:text-indigo-400'}`}
+              className={`p-2 transition-colors ${isMarketplace ? 'text-white' : isHero ? 'text-[#122332] hover:text-[#497e9c]' : 'text-white hover:text-indigo-400'}`}
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
