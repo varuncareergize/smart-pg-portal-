@@ -43,7 +43,7 @@ export default function Home() {
       setLoading(true);
       setError(null);
 
-      const response = await apiFetch('/owner/properties/', { method: 'GET' });
+      const response = await apiFetch('/properties/', { method: 'GET' });
 
       if (!response.ok) {
         if (response.status === 401 || response.status === 403) {

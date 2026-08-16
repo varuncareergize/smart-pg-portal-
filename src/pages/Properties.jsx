@@ -83,7 +83,7 @@ export default function Properties() {
     setSavedIds(getSavedProperties());
     const fetchProperties = async () => {
       try {
-        const response = await apiFetch('/owner/properties/');
+        const response = await apiFetch('/properties/');
         const json = await response.json();
         // API wraps the array as { success, data: [...] } — unwrap it.
         const list = Array.isArray(json) ? json : (json.data || []);

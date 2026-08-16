@@ -24,7 +24,7 @@ export default function PropertyDetails() {
       setLoading(true);
       setError(null);
 
-      const response = await apiFetch(`/owner/properties/${id}/`, { method: 'GET' });
+      const response = await apiFetch(`/properties/${id}/`, { method: 'GET' });
 
       if (!response.ok) {
         throw new Error(`Server returned HTTP ${response.status}: ${response.statusText}`);
