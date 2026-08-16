@@ -2,16 +2,34 @@ import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Sparkles, IndianRupee } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../api';
+
+// Same fallback used on the Home page
+const DEFAULT_PROPERTY_IMAGE = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600&auto=format&fit=crop";
+
+// Resolve a property image the same way Home.jsx does
+function resolveImage(image) {
+  if (!image) return DEFAULT_PROPERTY_IMAGE;
+  return image.startsWith('http') ? image : `${BASE_URL}${image}`;
+}
 
 function MiniPropertyCard({ property }) {
   const navigate = useNavigate();
+  const imageSrc = resolveImage(property.image);
+
   return (
     <motion.div
       whileHover={{ y: -4 }}
       onClick={() => navigate(`/property/${property.id}`)}
       className="shrink-0 w-56 bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md cursor-pointer transition-shadow"
     >
-      <img src={property.image} alt={property.name} className="w-full h-32 object-cover" loading="lazy" />
+      <img
+        src={imageSrc}
+        alt={property.name}
+        className="w-full h-32 object-cover"
+        loading="lazy"
+        onError={(e) => { e.currentTarget.src = DEFAULT_PROPERTY_IMAGE; }}
+      />
       <div className="p-3">
         <h4 className="font-black text-sm text-[#001F3F] truncate">{property.name}</h4>
         <p className="text-xs text-slate-400 mt-0.5">{property.city}</p>
@@ -68,7 +86,7 @@ export default function AIRecommendation({ similarProperties, budget, maxBudget 
       <div>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-black text-[#001F3F] flex items-center gap-2">
-            <Sparkles size={18} className="text-[#FFC107]" />
+           
             You may also like
           </h3>
           <div className="flex gap-1">
