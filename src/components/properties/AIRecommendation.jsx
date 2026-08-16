@@ -2,8 +2,7 @@ import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Sparkles, IndianRupee } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { BASE_URL } from '../api';
-
+import { BASE_URL } from '../../api';
 // Same fallback used on the Home page
 const DEFAULT_PROPERTY_IMAGE = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600&auto=format&fit=crop";
 
