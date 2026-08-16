@@ -19,20 +19,10 @@ import ExploreProperties from '../components/ExploreProperties';
 import Footer from '../components/Footer';
 import WhyChooseUs from '../components/WhyChooseUs';
 import { apiFetch, BASE_URL } from '../api';
-import image1 from '../assets/image1.jpeg';
-import image2 from '../assets/image2.jpeg';
-import image3 from '../assets/image3.jpeg';
-import image4 from '../assets/image4.jpeg';
+import heroResidence from '../assets/hero-residence.png';
 
 // High-quality fallback image when backend returns image: null
 const DEFAULT_PROPERTY_IMAGE = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600&auto=format&fit=crop";
-
-const galleryImages = [
-  { src: image1, alt: 'Open-plan dining and living space', position: 'center center' },
-  { src: image2, alt: 'Curved wood feature wall and lounge chair', position: 'center center' },
-  { src: image3, alt: 'Living room with expansive mountain view', position: 'center center' },
-  { src: image4, alt: 'Modern interior with sculptural staircase', position: 'center 58%' },
-];
 
 export default function Home() {
   const navigate = useNavigate();
@@ -146,67 +136,68 @@ export default function Home() {
 
   return (
     <div className="bg-neutral-50/50 min-h-screen antialiased text-neutral-800 font-sans selection:bg-neutral-900 selection:text-white">
-      <Navbar />
+      <Navbar variant="hero" />
 
       {/* Hero Section */}
-      <section className="relative h-screen h-[100dvh] max-h-[100dvh] overflow-hidden bg-[#f4f0e8]">
-        <div className="relative h-full overflow-hidden rounded-b-[2rem] bg-[#151515] shadow-[0_25px_60px_-30px_rgba(0,0,0,0.45)] sm:rounded-b-[3rem]">
-          {/* Four supplied images, clipped together as one curved gallery. */}
-          <div className="absolute inset-x-0 bottom-0 h-[62%] overflow-hidden">
-            <div className="grid h-full grid-cols-2 gap-px bg-white md:grid-cols-4">
-              {galleryImages.map((image) => (
-                <div key={image.src} className="h-full min-h-0 overflow-hidden">
-                  <img
-                    src={image.src}
-                    alt={image.alt}
-                    className="block h-full w-full object-cover"
-                    style={{ objectPosition: image.position }}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-black/35 via-transparent to-black/10" />
-
-          {/* Curved white editorial panel */}
-          <div className="absolute inset-x-0 top-0 z-10 h-[55%] bg-[#fdfbf6] [clip-path:ellipse(108%_88%_at_50%_0%)] sm:h-[57%]" />
-          <div className="absolute inset-x-0 top-0 z-20 flex h-[39%] translate-y-6 flex-col items-center justify-center px-5 pt-14 text-center sm:h-[41%] sm:translate-y-8 sm:px-12 sm:pt-12">
-            <h1 className="max-w-5xl text-[clamp(2.15rem,5.8vw,6.25rem)] font-black tracking-[-0.075em] leading-[0.88] text-[#111111]">
-              Browse Homes, Apartments<br className="hidden sm:inline" />
-              <span className="block">& Rentals with Ease</span>
+      <section className="relative isolate min-h-[760px] h-[100svh] overflow-hidden bg-[#a9d3e9]">
+        <img src={heroResidence} alt="Modern residence at dusk" className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(153,203,229,0.32)_0%,rgba(153,203,229,0.06)_32%,rgba(10,39,55,0.12)_100%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-[11%] z-0 select-none overflow-hidden bg-gradient-to-b from-[#eff9ff]/65 via-[#d5edf9]/45 to-[#9fcce3]/20 bg-clip-text text-center text-[clamp(8rem,24vw,24rem)] font-black leading-none tracking-[-0.11em] text-transparent opacity-75">
+          LIVZZ
+        </div>
+        {/* Re-layer the residence and shoreline so the ghost type lives behind them. */}
+        <img
+          src={heroResidence}
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-[1] h-full w-full object-cover object-center [clip-path:polygon(28%_47%,42%_41%,42%_36%,55%_29%,70%_35%,70%_47%,73%_48%,73%_75%,100%_75%,100%_100%,0_100%,0_75%,28%_75%)]"
+        />
+        <div className="relative mx-auto flex h-full max-w-[1600px] items-center px-5 pb-20 pt-24 sm:px-10">
+          <div className="max-w-[235px] text-white drop-shadow-[0_2px_8px_rgba(12,39,53,0.18)]">
+            <h1 className="text-sm font-medium uppercase leading-[1.12] tracking-[-0.03em] sm:text-base">
+              Browse homes, apartments & rentals with ease.
             </h1>
+            <p className="mt-4 text-xs font-medium uppercase leading-[1.1] text-white/90">Verified listings. Smarter stays.</p>
+            <button onClick={() => navigate('/contact')} className="mt-6 rounded-full bg-white px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-[#132b3a] transition hover:bg-[#eaf6fc]">
+              Contact us
+            </button>
           </div>
 
-          {/* Floating search panel */}
-          <div className="absolute inset-x-0 bottom-[5%] z-30 mx-auto w-[calc(100%-1.5rem)] max-w-7xl sm:w-[calc(100%-4rem)]">
+          <div className="absolute bottom-[17%] right-5 grid grid-cols-2 gap-2 sm:right-10">
+            {['Verified Listing', 'New on Market', 'Just Listed', 'Prime Location'].map((tag) => (
+              <span key={tag} className="rounded-full bg-[#477f9e]/70 px-3 py-1.5 text-[10px] font-medium text-white backdrop-blur-sm">{tag}</span>
+            ))}
+          </div>
+
+          <div className="absolute inset-x-0 bottom-4 z-30 mx-auto w-[calc(100%-1.5rem)] max-w-6xl sm:bottom-6 sm:w-[calc(100%-4rem)]">
             <form
               onSubmit={handleSearch}
-              className="grid grid-cols-1 items-center gap-2 rounded-[1.4rem] border border-white/70 bg-white/95 p-3 shadow-[0_20px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:grid-cols-2 sm:gap-3 sm:rounded-[1.75rem] sm:p-4 lg:grid-cols-4 lg:rounded-[2rem]"
+              className="grid grid-cols-1 items-center gap-2 rounded-[1.4rem] border border-white/30 bg-[#0e2e40]/80 p-3 shadow-[0_20px_60px_rgba(0,0,0,0.22)] backdrop-blur-xl sm:grid-cols-2 sm:gap-3 sm:rounded-[1.75rem] sm:p-4 lg:grid-cols-4 lg:rounded-[2rem]"
             >
             {/* Location Input */}
-            <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-neutral-50 border border-neutral-200/60 focus-within:border-neutral-800 transition">
-              <MapPin className="w-5 h-5 text-neutral-400 shrink-0" />
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-white/10 border border-white/15 focus-within:border-white/60 transition">
+              <MapPin className="w-5 h-5 text-white/60 shrink-0" />
               <div className="flex-1 min-w-0">
-                <label className="block text-[10px] uppercase font-bold tracking-wider text-neutral-400">Location</label>
+                <label className="block text-[10px] uppercase font-bold tracking-wider text-white/60">Location</label>
                 <input
                   type="text"
                   placeholder="e.g. Kadugodi"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="w-full bg-transparent text-sm font-semibold text-neutral-800 focus:outline-none placeholder:text-neutral-400 placeholder:font-normal truncate"
+                  className="w-full bg-transparent text-sm font-semibold text-white focus:outline-none placeholder:text-white/55 placeholder:font-normal truncate"
                 />
               </div>
             </div>
 
             {/* Property Type Dropdown */}
-            <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-neutral-50 border border-neutral-200/60 focus-within:border-neutral-800 transition">
-              <HomeIcon className="w-5 h-5 text-neutral-400 shrink-0" />
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-white/10 border border-white/15 focus-within:border-white/60 transition">
+              <HomeIcon className="w-5 h-5 text-white/60 shrink-0" />
               <div className="flex-1 min-w-0">
-                <label className="block text-[10px] uppercase font-bold tracking-wider text-neutral-400">Property Type</label>
+                <label className="block text-[10px] uppercase font-bold tracking-wider text-white/60">Property Type</label>
                 <select
                   value={propertyType}
                   onChange={(e) => setPropertyType(e.target.value)}
-                  className="w-full bg-transparent text-sm font-semibold text-neutral-800 focus:outline-none cursor-pointer"
+                  className="w-full bg-transparent text-sm font-semibold text-white focus:outline-none cursor-pointer [&>option]:text-neutral-900"
                 >
                   <option value="all">All Types</option>
                   <option value="Co-living">Co-living</option>
@@ -218,14 +209,14 @@ export default function Home() {
             </div>
 
             {/* Price Range Dropdown */}
-            <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-neutral-50 border border-neutral-200/60 focus-within:border-neutral-800 transition">
-              <DollarSign className="w-5 h-5 text-neutral-400 shrink-0" />
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-white/10 border border-white/15 focus-within:border-white/60 transition">
+              <DollarSign className="w-5 h-5 text-white/60 shrink-0" />
               <div className="flex-1 min-w-0">
-                <label className="block text-[10px] uppercase font-bold tracking-wider text-neutral-400">Budget Range</label>
+                <label className="block text-[10px] uppercase font-bold tracking-wider text-white/60">Budget Range</label>
                 <select
                   value={priceRange}
                   onChange={(e) => setPriceRange(e.target.value)}
-                  className="w-full bg-transparent text-sm font-semibold text-neutral-800 focus:outline-none cursor-pointer"
+                  className="w-full bg-transparent text-sm font-semibold text-white focus:outline-none cursor-pointer [&>option]:text-neutral-900"
                 >
                   <option value="all">Any Price</option>
                   <option value="5000-10000">₹5,000 - ₹10,000 / mo</option>
@@ -238,13 +229,13 @@ export default function Home() {
             {/* Search Submit Button */}
             <button
               type="submit"
-              className="w-full h-full min-h-[52px] bg-[#111111] hover:bg-[#2a2a2a] text-white font-semibold rounded-2xl px-6 flex items-center justify-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.99]"
+              className="w-full h-full min-h-[52px] bg-white hover:bg-[#eaf6fc] text-[#153346] font-semibold rounded-2xl px-6 flex items-center justify-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.99]"
             >
               <Search className="w-4 h-4" />
               <span>Search Stay</span>
             </button>
           </form>
-          </div>
+        </div>
         </div>
       </section>
 
