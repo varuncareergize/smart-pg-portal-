@@ -6,6 +6,20 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ImageCarousel from './ImageCarousel';
+import { BASE_URL } from '../../api';
+
+const DEFAULT_PROPERTY_IMAGE = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600&auto=format&fit=crop";
+
+// Same resolution logic as Home.jsx
+function resolveImage(image) {
+  if (!image) return DEFAULT_PROPERTY_IMAGE;
+  return image.startsWith('http') ? image : `${BASE_URL}${image}`;
+}
+
+function resolveImages(images) {
+  if (!Array.isArray(images) || images.length === 0) return [DEFAULT_PROPERTY_IMAGE];
+  return images.map(resolveImage);
+}
 
 const AMENITY_ICONS = {
   WiFi: Wifi,
@@ -34,6 +48,8 @@ export default function PropertyCard({
 }) {
   const navigate = useNavigate();
 
+  const resolvedImages = resolveImages(property.images);
+
   const handleBookVisit = (e) => {
     e.stopPropagation();
     navigate(`/property/${property.id}`);
@@ -60,7 +76,7 @@ export default function PropertyCard({
     >
       {/* Image Section */}
       <div className="relative h-52 m-3 rounded-2xl overflow-hidden">
-        <ImageCarousel images={property.images} alt={property.name} className="group" />
+        <ImageCarousel images={resolvedImages} alt={property.name} className="group" />
 
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-20">
