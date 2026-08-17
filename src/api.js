@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const  = import.meta.env.VITE_API_BASE_URL || 'https://livzz-backend.azurewebsites.net';
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://livzz-backend.azurewebsites.net';
 export const AUTH_TOKEN = '6288a3edf900378478ea833b695615e6d4c8dd71';
 
 export const getAuthToken = () => {
