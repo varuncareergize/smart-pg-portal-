@@ -60,7 +60,7 @@ export default function Properties() {
   const [savedIds, setSavedIds] = useState([]);
   const [compareIds, setCompareIds] = useState([]);
   const [highlightedId, setHighlightedId] = useState(null);
-  const [showMap, setShowMap] = useState(true);
+  const [showMap, setShowMap] = useState(() => window.innerWidth >= 768);
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
   const [showCompare, setShowCompare] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -71,8 +71,10 @@ export default function Properties() {
 
   useEffect(() => {
     const check = () => {
-      setIsMobile(window.innerWidth < 768);
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
       setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+      if (mobile) setShowMap(false);
     };
     check();
     window.addEventListener('resize', check);
@@ -212,7 +214,7 @@ export default function Properties() {
       <Navbar variant="marketplace" />
 
       {/* Sticky Search Bar */}
-      <div ref={searchBarRef} className="sticky top-[60px] md:top-[68px] z-40 bg-slate-50/95 backdrop-blur-sm pt-20 md:pt-24 pb-2 px-4 md:px-8">
+      <div ref={searchBarRef} className="md:sticky md:top-[68px] z-40 bg-slate-50/95 backdrop-blur-sm pt-20 md:pt-24 pb-2 px-4 md:px-8">
         <div className="max-w-[1600px] mx-auto">
           <SearchBar
             location={location}
@@ -397,10 +399,10 @@ export default function Properties() {
 
       {/* Mobile Map Overlay */}
       {isMobile && showMap && !loading && (
-        <div className="fixed inset-0 z-[90] bg-white pt-16">
+        <div className="fixed inset-x-0 top-16 bottom-0 z-[90] bg-white">
           <button
             onClick={() => setShowMap(false)}
-            className="absolute top-20 right-4 z-50 p-2 bg-white rounded-full shadow-lg"
+            className="absolute top-4 right-4 z-50 p-2 bg-white rounded-full shadow-lg"
           >
             <X size={20} />
           </button>
