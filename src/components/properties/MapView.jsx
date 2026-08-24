@@ -12,7 +12,7 @@ import {
 // GOOGLE MAPS CONFIG
 // ============================================================
 
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyCS5WKEgBfOxKbZ9MAeKAaVq2I1HHpepOs';
 
 const DEFAULT_CENTER = {
   lat: 9.9312,
