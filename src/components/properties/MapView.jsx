@@ -11,7 +11,12 @@ import {
 // ============================================================
 // GOOGLE MAPS CONFIG
 // ============================================================
-
+// TEMP: hardcoded while we debug the env var issue. Once confirmed
+// working, move this back to:
+//   const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+// and set VITE_GOOGLE_MAPS_API_KEY in Vercel (Production scope), then
+// redeploy. Also lock this key down with HTTP referrer restrictions in
+// Google Cloud Console before shipping — it's currently unrestricted.
 const GOOGLE_MAPS_API_KEY = 'AIzaSyCS5WKEgBfOxKbZ9MAeKAaVq2I1HHpepOs';
 
 const DEFAULT_CENTER = {
@@ -19,27 +24,17 @@ const DEFAULT_CENTER = {
   lng: 76.2673,
 };
 
-// FIX: fallback height inline, so the map can never collapse to 0px even
-// if a parent container forgets to set an explicit height. width/height
-// 100% still wins whenever the parent DOES have a real height.
 const MAP_CONTAINER_STYLE = {
   width: '100%',
   height: '100%',
   minHeight: '400px',
 };
 
-// ============================================================
-// MAP STYLES
-// ============================================================
-
 const MAP_STYLES = [
   { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
   { featureType: 'transit', elementType: 'labels', stylers: [{ visibility: 'off' }] },
 ];
 
-// A fixed list of libraries prevents @react-google-maps/api from
-// re-requesting the script on every render, which can otherwise
-// silently break the loader in some Vite/StrictMode setups.
 const LIBRARIES = [];
 
 // ============================================================
@@ -54,10 +49,6 @@ export default function MapView({
   onMarkerClick,
   visible = true,
 }) {
-  // ----------------------------------------------------------
-  // STATE
-  // ----------------------------------------------------------
-
   const [map, setMap] = useState(null);
   const [previewProperty, setPreviewProperty] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
@@ -65,19 +56,27 @@ export default function MapView({
   const [locError, setLocError] = useState(null);
 
   // ----------------------------------------------------------
-  // DEBUG: confirm the key is actually reaching the browser.
-  // Check your browser console — if this prints blank/undefined,
-  // the .env file isn't being picked up (wrong name/location, or
-  // the dev server wasn't restarted after adding it).
-  // Remove this once things are working.
+  // DEBUG: this now fires unconditionally on mount, loudly, so
+  // we can prove in production whether MapView renders at all.
+  // Open the deployed site's console — if you NEVER see this
+  // banner, MapView is not mounting on that route in production
+  // (wrong route, conditional render, error boundary swallowing
+  // a crash, or a different component being shown instead).
   // ----------------------------------------------------------
   useEffect(() => {
-    console.log('VITE_GOOGLE_MAPS_API_KEY loaded:', GOOGLE_MAPS_API_KEY ? `yes (${GOOGLE_MAPS_API_KEY.slice(0, 6)}...)` : 'NO — key is missing');
+    console.log(
+      '%c[MapView] MOUNTED',
+      'background:#001F3F;color:#fff;padding:2px 6px;border-radius:4px;'
+    );
+    console.log('[MapView] visible prop:', visible);
+    console.log('[MapView] properties count:', properties.length);
+    console.log(
+      '[MapView] API key present:',
+      GOOGLE_MAPS_API_KEY ? `yes (${GOOGLE_MAPS_API_KEY.slice(0, 6)}...)` : 'NO'
+    );
+    console.log('[MapView] window.google at mount:', typeof window !== 'undefined' ? !!window.google : 'no window');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // ----------------------------------------------------------
-  // GOOGLE MAPS LOADER
-  // ----------------------------------------------------------
 
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
@@ -85,21 +84,18 @@ export default function MapView({
     libraries: LIBRARIES,
   });
 
-  // ----------------------------------------------------------
-  // MAP LOAD
-  // ----------------------------------------------------------
+  useEffect(() => {
+    console.log('[MapView] isLoaded:', isLoaded, '| loadError:', loadError);
+  }, [isLoaded, loadError]);
 
   const handleMapLoad = useCallback((mapInstance) => {
+    console.log('[MapView] GoogleMap onLoad fired');
     setMap(mapInstance);
   }, []);
 
   const handleMapUnmount = useCallback(() => {
     setMap(null);
   }, []);
-
-  // ----------------------------------------------------------
-  // GET USER LOCATION
-  // ----------------------------------------------------------
 
   const locateMe = useCallback(() => {
     if (!navigator.geolocation) {
@@ -148,10 +144,6 @@ export default function MapView({
     );
   }, [map]);
 
-  // ----------------------------------------------------------
-  // LIVE LOCATION TRACKING
-  // ----------------------------------------------------------
-
   useEffect(() => {
     if (!navigator.geolocation) return;
 
@@ -172,18 +164,10 @@ export default function MapView({
     return () => navigator.geolocation.clearWatch(watchId);
   }, []);
 
-  // ----------------------------------------------------------
-  // MARKER CLICK
-  // ----------------------------------------------------------
-
   const handleMarkerClick = (property) => {
     setPreviewProperty(property);
     onMarkerClick?.(property.id);
   };
-
-  // ----------------------------------------------------------
-  // MAP CENTER
-  // ----------------------------------------------------------
 
   const mapCenter = userLocation
     ? { lat: userLocation.lat, lng: userLocation.lng }
@@ -192,14 +176,16 @@ export default function MapView({
   // ----------------------------------------------------------
   // HIDDEN
   // ----------------------------------------------------------
-
-  if (!visible) return null;
+  if (!visible) {
+    console.log('[MapView] visible=false, returning null');
+    return null;
+  }
 
   // ----------------------------------------------------------
   // API KEY MISSING
   // ----------------------------------------------------------
-
   if (!GOOGLE_MAPS_API_KEY) {
+    console.warn('[MapView] Rendering API-KEY-MISSING branch');
     return (
       <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center rounded-2xl border border-red-200 bg-red-50 p-6 text-center">
         <AlertCircle size={32} className="text-red-500 mb-3" />
@@ -219,10 +205,8 @@ export default function MapView({
   // ----------------------------------------------------------
   // GOOGLE MAPS LOAD ERROR
   // ----------------------------------------------------------
-
   if (loadError) {
-    console.error('Google Maps loading error:', loadError);
-
+    console.error('[MapView] Rendering LOAD-ERROR branch:', loadError);
     return (
       <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center rounded-2xl border border-red-200 bg-red-50 p-6 text-center">
         <AlertCircle size={32} className="text-red-500 mb-3" />
@@ -243,8 +227,8 @@ export default function MapView({
   // ----------------------------------------------------------
   // LOADING
   // ----------------------------------------------------------
-
   if (!isLoaded) {
+    console.log('[MapView] Rendering LOADING branch (isLoaded=false)');
     return (
       <div className="w-full h-full min-h-[400px] flex items-center justify-center rounded-2xl border border-slate-200 bg-slate-50">
         <div className="flex flex-col items-center gap-3">
@@ -255,21 +239,17 @@ export default function MapView({
     );
   }
 
+  console.log('[MapView] Rendering FULL MAP branch');
+
   // ==========================================================
   // RENDER
   // ==========================================================
-
   return (
-    // FIX: explicit min-height here too, as a second safety net in case
-    // a parent flex/grid container collapses this wrapper to 0px.
     <div
       className="relative w-full h-full min-h-[400px] lg:min-h-[calc(100vh-220px)] rounded-2xl overflow-hidden border border-slate-200 shadow-lg"
       style={{ minHeight: '400px' }}
+      data-mapview-mounted="true"
     >
-      {/* ======================================================
-          GOOGLE MAP
-      ====================================================== */}
-
       <GoogleMap
         mapContainerStyle={MAP_CONTAINER_STYLE}
         center={mapCenter}
@@ -286,10 +266,6 @@ export default function MapView({
           gestureHandling: 'greedy',
         }}
       >
-        {/* ==================================================
-            PROPERTY MARKERS
-        ================================================== */}
-
         {isLoaded &&
           window.google &&
           properties.map((property) => {
@@ -320,10 +296,6 @@ export default function MapView({
               />
             );
           })}
-
-        {/* ==================================================
-            USER LOCATION
-        ================================================== */}
 
         {isLoaded && window.google && userLocation && (
           <>
@@ -358,17 +330,9 @@ export default function MapView({
         )}
       </GoogleMap>
 
-      {/* ======================================================
-          MAP LABEL
-      ====================================================== */}
-
       <div className="absolute top-3 left-3 bg-white/95 backdrop-blur px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-500 shadow-sm z-10 pointer-events-none">
         Map View • {properties.length} properties
       </div>
-
-      {/* ======================================================
-          MY LOCATION BUTTON
-      ====================================================== */}
 
       <button
         type="button"
@@ -382,10 +346,6 @@ export default function MapView({
       >
         <LocateFixed size={20} className={userLocation ? 'text-[#1A73E8]' : 'text-[#001F3F]'} />
       </button>
-
-      {/* ======================================================
-          LOCATION ERROR
-      ====================================================== */}
 
       <AnimatePresence>
         {locError && (
@@ -408,10 +368,6 @@ export default function MapView({
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* ======================================================
-          PROPERTY PREVIEW
-      ====================================================== */}
 
       <AnimatePresence>
         {previewProperty && (
