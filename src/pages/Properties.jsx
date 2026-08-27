@@ -21,9 +21,10 @@ import {
   getSavedProperties,
   addRecentSearch,
 } from '../utils/propertyHelpers';
-import { apiFetch } from '../api';
+import { apiFetch, BASE_URL } from '../api';
 
 const PAGE_SIZE = 6;
+const FETCH_TIMEOUT_MS = 12000; // hard ceiling so `loading` can never hang forever
 
 export default function Properties() {
   const [properties, setProperties] = useState([]);
@@ -83,22 +84,59 @@ export default function Properties() {
 
   useEffect(() => {
     setSavedIds(getSavedProperties());
+
+    // ------------------------------------------------------------
+    // DEBUG + HARDENING:
+    // 1. Logs the exact URL being hit so we can see it in prod console.
+    // 2. Uses AbortController so the request can NEVER hang forever —
+    //    if Azure/CORS/network stalls, we bail after FETCH_TIMEOUT_MS
+    //    instead of leaving `loading` stuck true (which was silently
+    //    hiding MapView, since MapView is only rendered when !loading).
+    // ------------------------------------------------------------
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      console.warn(`[Properties] Fetch to /properties/ timed out after ${FETCH_TIMEOUT_MS}ms — aborting`);
+      controller.abort();
+    }, FETCH_TIMEOUT_MS);
+
     const fetchProperties = async () => {
+      const fullUrl = `${BASE_URL}/properties/`;
+      console.log('[Properties] Fetching:', fullUrl);
+
       try {
-        const response = await apiFetch('/properties/');
+        const response = await apiFetch('/properties/', { signal: controller.signal });
+
+        console.log('[Properties] Response status:', response.status, response.statusText);
+
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+
         const json = await response.json();
         // API wraps the array as { success, data: [...] } — unwrap it.
         const list = Array.isArray(json) ? json : (json.data || []);
+        console.log('[Properties] Loaded', list.length, 'properties');
         setProperties(list.map((p, i) => enrichProperty(p, i)));
         setLoadError(false);
       } catch (error) {
-        console.error('Error fetching properties:', error);
+        if (error.name === 'AbortError') {
+          console.error('[Properties] Fetch aborted (timeout or CORS block). Check Network tab for the request to', fullUrl);
+        } else {
+          console.error('[Properties] Error fetching properties:', error);
+        }
         setLoadError(true);
       } finally {
+        clearTimeout(timeoutId);
         setLoading(false);
       }
     };
+
     fetchProperties();
+
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, []);
 
   const handleSearch = () => {
@@ -285,6 +323,9 @@ export default function Properties() {
         {loadError && !loading && (
           <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 font-semibold">
             Couldn't load properties right now. Please refresh or try again shortly.
+            <span className="block text-xs font-normal mt-1 text-red-500">
+              (Check the browser console for the exact request URL and error — look for a message starting with "[Properties]".)
+            </span>
           </div>
         )}
 
