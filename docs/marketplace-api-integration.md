@@ -24,6 +24,8 @@ All endpoints must return `{ "data": ..., "meta": ... }`. List payloads may expo
 | Category eyebrow | `category` | Omitted when absent |
 | Description | `description` | Section omitted |
 | Location | `property.location` (string or `locality` + `city`), with `property.locality/city` compatibility | Omitted |
+| Map latitude | `property.location.latitude` | Numeric strings are converted; missing, non-finite, or outside -90…90 means no marker |
+| Map longitude | `property.location.longitude` | Numeric strings are converted; missing, non-finite, or outside -180…180 means no marker |
 | Price | `pricing.amount`, `pricing.currency`, `pricing.billing_cycle` | “Price on enquiry” |
 | Deposit | `pricing.deposit` | Omitted; never calculated |
 | Listing images | primary item in `media`, remaining `media` | Falls through to property media, legitimate legacy image, then neutral placeholder |
@@ -37,6 +39,10 @@ All endpoints must return `{ "data": ..., "meta": ... }`. List payloads may expo
 | Publish date | `published_at` | Currently not rendered |
 
 The adapter formats labels, absolute media URLs, currency, billing cycles, and locations. It does not create ratings, reviews, deposits, distances, coordinates, capacity, availability, badges, or recommendation scores.
+
+Map coordinates are the one exception to formatting-only location handling: the adapter exposes a normalized `coordinates: { lat, lng }` and `hasCoordinates` only when both exact V2 fields above are valid. It never geocodes, substitutes a locality center, or fabricates a position. Listings without coordinates remain in list results.
+
+Map mode uses the same filtered, paginated response as List mode and clearly labels that pins represent the current results page; it does not recursively fetch pages or imply a complete geographic result set. Geographic bounds search and proximity sorting are not implemented because the V2 contract has no bounding-box or distance query.
 
 ## Query parameters
 

@@ -36,6 +36,20 @@ function locationText(property) {
   return [value(location.locality, property?.locality), value(location.city, property?.city)].filter(Boolean).join(', ') || null;
 }
 
+function coordinate(input, minimum, maximum) {
+  if (input === null || input === undefined || input === '') return null;
+  const numeric = Number(input);
+  return Number.isFinite(numeric) && numeric >= minimum && numeric <= maximum ? numeric : null;
+}
+
+function listingCoordinates(listing) {
+  const location = listing.property?.location;
+  if (!location || typeof location !== 'object') return null;
+  const lat = coordinate(location.latitude, -90, 90);
+  const lng = coordinate(location.longitude, -180, 180);
+  return lat === null || lng === null ? null : { lat, lng };
+}
+
 function factsFor(listing) {
   const details = listing.category_details || {};
   const offer = listing.offer || {};
@@ -51,6 +65,7 @@ function factsFor(listing) {
 export function mapListing(listing = {}) {
   const media = collectMedia(listing);
   const pricing = formatPrice(listing.pricing);
+  const coordinates = listingCoordinates(listing);
   return {
     raw: listing,
     id: listing.id,
@@ -67,6 +82,8 @@ export function mapListing(listing = {}) {
     categoryDetails: listing.category_details || {},
     publishedAt: listing.published_at || null,
     location: locationText(listing.property),
+    coordinates,
+    hasCoordinates: coordinates !== null,
     media,
     primaryImage: media[0] || null,
     facts: factsFor(listing),

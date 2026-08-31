@@ -2,10 +2,10 @@ import { ArrowUpRight, Building2, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { mapListing } from '../../utils/marketplaceAdapter';
 
-export default function ListingCard({ listing }) {
+export default function ListingCard({ listing, highlighted = false, onFocus, onBlur, onMouseEnter, onMouseLeave }) {
   const item = listing.raw ? listing : mapListing(listing);
   return (
-    <article className="listing-card">
+    <article className={`listing-card${highlighted ? ' listing-card--highlighted' : ''}`} onFocus={onFocus} onBlur={onBlur} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       <Link className="listing-card__media" to={`/property/${item.slug}`} aria-label={`View ${item.title}`}>
         {item.primaryImage ? <img src={item.primaryImage} alt={item.title} loading="lazy" onError={(event) => { event.currentTarget.hidden = true; event.currentTarget.nextElementSibling.hidden = false; }} /> : null}
         <span className="image-placeholder" hidden={Boolean(item.primaryImage)}><Building2 aria-hidden="true" /><span>Image not available</span></span>

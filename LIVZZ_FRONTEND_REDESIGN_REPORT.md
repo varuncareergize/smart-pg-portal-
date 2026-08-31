@@ -154,3 +154,15 @@ Validate against seeded Phase 3 responses, add contract fixtures/component tests
 - `/villas`
 - `/offices`
 - `/property/:slug` once a valid published V2 slug is available
+
+## Google Maps Integration
+
+- Replaced the isolated legacy `src/components/properties/MapView.jsx` implementation with a real-coordinate map shared by category and detail pages. `Marketplace.jsx`, `PropertyDetails.jsx`, `ListingCard.jsx`, `marketplaceAdapter.js`, and `index.css` were updated.
+- Uses the existing `@react-google-maps/api` dependency and `VITE_GOOGLE_MAPS_API_KEY`; no key is hardcoded. The browser key must be restricted to approved HTTP referrers and the Maps JavaScript API in Google Cloud Console.
+- Coordinates come exclusively from V2 `property.location.latitude` and `property.location.longitude`. Numeric strings are safely converted and range checked. A missing or invalid member produces `hasCoordinates: false`; no fallback, geocoding, random offset, or locality-center pin exists.
+- Category pages provide an accessible List/Map segmented control. Desktop Map mode shows scrollable/readable results beside a sticky map; mobile Map mode uses the available viewport and retains the view and filter controls.
+- Markers show the effective API price in compact form when available, otherwise a plain location icon. Focus, hover, and marker selection highlight the corresponding card/marker. Marker activation opens a compact real-data preview linking to `/property/{slug}`.
+- Zero coordinates shows an explicit empty-map state, one coordinate uses a property/city zoom, and multiple coordinates fit bounds. Listings without coordinates always remain in List view.
+- Map mode intentionally plots only the current filtered API page and says so on the map. It does not fetch unlimited pages. Bounds search, “Search this area,” distance claims, automatic geolocation, and proximity sorting remain unsupported pending a backend geospatial contract.
+- A detail Location map renders only when the detail response contains valid coordinates; otherwise the existing textual location remains. Google Maps is lazy-loaded only when category Map mode opens or a coordinate-backed detail map mounts.
+- Missing key, script load failure, loading, and zero-coordinate states are contained inside the map. List browsing and detail content continue to function if Maps is unavailable.
