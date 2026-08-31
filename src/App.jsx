@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
-import ExploreProperties from './components/ExploreProperties';
 
 // Route-level chunks keep the first page load lean; pages load only when visited.
 const Home = lazy(() => import('./pages/Home'));
@@ -14,7 +13,6 @@ const Tenants = lazy(() => import('./pages/Tenants'));
 const Staff = lazy(() => import('./pages/Staff'));
 const Maintenance = lazy(() => import('./pages/Maintenance'));
 const Login = lazy(() => import('./pages/Login'));
-const Properties = lazy(() => import('./pages/Properties'));
 const Services = lazy(() => import('./pages/Services'));
 const PropertyDetails = lazy(() => import('./pages/PropertyDetails'));
 const About = lazy(() => import('./pages/About'));
@@ -28,6 +26,7 @@ const EditRoom = lazy(() => import('./pages/EditRoom'));
 const AddStaff = lazy(() => import('./pages/AddStaff'));
 const AddTicket = lazy(() => import('./pages/AddTicket'));
 const Notifications = lazy(() => import('./pages/Notifications'));
+const Marketplace = lazy(() => import('./pages/Marketplace'));
 
 function App() {
   return (
@@ -38,9 +37,14 @@ function App() {
         {/* --- PUBLIC ROUTES --- */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/properties" element={<Properties />} />
+        <Route path="/pg" element={<Marketplace category="pg" />} />
+        <Route path="/apartments" element={<Marketplace category="apartments" />} />
+        <Route path="/villas" element={<Marketplace category="villas" />} />
+        <Route path="/offices" element={<Marketplace category="office" />} />
+        <Route path="/properties" element={<Navigate to="/pg" replace />} />
         <Route path="/services" element={<Services />} />
-        <Route path="/property/:id" element={<PropertyDetails />} />
+        <Route path="/property/:slug" element={<PropertyDetails />} />
+        <Route path="/properties/:slug" element={<PropertyDetails />} />
         <Route path="/about-us" element={<About />} />
         <Route path="/contact" element={<Contact />} />
 

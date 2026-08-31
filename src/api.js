@@ -1,27 +1,28 @@
 import axios from 'axios';
 
 export const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://livzz-backend.azurewebsites.net';
-export const AUTH_TOKEN = '540edd7d56f75d26857e4e595a4b893592135a87';
 
 export const getAuthToken = () => {
   const storedToken = localStorage.getItem('token');
   if (storedToken && storedToken !== 'true') {
     return storedToken;
   }
-  return AUTH_TOKEN;
+  return null;
 };
 
 export const getAuthHeaders = (customHeaders = {}) => {
+  const token = getAuthToken();
   return {
     'Content-Type': 'application/json',
-    Authorization: `Token ${getAuthToken()}`,
+    ...(token ? { Authorization: `Token ${token}` } : {}),
     ...customHeaders,
   };
 };
 
 export const getAuthHeadersForForm = (customHeaders = {}) => {
+  const token = getAuthToken();
   return {
-    Authorization: `Token ${getAuthToken()}`,
+    ...(token ? { Authorization: `Token ${token}` } : {}),
     ...customHeaders,
   };
 };

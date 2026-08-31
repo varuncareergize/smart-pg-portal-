@@ -17,7 +17,7 @@ import {
 // and set VITE_GOOGLE_MAPS_API_KEY in Vercel (Production scope), then
 // redeploy. Also lock this key down with HTTP referrer restrictions in
 // Google Cloud Console before shipping — it's currently unrestricted.
-const GOOGLE_MAPS_API_KEY = 'AIzaSyCS5WKEgBfOxKbZ9MAeKAaVq2I1HHpepOs';
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
 const DEFAULT_CENTER = {
   lat: 9.9312,
