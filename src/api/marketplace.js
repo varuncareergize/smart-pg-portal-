@@ -1,32 +1,39 @@
-import { publicApiGet } from './client';
+import { BASE_URL } from '../api';
 
-const ROOT = '/api/v2/marketplace';
-const COMMON_PARAMS = new Set(['city', 'locality', 'min_price', 'max_price', 'amenities', 'availability', 'sort', 'page', 'page_size']);
-const CATEGORY_PARAMS = {
-  pg: new Set(['gender_policy', 'capacity', 'meals', 'minimum_stay']),
-  apartments: new Set(['bedrooms', 'furnishing', 'preferred_tenant', 'parking']),
-  villas: new Set(['bedrooms', 'furnishing', 'parking']),
-  office: new Set(['office_type', 'min_area', 'max_area', 'capacity', 'furnishing', 'parking', 'lease_type']),
-};
-
+// Maps our internal category keys to app routes and the backend's property_type values.
 export const categoryConfig = {
-  pg: { path: 'pg', route: '/pg', label: 'PG Rooms', singular: 'PG room' },
-  apartments: { path: 'apartments', route: '/apartments', label: 'Apartments', singular: 'apartment' },
-  villas: { path: 'villas', route: '/villas', label: 'Villas', singular: 'villa' },
-  office: { path: 'office', route: '/offices', label: 'Office Spaces', singular: 'office space' },
+  pg: { route: '/pg', propertyType: 'PG' },
+  apartments: { route: '/apartments', propertyType: 'Apartment' },
+  villas: { route: '/villas', propertyType: 'Villa' },
+  office: { route: '/office', propertyType: 'Office' },
 };
 
-export function sanitizeMarketplaceParams(params, category) {
-  const allowed = new Set([...COMMON_PARAMS, ...(CATEGORY_PARAMS[category] || [])]);
-  return Object.fromEntries(Object.entries(params || {}).filter(([key, value]) => allowed.has(key) && value !== ''));
+/**
+ * Fetches properties from GET /properties/
+ * Response shape: { success: true, data: [ {...flat property...} ] }
+ *
+ * Supported params:
+ *  - page_size
+ *  - locality (sent as `city`)
+ *  - category (sent as `property_type`, mapped via categoryConfig)
+ */
+export async function getProperties(params = {}) {
+  const query = new URLSearchParams();
+
+  if (params.page_size) query.set('page_size', params.page_size);
+  if (params.locality) query.set('city', params.locality);
+  if (params.category && categoryConfig[params.category]) {
+    query.set('property_type', categoryConfig[params.category].propertyType);
+  }
+
+  const qs = query.toString();
+  const res = await fetch(`${BASE_URL.replace(/\/$/, '')}/properties/${qs ? `?${qs}` : ''}`, {
+    headers: { Accept: 'application/json' },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch properties: ${res.status} ${res.statusText}`);
+  }
+
+  return res.json();
 }
-
-export const getListings = (params, options = {}) => publicApiGet(`${ROOT}/listings/`, { ...options, params: sanitizeMarketplaceParams(params) });
-const getCategoryListings = (category, params, options = {}) => publicApiGet(`${ROOT}/${categoryConfig[category].path}/`, { ...options, params: sanitizeMarketplaceParams(params, category) });
-export const getPGListings = (params, options) => getCategoryListings('pg', params, options);
-export const getApartmentListings = (params, options) => getCategoryListings('apartments', params, options);
-export const getVillaListings = (params, options) => getCategoryListings('villas', params, options);
-export const getOfficeListings = (params, options) => getCategoryListings('office', params, options);
-export const getListingBySlug = (slug, options = {}) => publicApiGet(`${ROOT}/listings/${encodeURIComponent(slug)}/`, options);
-
-export const categoryLoaders = { pg: getPGListings, apartments: getApartmentListings, villas: getVillaListings, office: getOfficeListings };

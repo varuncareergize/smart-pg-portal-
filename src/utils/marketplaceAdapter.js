@@ -105,3 +105,68 @@ export function availabilityLabel(availability) {
   if (quantity !== undefined) return Number(quantity) > 0 ? `${quantity} available` : 'Currently unavailable';
   return status ? labelize(status) : 'Contact for availability';
 }
+
+// ---------------------------------------------------------------------------
+// GET /properties/ returns a FLAT shape (no nested property/pricing/category_details
+// like the /listings/ endpoint above). mapProperty() normalizes it into the same
+// output contract as mapListing(), so ListingCard works with either source unchanged.
+//
+// Sample record:
+// { id, name, property_type, location_name, address, city, state, latitude, longitude,
+//   description, amenities, price, rating, image, total_rooms, gender_filter,
+//   owner_name, is_active, created_at }
+// ---------------------------------------------------------------------------
+
+function propertyLocationText(item) {
+  return [value(item.location_name), value(item.city), value(item.state)].filter(Boolean).join(', ') || null;
+}
+
+function propertyCoordinates(item) {
+  const lat = coordinate(item.latitude, -90, 90);
+  const lng = coordinate(item.longitude, -180, 180);
+  return lat === null || lng === null ? null : { lat, lng };
+}
+
+function propertyFacts(item) {
+  const candidates = [
+    item.total_rooms ? `${item.total_rooms} rooms` : null,
+    item.gender_filter && item.gender_filter !== 'Unisex' ? item.gender_filter : null,
+    Number.isFinite(item.rating) && item.rating > 0 ? `${item.rating}★ rating` : null,
+  ];
+  return candidates.filter(Boolean).slice(0, 3);
+}
+
+export function mapProperty(item = {}) {
+  const media = [item.image].map(absoluteMediaUrl).filter(Boolean);
+  // price of 0 in sample data looks like "not set" rather than "free" — treat
+  // 0/falsy as unknown so the card can show "Contact for price" instead of ₹0.
+  const pricing = item.price ? formatPrice({ amount: item.price, currency: 'INR' }) : null;
+  const coordinates = propertyCoordinates(item);
+
+  return {
+    raw: item,
+    id: item.id,
+    slug: item.id, // no dedicated slug field on this endpoint yet — fall back to id
+    category: item.property_type,
+    categoryLabel: labelize(item.property_type),
+    title: value(item.name, 'Untitled property'),
+    description: item.description || null,
+    property: item,
+    offer: {},
+    pricing,
+    availability: item.is_active === false ? false : item.total_rooms > 0 ? item.total_rooms : null,
+    amenities: Array.isArray(item.amenities) ? item.amenities : [],
+    categoryDetails: {
+      total_rooms: item.total_rooms,
+      gender_filter: item.gender_filter,
+      owner_name: item.owner_name,
+    },
+    publishedAt: item.created_at || null,
+    location: propertyLocationText(item),
+    coordinates,
+    hasCoordinates: coordinates !== null,
+    media,
+    primaryImage: media[0] || null,
+    facts: propertyFacts(item),
+  };
+}
