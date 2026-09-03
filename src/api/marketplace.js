@@ -1,29 +1,31 @@
 import { publicApiGet } from './client';
 
-const ROOT = '/api/v2/marketplace';
-const COMMON_PARAMS = new Set(['city', 'locality', 'min_price', 'max_price', 'amenities', 'availability', 'sort', 'page', 'page_size']);
-const CATEGORY_PARAMS = {
-  pg: new Set(['gender_policy', 'capacity', 'meals', 'minimum_stay']),
-  apartments: new Set(['bedrooms', 'furnishing', 'preferred_tenant', 'parking']),
-  villas: new Set(['bedrooms', 'furnishing', 'parking']),
-  office: new Set(['office_type', 'min_area', 'max_area', 'capacity', 'furnishing', 'parking', 'lease_type']),
-};
+const PROPERTY_PARAMS = new Set(['page', 'page_size', 'city', 'property_type']);
 
 // Maps our internal category keys to app routes and the backend's property_type values.
 export const categoryConfig = {
-  pg: { path: 'pg', route: '/pg', label: 'PG Rooms', singular: 'PG room' },
-  apartments: { path: 'apartments', route: '/apartments', label: 'Apartments', singular: 'apartment' },
-  villas: { path: 'villas', route: '/villas', label: 'Villas', singular: 'villa' },
-  office: { path: 'office', route: '/offices', label: 'Office Spaces', singular: 'office space' },
+  pg: { route: '/pg', propertyType: 'PG', label: 'PG Rooms', singular: 'PG room' },
+  apartments: { route: '/apartments', propertyType: 'Apartment', label: 'Apartments', singular: 'apartment' },
+  villas: { route: '/villas', propertyType: 'Villa', label: 'Villas', singular: 'villa' },
+  office: { route: '/offices', propertyType: 'Office', label: 'Office Spaces', singular: 'office space' },
 };
 
 export function sanitizeMarketplaceParams(params, category) {
-  const allowed = new Set([...COMMON_PARAMS, ...(CATEGORY_PARAMS[category] || [])]);
-  return Object.fromEntries(Object.entries(params || {}).filter(([key, value]) => allowed.has(key) && value !== ''));
+  const sanitized = {};
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== '' && value !== null && value !== undefined) sanitized[key] = value;
+  });
+  if (sanitized.locality) {
+    sanitized.city = sanitized.locality;
+    delete sanitized.locality;
+  }
+  if (categoryConfig[category]) sanitized.property_type = categoryConfig[category].propertyType;
+  return Object.fromEntries(Object.entries(sanitized).filter(([key]) => PROPERTY_PARAMS.has(key)));
 }
 
-export const getListings = (params, options = {}) => publicApiGet(`${ROOT}/listings/`, { ...options, params: sanitizeMarketplaceParams(params) });
-const getCategoryListings = (category, params, options = {}) => publicApiGet(`${ROOT}/${categoryConfig[category].path}/`, { ...options, params: sanitizeMarketplaceParams(params, category) });
+export const getProperties = (params = {}, options = {}) => publicApiGet('/properties/', { ...options, params: sanitizeMarketplaceParams(params, params.category) });
+export const getListings = getProperties;
+const getCategoryListings = (category, params, options = {}) => getProperties({ ...params, category }, options);
 export const getPGListings = (params, options) => getCategoryListings('pg', params, options);
 export const getApartmentListings = (params, options) => getCategoryListings('apartments', params, options);
 export const getVillaListings = (params, options) => getCategoryListings('villas', params, options);
@@ -31,5 +33,3 @@ export const getOfficeListings = (params, options) => getCategoryListings('offic
 export const getListingBySlug = (slug, options = {}) => publicApiGet(`${ROOT}/listings/${encodeURIComponent(slug)}/`, options);
 
 export const categoryLoaders = { pg: getPGListings, apartments: getApartmentListings, villas: getVillaListings, office: getOfficeListings };
-
-export const getProperties = (params = {}, options = {}) => getListings(params, options);

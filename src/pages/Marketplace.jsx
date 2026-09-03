@@ -6,7 +6,7 @@ import ListingCard from '../components/marketplace/ListingCard';
 import MarketplaceFilters from '../components/marketplace/MarketplaceFilters';
 import { EmptyState, ErrorState, ListingSkeletons } from '../components/marketplace/MarketplaceStates';
 import { categoryConfig, categoryLoaders, sanitizeMarketplaceParams } from '../api/marketplace';
-import { listingArray, mapListing } from '../utils/marketplaceAdapter';
+import { listingArray, mapProperty } from '../utils/marketplaceAdapter';
 
 const MapView = lazy(() => import('../components/properties/MapView'));
 
@@ -31,7 +31,7 @@ export default function Marketplace({ category }) {
   const load = useCallback((signal) => {
     setState((current) => ({ ...current, loading: true, error: false }));
     return categoryLoaders[category](Object.fromEntries(new URLSearchParams(requestKey).entries()), { signal })
-      .then((envelope) => setState({ loading: false, error: false, items: listingArray(envelope).map(mapListing), meta: envelope.meta || envelope.data?.meta || {} }))
+      .then((envelope) => setState({ loading: false, error: false, items: listingArray(envelope).map(mapProperty), meta: envelope.meta || envelope.data?.meta || {} }))
       .catch((error) => { if (error.name !== 'AbortError') setState({ loading: false, error: true, items: [], meta: {} }); });
   }, [category, requestKey]);
 
