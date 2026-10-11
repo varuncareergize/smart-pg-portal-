@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.livzz.com/';
+export const BASE_URL = `${(import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://127.0.0.1:8000' : 'https://api.livzz.com')).replace(/\/+$/, '')}/`;
 
 export const getAuthToken = () => {
   const storedToken = localStorage.getItem('token');
@@ -28,7 +28,7 @@ export const getAuthHeadersForForm = (customHeaders = {}) => {
 };
 
 export const apiFetch = async (path, options = {}) => {
-  const url = path.startsWith('http') ? path : `${BASE_URL}${path}`;
+  const url = path.startsWith('http') ? path : `${BASE_URL}${path.replace(/^\/+/, '')}`;
   const headers = getAuthHeaders(options.headers || {});
 
   if (options.body instanceof FormData) {

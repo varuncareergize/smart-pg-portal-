@@ -1,6 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 
 export default function ImageCarousel({ images, alt, className = '' }) {
+  useTranslation();
+
   const [current, setCurrent] = useState(0);
   const [loaded, setLoaded] = useState(false);
 

@@ -1,9 +1,13 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiAxios from '../api';
 import { ArrowLeftIcon, UserIcon, WrenchIcon, MapPinIcon } from '@heroicons/react/24/outline';
 
 export default function AddTicket() {
+  useTranslation();
+
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [staffList, setStaffList] = useState([]); // To store staff from DB
@@ -49,40 +53,39 @@ export default function AddTicket() {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-8 space-y-6">
+    <div className="dashboard-page dashboard-form-page space-y-6">
       <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-slate-400 hover:text-slate-800 font-black text-xs uppercase tracking-widest transition-colors">
-        <ArrowLeftIcon className="w-4 h-4 stroke-[3px]" /> Back
-      </button>
+        <ArrowLeftIcon className="w-4 h-4 stroke-[3px]" /> {translate("Back")} </button>
 
       <div className="bg-white rounded-[40px] border border-slate-100 shadow-2xl p-10">
-        <h2 className="text-3xl font-black text-slate-800 tracking-tight mb-8">New Ticket</h2>
+        <h2 className="text-3xl font-black text-slate-800 tracking-tight mb-8">{translate("New Ticket")}</h2>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Issue Input */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase ml-1">What is the issue?</label>
+            <label className="text-[10px] font-black text-slate-400 uppercase ml-1">{translate("What is the issue?")}</label>
             <div className="relative">
               <WrenchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
               <input required className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 font-bold outline-none focus:border-emerald-500 transition-all"
-                placeholder="Leakage, broken tile, etc."
+                placeholder={translate("Leakage, broken tile, etc.")}
                 onChange={(e) => setFormData({...formData, issue: e.target.value})} />
             </div>
           </div>
 
           {/* Location Input */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Room / Location</label>
+            <label className="text-[10px] font-black text-slate-400 uppercase ml-1">{translate("Room / Location")}</label>
             <div className="relative">
               <MapPinIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
               <input required className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 font-bold outline-none focus:border-emerald-500 transition-all"
-                placeholder="e.g. Unit 204"
+                placeholder={translate("e.g. Unit 204")}
                 onChange={(e) => setFormData({...formData, unit_details: e.target.value})} />
             </div>
           </div>
 
           {/* Staff Selection Dropdown */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Assign Staff</label>
+            <label className="text-[10px] font-black text-slate-400 uppercase ml-1">{translate("Assign Staff")}</label>
             <div className="relative">
               <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
               <select 
@@ -91,7 +94,7 @@ export default function AddTicket() {
                 value={formData.assigned_staff}
                 onChange={(e) => setFormData({...formData, assigned_staff: e.target.value})}
               >
-                <option value="">Select a staff member</option>
+                <option value="">{translate("Select a staff member")}</option>
                 {staffList.map((staff) => (
                   <option key={staff.id} value={staff.id}>
                     {staff.name}
@@ -104,27 +107,27 @@ export default function AddTicket() {
           {/* Priority & Category Grid */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Priority</label>
+              <label className="text-[10px] font-black text-slate-400 uppercase ml-1">{translate("Priority")}</label>
               <select className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-4 font-bold outline-none"
                 onChange={(e) => setFormData({...formData, priority: e.target.value})}>
-                <option value="LOW">Low</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="HIGH">High</option>
+                <option value="LOW">{translate("Low")}</option>
+                <option value="MEDIUM">{translate("Medium")}</option>
+                <option value="HIGH">{translate("High")}</option>
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Category</label>
+              <label className="text-[10px] font-black text-slate-400 uppercase ml-1">{translate("Category")}</label>
               <select className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-4 font-bold outline-none"
                 onChange={(e) => setFormData({...formData, category: e.target.value})}>
-                <option value="General">General</option>
-                <option value="Plumbing">Plumbing</option>
-                <option value="Electrical">Electrical</option>
+                <option value="General">{translate("General")}</option>
+                <option value="Plumbing">{translate("Plumbing")}</option>
+                <option value="Electrical">{translate("Electrical")}</option>
               </select>
             </div>
           </div>
 
           <button disabled={loading} type="submit" className="w-full bg-emerald-500 text-white py-5 rounded-[24px] font-black uppercase tracking-widest text-sm hover:bg-slate-900 transition-all shadow-xl shadow-emerald-100">
-            {loading ? "Processing..." : "Create Ticket"}
+            {translate(loading ? "Processing..." : "Create Ticket")}
           </button>
         </form>
       </div>

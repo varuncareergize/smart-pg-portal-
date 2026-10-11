@@ -1,7 +1,11 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React from 'react';
 import { ShieldCheck, Award, ThumbsUp, Headset } from 'lucide-react';
 
 const WhyChooseUs = () => {
+  useTranslation();
+
   // Features array representing the reasons to choose the company
   const features = [
     {
@@ -38,12 +42,8 @@ const WhyChooseUs = () => {
 
       {/* Header Section */}
       <div className="relative z-10 max-w-2xl mx-auto mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3 tracking-wide">
-          Why Choose Us
-        </h2>
-        <p className="text-slate-500 text-sm md:text-base leading-relaxed">
-          We pride ourselves on providing an unparalleled experience and setting new benchmarks in the real estate industry.
-        </p>
+        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3 tracking-wide"> {translate("Why Choose Us")} </h2>
+        <p className="text-slate-500 text-sm md:text-base leading-relaxed"> {translate("We pride ourselves on providing an unparalleled experience and setting new benchmarks in the real estate industry.")} </p>
       </div>
 
       {/* Grid Features Container */}

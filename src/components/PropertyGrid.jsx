@@ -1,8 +1,12 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropertyCard from './PropertyCard';
 
 export default function PropertyGrid({ title, listings }) {
+  useTranslation();
+
   const navigate = useNavigate();
 
   return (
@@ -10,14 +14,12 @@ export default function PropertyGrid({ title, listings }) {
       {/* Section Title */}
       <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-3 mb-10">
         <h2 className="text-3xl font-bold text-gray-900 text-center tracking-tight">
-          {title}
+          {translate(title)}
         </h2>
         <button
           onClick={() => navigate('/properties')}
           className="inline-flex items-center rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700"
-        >
-          View all properties
-        </button>
+        > {translate("View all properties")} </button>
       </div>
       
       {/* Responsive Grid layout */}

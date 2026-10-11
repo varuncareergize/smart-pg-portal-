@@ -443,7 +443,7 @@ export function filterAndSortProperties(properties, filters) {
       (p.city || '').toLowerCase().includes(search);
 
     const types = propertyTypes?.length ? propertyTypes : selectedType && selectedType !== 'All Stays' ? [selectedType] : [];
-    const matchesType = !types.length || types.includes(p.property_type);
+    const matchesType = !types.length || types.some(type => String(type).toLowerCase() === String(p.property_type).toLowerCase());
 
     const genderList = genders?.length ? genders : gender ? [gender] : [];
     const matchesGender = !genderList.length || genderList.includes(p.gender);

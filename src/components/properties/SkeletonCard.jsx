@@ -1,6 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 
 export default function SkeletonCard() {
+  useTranslation();
+
   return (
     <div className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm animate-pulse">
       <div className="h-52 bg-slate-200 m-3 rounded-2xl" />

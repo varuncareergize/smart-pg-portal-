@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../../i18n';
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Sparkles, IndianRupee } from 'lucide-react';
@@ -13,6 +15,8 @@ function resolveImage(image) {
 }
 
 function MiniPropertyCard({ property }) {
+  useTranslation();
+
   const navigate = useNavigate();
   const imageSrc = resolveImage(property.image);
 
@@ -34,7 +38,7 @@ function MiniPropertyCard({ property }) {
         <p className="text-xs text-slate-400 mt-0.5">{property.city}</p>
         <div className="flex items-center justify-between mt-2">
           <span className="font-black text-[#001F3F]">
-            {property.price > 0 ? `₹${property.price.toLocaleString()}` : 'Contact'}
+            {translate(property.price > 0 ? `₹${property.price.toLocaleString()}` : 'Contact')}
           </span>
           <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-0.5">
             <Sparkles size={10} /> {property.aiMatch}%
@@ -46,6 +50,8 @@ function MiniPropertyCard({ property }) {
 }
 
 export default function AIRecommendation({ similarProperties, budget, maxBudget }) {
+  useTranslation();
+
   const scrollRef = useRef(null);
 
   const scroll = (dir) => {
@@ -68,26 +74,20 @@ export default function AIRecommendation({ similarProperties, budget, maxBudget 
       <div className="bg-gradient-to-r from-[#001F3F] to-[#001F3F]/90 rounded-2xl p-5 text-white">
         <div className="flex items-center gap-2 mb-3">
           <IndianRupee size={18} className="text-[#FFC107]" />
-          <h3 className="font-black text-sm">Budget Recommendation</h3>
+          <h3 className="font-black text-sm">{translate("Budget Recommendation")}</h3>
         </div>
-        <p className="text-sm text-white/80">
-          Your budget: <span className="font-black text-[#FFC107]">₹{budget.toLocaleString()}</span>
+        <p className="text-sm text-white/80"> {translate("Your budget:")} <span className="font-black text-[#FFC107]">₹{budget.toLocaleString()}</span>
         </p>
-        <p className="text-sm text-white/80 mt-1">
-          Recommended range: <span className="font-black">₹{recommendedMin.toLocaleString()} – ₹{recommendedMax.toLocaleString()}</span>
+        <p className="text-sm text-white/80 mt-1"> {translate("Recommended range:")} <span className="font-black">₹{recommendedMin.toLocaleString()} – ₹{recommendedMax.toLocaleString()}</span>
         </p>
         <p className="text-xs font-bold text-[#FFC107] mt-2">
-          {inRangeCount} more properties available in this range
-        </p>
+          {translate(inRangeCount)} {translate("more properties available in this range")} </p>
       </div>
 
       {/* Similar Properties Carousel */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-black text-[#001F3F] flex items-center gap-2">
-           
-            You may also like
-          </h3>
+          <h3 className="font-black text-[#001F3F] flex items-center gap-2"> {translate("You may also like")} </h3>
           <div className="flex gap-1">
             <button onClick={() => scroll(-1)} className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors">
               <ChevronLeft size={16} />

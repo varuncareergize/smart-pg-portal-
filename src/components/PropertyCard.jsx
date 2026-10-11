@@ -1,7 +1,11 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function PropertyCard({ id = "1", image, title, location, rating, price }) {
+  useTranslation();
+
   const navigate = useNavigate();
 
   const handleVisitClick = (e) => {
@@ -22,16 +26,14 @@ export default function PropertyCard({ id = "1", image, title, location, rating,
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         {/* Status Badge (e.g., For Rent / For Sale) */}
-        <span className="absolute top-3 left-3 bg-emerald-50 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm">
-          For Rent
-        </span>
+        <span className="absolute top-3 left-3 bg-emerald-50 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm"> {translate("For Rent")} </span>
       </div>
       
       {/* Content Area */}
       <div className="p-4">
-        <h3 className="font-bold text-lg text-gray-900 truncate mb-1">{title}</h3>
+        <h3 className="font-bold text-lg text-gray-900 truncate mb-1">{translate(title)}</h3>
         <p className="text-xs text-gray-400 mb-3 flex items-center gap-1">
-          <span>📍</span> {location}
+          <span>📍</span> {translate(location)}
         </p>
         
         {/* Bottom Panel Layout matching the side-by-side mockup structure */}
@@ -41,14 +43,14 @@ export default function PropertyCard({ id = "1", image, title, location, rating,
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-1 text-sm font-bold text-gray-900">
               <span className="text-amber-500">★</span>
-              <span>{rating}</span>
-              <span className="text-xs font-normal text-gray-400">(42 Reviews)</span>
+              <span>{translate(rating)}</span>
+              <span className="text-xs font-normal text-gray-400">{translate("(42 Reviews)")}</span>
             </div>
             {/* Added structural specs layout placeholder matching row images */}
             <div className="flex items-center gap-2 text-[11px] text-gray-400 mt-0.5">
-              <span>🛏️ 3 Beds</span>
+              <span>{translate("🛏️ 3 Beds")}</span>
               <span>•</span>
-              <span>🛁 2 Bath</span>
+              <span>{translate("🛁 2 Bath")}</span>
             </div>
           </div>
 
@@ -58,15 +60,13 @@ export default function PropertyCard({ id = "1", image, title, location, rating,
               <p className="font-extrabold text-neutral-900 text-lg leading-tight">
                 ₹{price.toLocaleString()}
               </p>
-              <p className="text-[10px] text-gray-400">per month</p>
+              <p className="text-[10px] text-gray-400">{translate("per month")}</p>
             </div>
             
             <button 
               onClick={handleVisitClick}
               className="bg-emerald-500 text-white font-medium text-xs px-5 py-2 rounded-full hover:bg-emerald-600 transition shadow-sm active:scale-95 duration-200"
-            >
-              Visit Us
-            </button>
+            > {translate("Visit Us")} </button>
           </div>
 
         </div>

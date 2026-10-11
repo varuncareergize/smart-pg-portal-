@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import { NavLink } from 'react-router-dom';
 import { 
   Squares2X2Icon, BuildingOfficeIcon, KeyIcon, UsersIcon, 
@@ -18,8 +20,10 @@ const navItems = [
 ];
 
 export default function Sidebar({ isOpen, toggleMenu }) {
+  useTranslation();
+
   const sidebarClasses = `
-    fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-sg-border transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0
+    fixed inset-y-0 left-0 z-50 w-72 shrink-0 bg-white border-r border-sg-border transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0
     ${isOpen ? 'translate-x-0' : '-translate-x-full'}
   `;
 
@@ -36,10 +40,9 @@ export default function Sidebar({ isOpen, toggleMenu }) {
         <div className="h-full flex flex-col">
           <div className="p-8 flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-black text-sg-navy tracking-tighter">
-              LIV<span className="text-sg-green">ZZ</span>
+              <h1 className="text-2xl font-black text-sg-navy tracking-tighter"> {translate("LIV")}<span className="text-sg-green">{translate("ZZ")}</span>
               </h1>
-              <p className="text-[10px] font-bold text-sg-green uppercase tracking-widest mt-0.5">Management Portal</p>
+              <p className="text-[10px] font-bold text-sg-green uppercase tracking-widest mt-0.5">{translate("Management Portal")}</p>
             </div>
             <button onClick={toggleMenu} className="lg:hidden p-2 text-sg-text-muted">
               <XMarkIcon className="w-6 h-6" />
@@ -58,7 +61,7 @@ export default function Sidebar({ isOpen, toggleMenu }) {
                 `}
               >
                 <item.icon className="w-5 h-5" />
-                <span className="text-[15px]">{item.name}</span>
+                <span className="text-[15px]">{translate(item.name)}</span>
               </NavLink>
             ))}
           </nav>

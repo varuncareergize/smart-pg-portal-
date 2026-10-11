@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -60,6 +62,8 @@ const OWNER_SERVICES = [
 ];
 
 export default function Services() {
+  useTranslation();
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -67,10 +71,8 @@ export default function Services() {
       {/* Hero Header */}
       <section className="pt-40 pb-20 bg-slate-50 border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-5xl font-black text-[#001D3D] mb-6 tracking-tight">Our Services</h1>
-          <p className="text-slate-500 font-medium text-lg max-w-2xl mx-auto leading-relaxed">
-            From seamless living experiences for tenants to effortless asset management for owners, we’ve got everything covered.
-          </p>
+          <h1 className="text-5xl font-black text-[#001D3D] mb-6 tracking-tight">{translate("Our Services")}</h1>
+          <p className="text-slate-500 font-medium text-lg max-w-2xl mx-auto leading-relaxed"> {translate("From seamless living experiences for tenants to effortless asset management for owners, we’ve got everything covered.")} </p>
         </div>
       </section>
 
@@ -78,7 +80,7 @@ export default function Services() {
       <section className="py-24 max-w-7xl mx-auto px-4">
         <div className="flex items-center gap-4 mb-16">
           <div className="h-[2px] w-12 bg-[#00C896]" />
-          <h2 className="text-sm font-black text-[#00C896] uppercase tracking-[0.2em]">For Residents</h2>
+          <h2 className="text-sm font-black text-[#00C896] uppercase tracking-[0.2em]">{translate("For Residents")}</h2>
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -93,7 +95,7 @@ export default function Services() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-4 mb-16">
             <div className="h-[2px] w-12 bg-[#00C896]" />
-            <h2 className="text-sm font-black text-[#00C896] uppercase tracking-[0.2em]">For Property Owners</h2>
+            <h2 className="text-sm font-black text-[#00C896] uppercase tracking-[0.2em]">{translate("For Property Owners")}</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -107,15 +109,12 @@ export default function Services() {
       {/* Bottom CTA Card */}
       <section className="py-24 text-center px-4">
         <div className="max-w-5xl mx-auto bg-slate-50 rounded-[48px] p-16 border border-slate-100 shadow-sm">
-          <h3 className="text-3xl font-black text-[#001D3D] mb-4">Ready to experience SmartPG?</h3>
-          <p className="text-slate-500 font-medium mb-10 max-w-lg mx-auto">Whether you're looking for a room or looking to list your property, we're here to help.</p>
+          <h3 className="text-3xl font-black text-[#001D3D] mb-4">{translate("Ready to experience SmartPG?")}</h3>
+          <p className="text-slate-500 font-medium mb-10 max-w-lg mx-auto">{translate("Whether you're looking for a room or looking to list your property, we're here to help.")}</p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className="bg-[#00C896] text-white px-10 py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:scale-105 transition-all shadow-xl shadow-green-900/10 active:scale-95">
-              Get Started <ArrowRight size={20} />
+            <button className="bg-[#00C896] text-white px-10 py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:scale-105 transition-all shadow-xl shadow-green-900/10 active:scale-95"> {translate("Get Started")} <ArrowRight size={20} />
             </button>
-            <button className="bg-white text-[#001D3D] border border-slate-200 px-10 py-4 rounded-2xl font-black hover:bg-slate-100 transition-all active:scale-95">
-              Talk to Sales
-            </button>
+            <button className="bg-white text-[#001D3D] border border-slate-200 px-10 py-4 rounded-2xl font-black hover:bg-slate-100 transition-all active:scale-95"> {translate("Talk to Sales")} </button>
           </div>
         </div>
       </section>
@@ -130,6 +129,8 @@ export default function Services() {
  * Optimized for a grid layout without a sidebar
  */
 function ServiceCard({ icon, title, desc, dark = false }) {
+  useTranslation();
+
   return (
     <div className={`group p-8 rounded-[40px] transition-all duration-500 h-full ${
       dark 
@@ -142,12 +143,12 @@ function ServiceCard({ icon, title, desc, dark = false }) {
         {React.cloneElement(icon, { size: 32, strokeWidth: 2.5 })}
       </div>
       <h4 className={`text-xl font-black mb-4 ${dark ? 'text-white' : 'text-[#001D3D]'}`}>
-        {title}
+        {translate(title)}
       </h4>
       <p className={`text-sm leading-relaxed font-medium transition-colors ${
         dark ? 'text-slate-400 group-hover:text-slate-300' : 'text-slate-500 group-hover:text-slate-600'
       }`}>
-        {desc}
+        {translate(desc)}
       </p>
     </div>
   );

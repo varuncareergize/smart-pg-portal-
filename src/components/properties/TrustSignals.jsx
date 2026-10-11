@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../../i18n';
 import React from 'react';
 import { ShieldCheck, BadgeCheck, CreditCard, Headphones, Ban } from 'lucide-react';
 
@@ -10,9 +12,11 @@ const TRUST_ITEMS = [
 ];
 
 export default function TrustSignals() {
+  useTranslation();
+
   return (
     <section className="bg-[#001F3F] rounded-3xl p-6 md:p-8 mt-8">
-      <h3 className="text-white font-black text-lg mb-5">Why trust LivZZ?</h3>
+      <h3 className="text-white font-black text-lg mb-5">{translate("Why trust LivZZ?")}</h3>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {TRUST_ITEMS.map(({ icon: Icon, label }) => (
           <div
@@ -22,7 +26,7 @@ export default function TrustSignals() {
             <div className="w-10 h-10 rounded-xl bg-[#FFC107]/20 flex items-center justify-center">
               <Icon size={20} className="text-[#FFC107]" />
             </div>
-            <span className="text-white/90 text-xs font-bold leading-tight">{label}</span>
+            <span className="text-white/90 text-xs font-bold leading-tight">{translate(label)}</span>
           </div>
         ))}
       </div>

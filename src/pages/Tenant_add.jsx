@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../api';
@@ -15,6 +17,8 @@ import {
 } from 'lucide-react';
 
 export default function TenantsAdd() {
+  useTranslation();
+
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [rooms, setRooms] = useState([]); 
@@ -56,7 +60,7 @@ const response = await apiFetch('/rooms/');
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.room) {
-      alert("Please select a room first!");
+      alert(translate("Please select a room first!"));
       return;
     }
 
@@ -84,7 +88,7 @@ const response = await apiFetch('/tenants/', {
       } else {
         const errorData = await response.json();
         console.error("Server Error:", errorData);
-        alert("Registration failed. Please check the logs.");
+        alert(translate("Registration failed. Please check the logs."));
       }
     } catch (error) {
       console.error("Network Error:", error);
@@ -98,7 +102,7 @@ const response = await apiFetch('/tenants/', {
   const sectionCardClass = "bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm relative overflow-hidden";
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-12 px-4">
+    <div className="dashboard-page dashboard-form-page space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between pt-8">
         <button 
@@ -107,12 +111,10 @@ const response = await apiFetch('/tenants/', {
         >
           <div className="p-2 rounded-full group-hover:bg-slate-100 transition-all">
             <ArrowLeft size={18} /> 
-          </div>
-          Back to List
-        </button>
+          </div> {translate("Back to List")} </button>
         <div className="text-right">
-          <h2 className="text-3xl font-black text-[#001D3D] italic">Onboard Resident</h2>
-          <p className="text-slate-400 text-xs font-bold uppercase tracking-tighter">LivZZ Management System</p>
+          <h2 className="text-3xl font-black text-[#001D3D] italic">{translate("Onboard Resident")}</h2>
+          <p className="text-slate-400 text-xs font-bold uppercase tracking-tighter">{translate("LivZZ Management System")}</p>
         </div>
       </div>
 
@@ -124,27 +126,27 @@ const response = await apiFetch('/tenants/', {
             <div className="w-10 h-10 bg-[#00C896]/10 text-[#00C896] rounded-xl flex items-center justify-center">
               <User size={20} strokeWidth={2.5} />
             </div>
-            <h3 className="font-black text-[#001D3D] uppercase text-sm tracking-wide">01. Personal Profile</h3>
+            <h3 className="font-black text-[#001D3D] uppercase text-sm tracking-wide">{translate("01. Personal Profile")}</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1">
-              <label className={labelClass}>Full Name</label>
+              <label className={labelClass}>{translate("Full Name")}</label>
               <div className="relative">
                 <User className="absolute left-4 top-3.5 text-slate-300" size={18} />
                 <input 
-                  type="text" required placeholder="Full Name" className={inputClass}
+                  type="text" required placeholder={translate("Full Name")} className={inputClass}
                   onChange={(e) => setFormData({...formData, full_name: e.target.value})}
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className={labelClass}>Contact Number</label>
+              <label className={labelClass}>{translate("Contact Number")}</label>
               <div className="relative">
                 <Phone className="absolute left-4 top-3.5 text-slate-300" size={18} />
                 <input 
-                  type="tel" required placeholder="Phone Number" className={inputClass}
+                  type="tel" required placeholder={translate("Phone Number")} className={inputClass}
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
                 />
               </div>
@@ -158,12 +160,12 @@ const response = await apiFetch('/tenants/', {
             <div className="w-10 h-10 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center">
               <Home size={20} strokeWidth={2.5} />
             </div>
-            <h3 className="font-black text-[#001D3D] uppercase text-sm tracking-wide">02. Room Allocation</h3>
+            <h3 className="font-black text-[#001D3D] uppercase text-sm tracking-wide">{translate("02. Room Allocation")}</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1">
-              <label className={labelClass}>Assign Room</label>
+              <label className={labelClass}>{translate("Assign Room")}</label>
               <div className="relative">
                 <Home className="absolute left-4 top-3.5 text-slate-300" size={18} />
                 <select 
@@ -173,11 +175,10 @@ const response = await apiFetch('/tenants/', {
                   onChange={(e) => setFormData({...formData, room: e.target.value})}
                 >
                   <option value="">
-                    {roomsLoading ? "Loading rooms..." : "Choose available room..."}
+                    {translate(roomsLoading ? "Loading rooms..." : "Choose available room...")}
                   </option>
                   {rooms.map((room) => (
-                    <option key={room.id} value={room.id}>
-                      Room {room.room_number} — {room.room_type || 'Standard'}
+                    <option key={room.id} value={room.id}> {translate("Room")} {room.room_number} — {room.room_type || 'Standard'}
                     </option>
                   ))}
                 </select>
@@ -185,7 +186,7 @@ const response = await apiFetch('/tenants/', {
             </div>
 
             <div className="space-y-1">
-              <label className={labelClass}>Joining Date</label>
+              <label className={labelClass}>{translate("Joining Date")}</label>
               <div className="relative">
                 <Calendar className="absolute left-4 top-3.5 text-slate-300" size={18} />
                 <input 
@@ -203,24 +204,24 @@ const response = await apiFetch('/tenants/', {
             <div className="w-10 h-10 bg-purple-50 text-purple-500 rounded-xl flex items-center justify-center">
               <Fingerprint size={20} strokeWidth={2.5} />
             </div>
-            <h3 className="font-black text-[#001D3D] uppercase text-sm tracking-wide">03. Verification</h3>
+            <h3 className="font-black text-[#001D3D] uppercase text-sm tracking-wide">{translate("03. Verification")}</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1">
-              <label className={labelClass}>ID Type</label>
+              <label className={labelClass}>{translate("ID Type")}</label>
               <select 
                 className={inputClass.replace("pl-11", "pl-4")}
                 onChange={(e) => setFormData({...formData, id_proof_type: e.target.value})}
               >
-                <option value="Aadhar">Aadhar Card</option>
-                <option value="PAN">PAN Card</option>
-                <option value="Passport">Passport</option>
-                <option value="Driving License">Driving License</option>
+                <option value="Aadhar">{translate("Aadhar Card")}</option>
+                <option value="PAN">{translate("PAN Card")}</option>
+                <option value="Passport">{translate("Passport")}</option>
+                <option value="Driving License">{translate("Driving License")}</option>
               </select>
             </div>
             <div className="space-y-1">
-              <label className={labelClass}>Upload ID Proof (Photo)</label>
+              <label className={labelClass}>{translate("Upload ID Proof (Photo)")}</label>
               <div className="relative">
                 <input 
                   type="file" 
@@ -234,7 +235,7 @@ const response = await apiFetch('/tenants/', {
                   className="flex items-center gap-2 w-full px-4 py-3 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-xs font-bold text-slate-400 cursor-pointer hover:border-[#00C896] hover:text-[#00C896] transition-all"
                 >
                   <ImageIcon size={18} />
-                  {idImage ? idImage.name : "Select Image File..."}
+                  {translate(idImage ? idImage.name : "Select Image File...")}
                 </label>
               </div>
             </div>
@@ -247,19 +248,19 @@ const response = await apiFetch('/tenants/', {
             <div className="w-10 h-10 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center">
               <CreditCard size={20} strokeWidth={2.5} />
             </div>
-            <h3 className="font-black text-[#001D3D] uppercase text-sm tracking-wide">04. Billing Details</h3>
+            <h3 className="font-black text-[#001D3D] uppercase text-sm tracking-wide">{translate("04. Billing Details")}</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-1">
-              <label className={labelClass}>Monthly Rent (₹)</label>
+              <label className={labelClass}>{translate("Monthly Rent (₹)")}</label>
               <input 
                 type="number" required placeholder="8000" className={inputClass.replace("pl-11", "pl-6")}
                 onChange={(e) => setFormData({...formData, monthly_rent: e.target.value})}
               />
             </div>
             <div className="space-y-1">
-              <label className={labelClass}>Security Deposit (₹)</label>
+              <label className={labelClass}>{translate("Security Deposit (₹)")}</label>
               <input 
                 type="number" required placeholder="16000" className={inputClass.replace("pl-11", "pl-6")}
                 onChange={(e) => setFormData({...formData, security_deposit: e.target.value})}
@@ -268,7 +269,7 @@ const response = await apiFetch('/tenants/', {
 
             {/* ✅ UPDATED BOOLEAN LOGIC */}
             <div className="space-y-1">
-              <label className={labelClass}>Current Payment Status</label>
+              <label className={labelClass}>{translate("Current Payment Status")}</label>
               <select 
                 className={inputClass.replace("pl-11", "pl-4")}
                 value={formData.is_paid.toString()} // Ensure UI reflects the boolean state
@@ -277,8 +278,8 @@ const response = await apiFetch('/tenants/', {
                   is_paid: e.target.value === 'true' // Logic: 'true' string becomes True boolean
                 })}
               >
-                <option value="false">Unpaid</option>
-                <option value="true">Paid</option>
+                <option value="false">{translate("Unpaid")}</option>
+                <option value="true">{translate("Paid")}</option>
               </select>
             </div>
           </div>
@@ -290,15 +291,13 @@ const response = await apiFetch('/tenants/', {
             type="button"
             onClick={() => navigate('/tenants')}
             className="flex-1 py-4 rounded-3xl font-black text-slate-400 hover:bg-slate-100 transition-all uppercase tracking-widest text-[11px]"
-          >
-            Cancel
-          </button>
+          > {translate("Cancel")} </button>
           <button
             type="submit"
             disabled={loading}
             className="flex-[2] bg-[#001D3D] text-white py-4 rounded-3xl font-black flex items-center justify-center gap-3 hover:bg-[#00C896] shadow-2xl shadow-[#001D3D]/20 transition-all active:scale-[0.97] disabled:opacity-50"
           >
-            {loading ? "Registering..." : <><Save size={22} /> Register Tenant</>}
+            {translate(loading ? "Registering..." : <><Save size={22} /> {translate("Register Tenant")}</>)}
           </button>
         </div>
       </form>

@@ -1,8 +1,13 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { apiFetch } from '../api';
 
 export default function AddRoom() {
+  useTranslation();
+
   const navigate = useNavigate();
   const [properties, setProperties] = useState([]); // To store properties from API
   
@@ -18,9 +23,9 @@ export default function AddRoom() {
 
   // 1. Fetch properties so the dropdown has real data
   useEffect(() => {
-    apiFetch('/properties/all')
+    apiFetch('/properties/')
       .then(res => res.json())
-      .then(data => setProperties(data))
+      .then(data => setProperties(data.data || []))
       .catch(err => console.error("Error fetching properties:", err));
   }, []);
 
@@ -31,7 +36,7 @@ export default function AddRoom() {
     try {
       const response = await apiFetch('/rooms/', {
         method: 'POST',
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, sharing_type: typeof formData.sharing_type === 'number' ? ['Single Sharing', 'Double Sharing', 'Triple Sharing', 'Four Sharing'][formData.sharing_type - 1] : formData.sharing_type }),
       });
 
       if (response.ok) {
@@ -41,53 +46,52 @@ export default function AddRoom() {
       } else {
         const errorData = await response.json();
         console.error("Server Error:", errorData);
-        alert("Failed to save room. Check field requirements.");
+        alert(translate("Failed to save room. Check field requirements."));
       }
     } catch (err) {
       console.error("Network Error:", err);
-      alert("Could not connect to the server.");
+      alert(translate("Could not connect to the server."));
     }
   };
 
   return (
-    <div className="container-custom max-w-2xl py-10">
+    <div className="dashboard-page dashboard-form-page">
       <button 
         onClick={() => navigate(-1)} 
         className="flex items-center gap-2 text-sg-text-muted hover:text-sg-navy font-black text-xs uppercase tracking-widest mb-8 transition-colors"
       >
-        <ArrowLeftIcon className="w-4 h-4" /> Back to Inventory
-      </button>
+        <ArrowLeftIcon className="w-4 h-4" /> {translate("Back to Inventory")} </button>
 
       <div className="bg-white rounded-[40px] border border-sg-border p-8 md:p-12 shadow-sm">
         <div className="mb-10">
-          <h2 className="text-3xl font-black text-sg-navy italic">Add New Room</h2>
-          <p className="text-sg-text-muted font-medium mt-1">Register a new asset to your property listing.</p>
+          <h2 className="text-3xl font-black text-sg-navy italic">{translate("Add New Room")}</h2>
+          <p className="text-sg-text-muted font-medium mt-1">{translate("Register a new asset to your property listing.")}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Room Number */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-sg-navy ml-1">Room Number</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-sg-navy ml-1">{translate("Room Number")}</label>
               <input 
                 type="text"
                 required
                 className="w-full bg-sg-bg border-none rounded-2xl p-4 font-bold focus:ring-2 focus:ring-sg-green transition-all"
-                placeholder="e.g. 101"
+                placeholder={translate("e.g. 101")}
                 onChange={(e) => setFormData({...formData, room_number: e.target.value})}
               />
             </div>
 
             {/* Property Select - Dynamic */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-sg-navy ml-1">Property</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-sg-navy ml-1">{translate("Property")}</label>
               <select 
                 required
                 className="w-full bg-sg-bg border-none rounded-2xl p-4 font-bold focus:ring-2 focus:ring-sg-green appearance-none"
                 value={formData.property}
                 onChange={(e) => setFormData({...formData, property: e.target.value})}
               >
-                <option value="">Select Property</option>
+                <option value="">{translate("Select Property")}</option>
                 {properties.map(p => (
                   <option key={p.id} value={p.id}>{p.name}</option>
                 ))}
@@ -97,7 +101,7 @@ export default function AddRoom() {
 
           {/* Sharing Type Buttons */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-sg-navy ml-1">Sharing Type</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-sg-navy ml-1">{translate("Sharing Type")}</label>
             <div className="grid grid-cols-4 gap-3">
               {[
                 { label: 'Single', val: 1 },
@@ -113,7 +117,7 @@ export default function AddRoom() {
                     formData.sharing_type === opt.val ? 'bg-sg-navy text-white' : 'bg-sg-bg text-sg-text-muted'
                   }`}
                 >
-                  {opt.label}
+                  {translate(opt.label)}
                 </button>
               ))}
             </div>
@@ -121,18 +125,18 @@ export default function AddRoom() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-sg-navy ml-1">Total Beds</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-sg-navy ml-1">{translate("Total Beds")}</label>
               <input 
                 type="number"
                 required
                 className="w-full bg-sg-bg border-none rounded-2xl p-4 font-bold focus:ring-2 focus:ring-sg-green transition-all"
-                placeholder="Total capacity"
+                placeholder={translate("Total capacity")}
                 onChange={(e) => setFormData({...formData, total_beds: parseInt(e.target.value)})}
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-sg-navy ml-1">Already Occupied</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-sg-navy ml-1">{translate("Already Occupied")}</label>
               <input 
                 type="number"
                 defaultValue={0}
@@ -143,13 +147,13 @@ export default function AddRoom() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-sg-navy ml-1">Monthly Rent (₹)</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-sg-navy ml-1">{translate("Monthly Rent (₹)")}</label>
             <input 
               type="number"
               step="0.01"
               required
               className="w-full bg-sg-bg border-none rounded-2xl p-4 font-bold focus:ring-2 focus:ring-sg-green transition-all"
-              placeholder="e.g. 12000"
+              placeholder={translate("e.g. 12000")}
               onChange={(e) => setFormData({...formData, rent: e.target.value})}
             />
           </div>
@@ -162,15 +166,13 @@ export default function AddRoom() {
               className="w-5 h-5 accent-sg-green"
               onChange={(e) => setFormData({...formData, is_active: e.target.checked})}
             />
-            <label htmlFor="is_active" className="text-xs font-bold text-sg-navy uppercase">Is Active / Listed</label>
+            <label htmlFor="is_active" className="text-xs font-bold text-sg-navy uppercase">{translate("Is Active / Listed")}</label>
           </div>
 
           <button 
             type="submit"
             className="w-full bg-sg-green text-white py-5 rounded-[24px] font-black text-lg shadow-lg shadow-sg-green/20 hover:scale-[1.01] active:scale-[0.98] transition-all mt-4"
-          >
-            Save Room Entry
-          </button>
+          > {translate("Save Room Entry")} </button>
         </form>
       </div>
     </div>

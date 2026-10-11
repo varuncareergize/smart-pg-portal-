@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../../i18n';
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Wifi, Utensils, Wind, Shirt, Car, Dumbbell, Shield, Star } from 'lucide-react';
 import { SORT_OPTIONS } from '../../utils/propertyHelpers';
@@ -32,6 +34,8 @@ const TRUST_OPTIONS = [
 ];
 
 function FilterSection({ title, children, defaultOpen = true }) {
+  useTranslation();
+
   const [open, setOpen] = useState(defaultOpen);
   return (
     <div className="border-b border-slate-100 pb-4">
@@ -39,8 +43,8 @@ function FilterSection({ title, children, defaultOpen = true }) {
         onClick={() => setOpen(!open)}
         className="flex items-center justify-between w-full text-left mb-3"
       >
-        <span className="text-xs font-black text-slate-500 uppercase tracking-wider">{title}</span>
-        {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+        <span className="text-xs font-black text-slate-500 uppercase tracking-wider">{translate(title)}</span>
+        {translate(open ? <ChevronUp size={14} /> : <ChevronDown size={14} />)}
       </button>
       {open && children}
     </div>
@@ -48,6 +52,8 @@ function FilterSection({ title, children, defaultOpen = true }) {
 }
 
 function ChipGroup({ options, selected, onChange, multi = true }) {
+  useTranslation();
+
   const toggle = (val) => {
     if (multi) {
       onChange(selected.includes(val) ? selected.filter((s) => s !== val) : [...selected, val]);
@@ -70,7 +76,7 @@ function ChipGroup({ options, selected, onChange, multi = true }) {
               isActive ? 'chip-active' : 'chip-inactive'
             }`}
           >
-            {label}
+            {translate(label)}
           </button>
         );
       })}
@@ -102,6 +108,8 @@ export default function FilterSidebar({
   onReset,
   collapsed,
 }) {
+  useTranslation();
+
   if (collapsed) return null;
 
   const toggleAmenity = (id) => {
@@ -115,25 +123,23 @@ export default function FilterSidebar({
   return (
     <aside className="livzz-glass rounded-2xl p-5 space-y-4 h-fit lg:sticky lg:top-36">
       <div className="flex items-center justify-between">
-        <h3 className="font-black text-[#001F3F] text-sm">Filters</h3>
-        <button onClick={onReset} className="text-xs font-bold text-[#FFC107] hover:text-[#001F3F] transition-colors">
-          Reset
-        </button>
+        <h3 className="font-black text-[#001F3F] text-sm">{translate("Filters")}</h3>
+        <button onClick={onReset} className="text-xs font-bold text-[#FFC107] hover:text-[#001F3F] transition-colors"> {translate("Reset")} </button>
       </div>
 
-      <FilterSection title="Property Type">
+      <FilterSection title={translate("Property Type")}>
         <ChipGroup options={PROPERTY_TYPES} selected={propertyTypes} onChange={setPropertyTypes} />
       </FilterSection>
 
-      <FilterSection title="Gender">
+      <FilterSection title={translate("Gender")}>
         <ChipGroup options={GENDERS} selected={genders} onChange={setGenders} />
       </FilterSection>
 
-      <FilterSection title="Room Type">
+      <FilterSection title={translate("Room Type")}>
         <ChipGroup options={ROOM_TYPES} selected={roomTypes} onChange={setRoomTypes} />
       </FilterSection>
 
-      <FilterSection title="Budget">
+      <FilterSection title={translate("Budget")}>
         <p className="text-xs font-bold text-slate-500 mb-2">
           ₹{minPrice.toLocaleString()} – ₹{maxPrice.toLocaleString()}
         </p>
@@ -157,7 +163,7 @@ export default function FilterSidebar({
         />
       </FilterSection>
 
-      <FilterSection title="Distance">
+      <FilterSection title={translate("Distance")}>
         <ChipGroup
           options={DISTANCE_OPTIONS}
           selected={distance}
@@ -166,7 +172,7 @@ export default function FilterSidebar({
         />
       </FilterSection>
 
-      <FilterSection title="Amenities">
+      <FilterSection title={translate("Amenities")}>
         <div className="grid grid-cols-2 gap-2">
           {AMENITY_OPTIONS.map(({ id, icon: Icon }) => (
             <button
@@ -177,13 +183,13 @@ export default function FilterSidebar({
               }`}
             >
               <Icon size={14} />
-              {id}
+              {translate(id)}
             </button>
           ))}
         </div>
       </FilterSection>
 
-      <FilterSection title="Ratings">
+      <FilterSection title={translate("Ratings")}>
         <div className="flex gap-2">
           {RATING_OPTIONS.map(({ id, label }) => (
             <button
@@ -194,13 +200,13 @@ export default function FilterSidebar({
               }`}
             >
               {id !== 'any' && <Star size={12} fill="currentColor" />}
-              {label}
+              {translate(label)}
             </button>
           ))}
         </div>
       </FilterSection>
 
-      <FilterSection title="Trust Filters">
+      <FilterSection title={translate("Trust Filters")}>
         <div className="space-y-2">
           {TRUST_OPTIONS.map(({ id, label }) => (
             <label key={id} className="flex items-center gap-2 cursor-pointer">
@@ -210,20 +216,20 @@ export default function FilterSidebar({
                 onChange={() => toggleTrust(id)}
                 className="accent-[#FFC107] w-4 h-4 rounded"
               />
-              <span className="text-xs font-semibold text-slate-600">{label}</span>
+              <span className="text-xs font-semibold text-slate-600">{translate(label)}</span>
             </label>
           ))}
         </div>
       </FilterSection>
 
-      <FilterSection title="Sort By">
+      <FilterSection title={translate("Sort By")}>
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
           className="w-full px-3 py-2.5 bg-slate-50 rounded-xl text-sm font-semibold text-[#001F3F] outline-none"
         >
           {SORT_OPTIONS.map((s) => (
-            <option key={s.id} value={s.id}>{s.label}</option>
+            <option key={s.id} value={s.id}>{translate(s.label)}</option>
           ))}
         </select>
       </FilterSection>

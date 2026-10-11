@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../api';
@@ -11,6 +13,8 @@ import {
 } from '@heroicons/react/24/outline';
 
 export default function Rooms() {
+  useTranslation();
+
   const navigate = useNavigate();
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,20 +61,20 @@ export default function Rooms() {
   });
 
   return (
-    <div className="container-custom space-y-8 py-10">
+    <div className="dashboard-page space-y-6">
       
       {/* --- HEADER SECTION --- */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h2 className="text-4xl font-black text-[#001D3D] tracking-tight italic">Room Inventory</h2>
-          <p className="text-slate-500 font-medium mt-1">Manage availability, rent, and property assets.</p>
+          <h2 className="text-4xl font-black text-[#001D3D] tracking-tight italic">{translate("Room Inventory")}</h2>
+          <p className="text-slate-500 font-medium mt-1">{translate("Manage availability, rent, and property assets.")}</p>
         </div>
         
         <div className="flex gap-3 w-full md:w-auto">
           <button 
             onClick={fetchRooms}
             className="p-4 bg-white border border-slate-100 rounded-2xl hover:bg-slate-50 transition-colors shadow-sm"
-            title="Refresh Data"
+            title={translate("Refresh Data")}
           >
             <ArrowPathIcon className={`w-5 h-5 text-slate-500 ${loading ? 'animate-spin' : ''}`} />
           </button>
@@ -79,8 +83,7 @@ export default function Rooms() {
             onClick={() => navigate('/rooms/add')}
             className="flex-1 md:flex-none bg-[#00C896] text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-[#00C896]/20 hover:scale-[1.02] transition-transform active:scale-95 flex items-center justify-center gap-2"
           >
-            <PlusIcon className="w-5 h-5 stroke-[3px]" /> Add New Room
-          </button>
+            <PlusIcon className="w-5 h-5 stroke-[3px]" /> {translate("Add New Room")} </button>
         </div>
       </div>
 
@@ -97,13 +100,13 @@ export default function Rooms() {
                 : 'text-slate-400 hover:bg-slate-50 hover:text-[#001D3D]'}
             `}
           >
-            {tab}
+            {translate(tab)}
           </button>
         ))}
       </div>
 
       {/* --- ROOM GRID --- */}
-      {loading ? (
+      {translate(loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-pulse">
           {[1, 2, 3, 4].map(i => (
             <div key={i} className="h-80 bg-slate-100 rounded-[32px]"></div>
@@ -128,13 +131,13 @@ export default function Rooms() {
                     <KeyIcon className="w-6 h-6" />
                   </div>
                   <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${occupancyColor}`}>
-                    {status}
+                    {translate(status)}
                   </span>
                 </div>
 
                 {/* Room Identity */}
                 <div className="space-y-1">
-                  <h3 className="text-2xl font-black text-[#001D3D]">Room {room.room_number}</h3>
+                  <h3 className="text-2xl font-black text-[#001D3D]">{translate("Room")} {room.room_number}</h3>
                   <div className="flex items-center gap-1 text-slate-400">
                     <BuildingOfficeIcon className="w-3 h-3" />
                     <span className="text-[10px] font-bold uppercase tracking-widest truncate max-w-[150px]">
@@ -146,11 +149,11 @@ export default function Rooms() {
                 {/* Quick Info Table */}
                 <div className="mt-6 py-4 border-y border-slate-50 space-y-3">
                   <div className="flex justify-between text-sm font-bold">
-                    <span className="text-slate-400 font-medium">Sharing</span>
+                    <span className="text-slate-400 font-medium">{translate("Sharing")}</span>
                     <span className="text-[#001D3D]">{getSharingTypeLabel(room.sharing_type)}</span>
                   </div>
                   <div className="flex justify-between text-sm font-bold">
-                    <span className="text-slate-400 font-medium">Beds</span>
+                    <span className="text-slate-400 font-medium">{translate("Beds")}</span>
                     <span className="text-[#001D3D]">{room.occupied_beds} / {room.total_beds}</span>
                   </div>
                 </div>
@@ -158,14 +161,14 @@ export default function Rooms() {
                 {/* Footer: Price and Edit Action */}
                 <div className="mt-6 flex items-center justify-between">
                   <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase leading-none mb-1">Monthly Rent</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase leading-none mb-1">{translate("Monthly Rent")}</p>
                     <p className="text-xl font-black text-[#00C896]">₹{parseFloat(room.rent).toLocaleString()}</p>
                   </div>
                   
                   <button 
                     onClick={() => navigate(`/rooms/edit/${room.id}`)}
                     className="flex items-center justify-center w-12 h-12 bg-slate-50 text-[#001D3D] rounded-2xl hover:bg-[#001D3D] hover:text-white transition-all shadow-sm"
-                    title="Edit Room"
+                    title={translate("Edit Room")}
                   >
                     <PencilSquareIcon className="w-5 h-5" />
                   </button>
@@ -180,18 +183,16 @@ export default function Rooms() {
               <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
                 <UserIcon className="w-10 h-10 text-slate-200" />
               </div>
-              <h4 className="text-xl font-black text-[#001D3D]">No Rooms Found</h4>
-              <p className="text-slate-400 font-medium">There are no rooms listed under "{activeTab}".</p>
+              <h4 className="text-xl font-black text-[#001D3D]">{translate("No Rooms Found")}</h4>
+              <p className="text-slate-400 font-medium">{translate("There are no rooms listed under \"")}{translate(activeTab)}".</p>
               <button 
                 onClick={() => setActiveTab('All')}
                 className="mt-6 text-[#00C896] font-black text-xs uppercase tracking-widest hover:underline"
-              >
-                Show All Inventory
-              </button>
+              > {translate("Show All Inventory")} </button>
             </div>
           )}
         </div>
-      )}
+      ))}
     </div>
   );
 }

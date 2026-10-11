@@ -65,3 +65,54 @@ h1,h2,h3,h4 { color: var(--text-primary); font-family: Manrope, sans-serif; lett
 @media(max-width:768px){.home-hero { min-height: min(730px,calc(100svh - 72px)); }.filter-drawer { height: 100dvh; }.mobile-nav { max-height: calc(100dvh - 72px); overflow-y: auto; }}
 @media(max-width:520px){.home-hero { min-height: auto; }.home-hero__content { padding-block: 42px; }.home-hero h1 { font-size: clamp(2.25rem,11vw,2.65rem); }.hero-search { margin-top: 20px; padding: 14px; }.category-tabs { display: grid; grid-template-columns: 1fr 1fr; overflow: visible; }.category-tabs button { padding: 9px 7px; }.search-row { gap: 9px; margin-top: 12px; }}
 @media(prefers-reduced-motion:reduce){html { scroll-behavior: auto; }*,*::before,*::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }}
+
+/* Full viewport dashboard login, with a readable form on every screen. */
+.login-screen { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); width: 100%; min-height: 100vh; min-height: 100dvh; }
+.login-brand-panel { display: flex; flex-direction: column; justify-content: space-between; gap: 48px; background: var(--primary-dark); color: white; padding: clamp(32px, 6vw, 96px); }
+.login-brand-panel h1 { margin: 0; color: white; font-size: 32px; font-weight: 800; }
+.login-brand-panel h2 { margin: 0 0 24px; color: white; font-size: clamp(36px, 4vw, 64px); line-height: 1.12; }
+.login-brand-panel p:not(.eyebrow) { max-width: 460px; color: #c9f0e2; line-height: 1.7; }
+.login-brand-caption { margin: 0; font-size: 14px; }
+.login-form-panel { display: flex; align-items: center; justify-content: center; min-width: 0; background: white; padding: 48px clamp(24px, 5vw, 80px); }
+.login-form-content { width: 100%; max-width: 480px; }
+@media (max-width: 760px) {
+  .login-screen { grid-template-columns: 1fr; }
+  .login-brand-panel { padding: 28px 24px; gap: 24px; }
+  .login-brand-panel h2 { font-size: 32px; margin-bottom: 12px; }
+  .login-brand-caption { display: none; }
+  .login-form-panel { padding: 36px 24px; }
+}
+
+/* Shared layout for every management route. */
+.dashboard-page { width: 100%; min-width: 0; max-width: none; margin: 0; padding: 0; }
+.dashboard-page > .flex:first-child { flex-wrap: wrap; gap: 16px; }
+.dashboard-page .grid > *, .dashboard-page .flex-1 { min-width: 0; }
+.dashboard-page input:not([type=checkbox]):not([type=radio]), .dashboard-page select, .dashboard-page textarea { max-width: 100%; min-width: 0; }
+.dashboard-page .overflow-x-auto { max-width: 100%; overscroll-behavior-x: contain; }
+.dashboard-page h2 { font-size: clamp(1.75rem, 3vw, 3rem); overflow-wrap: anywhere; }
+.dashboard-form-page > form, .dashboard-form-page > div { width: 100%; }
+@media (max-width: 1279px) and (min-width: 1024px) {
+  .dashboard-page .lg\:grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dashboard-page .lg\:grid-cols-5 { grid-template-columns: minmax(0, 1fr); }
+  .dashboard-page .lg\:col-span-2, .dashboard-page .lg\:col-span-3 { grid-column: auto; }
+}
+@media (max-width: 640px) {
+  .dashboard-page .p-8, .dashboard-page .p-10 { padding: 20px; }
+  .dashboard-page .px-8 { padding-inline: 20px; }
+  .dashboard-page .gap-8, .dashboard-page .gap-10 { gap: 20px; }
+  .dashboard-page .grid-cols-2 { grid-template-columns: minmax(0, 1fr); }
+  .dashboard-page .grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dashboard-page .flex.justify-between { flex-wrap: wrap; gap: 12px; }
+  .dashboard-page [class*="min-w-[280px]"] { min-width: 0; }
+  .dashboard-page [class*="rounded-[40px]"], .dashboard-page [class*="rounded-[48px]"], .dashboard-page [class*="rounded-[56px]"] { border-radius: 24px; }
+  .dashboard-page .tracking-\[0\.4em\] { letter-spacing: .16em; }
+  .dashboard-page input[type=file] { width: 100%; }
+}
+
+.language-selector { display: inline-flex; flex-shrink: 0; align-items: center; }
+.language-selector select { width: 112px; min-height: 40px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; background: white; color: var(--text-primary); font-size: 14px; cursor: pointer; }
+.login-form-panel { position: relative; padding-top: 90px; }
+.login-language { position: absolute; top: 24px; right: 24px; }
+html[lang=kn] h1, html[lang=kn] h2, html[lang=kn] h3, html[lang=te] h1, html[lang=te] h2, html[lang=te] h3, html[lang=ml] h1, html[lang=ml] h2, html[lang=ml] h3 { line-height: 1.5; letter-spacing: normal; }
+html:not([lang=en]) .dashboard-page [class*=tracking], html:not([lang=en]) .dashboard-page label { letter-spacing: normal; }
+@media (max-width: 640px) { .nav-actions { gap: 10px; }.language-selector select { width: 98px; font-size: 13px; }.dashboard-content h2 { font-size: 1.6rem; } }

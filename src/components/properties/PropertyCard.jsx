@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../../i18n';
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -46,6 +48,8 @@ export default function PropertyCard({
   onHover,
   onLeave,
 }) {
+  useTranslation();
+
   const navigate = useNavigate();
 
   const resolvedImages = resolveImages(property.images);
@@ -89,7 +93,7 @@ export default function PropertyCard({
               {badge.type === 'choice' && '⭐ '}
               {badge.type === 'instant' && '⚡ '}
               {badge.type === 'brokerage' && '₹ '}
-              {badge.label}
+              {translate(badge.label)}
             </span>
           ))}
         </div>
@@ -115,9 +119,7 @@ export default function PropertyCard({
             checked={isCompared}
             onChange={() => onToggleCompare?.(property.id)}
             className="accent-[#FFC107] w-3 h-3"
-          />
-          Compare
-        </label>
+          /> {translate("Compare")} </label>
       </div>
 
       {/* Property Info */}
@@ -139,18 +141,17 @@ export default function PropertyCard({
         </div>
 
         <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-bold text-slate-500">
-          <span>{property.metroDistance < 1000 ? `${property.metroDistance}m` : `${(property.metroDistance / 1000).toFixed(1)}km`} from Metro</span>
-          <span>{property.collegeDistance < 1000 ? `${property.collegeDistance}m` : `${(property.collegeDistance / 1000).toFixed(1)}km`} from College</span>
+          <span>{translate(property.metroDistance < 1000 ? `${property.metroDistance}m` : `${(property.metroDistance / 1000).toFixed(1)}km`)} {translate("from Metro")}</span>
+          <span>{translate(property.collegeDistance < 1000 ? `${property.collegeDistance}m` : `${(property.collegeDistance / 1000).toFixed(1)}km`)} {translate("from College")}</span>
         </div>
 
         <div className="flex items-baseline gap-2">
           <span className="text-xl font-black text-[#001F3F]">
-            {property.price > 0 ? `₹${property.price.toLocaleString()}` : 'Contact'}
+            {translate(property.price > 0 ? `₹${property.price.toLocaleString()}` : 'Contact')}
           </span>
-          {property.price > 0 && <span className="text-xs font-bold text-slate-400">/month</span>}
+          {property.price > 0 && <span className="text-xs font-bold text-slate-400">{translate("/month")}</span>}
           {property.deposit > 0 && (
-            <span className="text-[10px] font-bold text-slate-400 ml-auto">
-              Deposit ₹{property.deposit.toLocaleString()}
+            <span className="text-[10px] font-bold text-slate-400 ml-auto"> {translate("Deposit ₹")}{property.deposit.toLocaleString()}
             </span>
           )}
         </div>
@@ -165,7 +166,7 @@ export default function PropertyCard({
                 className="flex items-center gap-1 text-[10px] font-bold bg-slate-50 text-slate-500 px-2 py-1 rounded-md border border-slate-100"
               >
                 {Icon && <Icon size={10} />}
-                {a}
+                {translate(a)}
               </span>
             );
           })}
@@ -175,13 +176,13 @@ export default function PropertyCard({
         <div className="bg-gradient-to-r from-[#001F3F]/5 to-[#FFC107]/10 rounded-xl p-3 border border-[#FFC107]/20">
           <div className="flex items-center gap-2 mb-1.5">
             <Sparkles size={14} className="text-[#FFC107]" />
-            <span className="text-xs font-black text-[#001F3F]">{property.aiMatch}% AI Match</span>
+            <span className="text-xs font-black text-[#001F3F]">{property.aiMatch}{translate("% AI Match")}</span>
           </div>
-          <p className="text-[10px] font-bold text-slate-500 mb-1">Why this property?</p>
+          <p className="text-[10px] font-bold text-slate-500 mb-1">{translate("Why this property?")}</p>
           <div className="flex flex-wrap gap-1">
             {property.aiReasons?.slice(0, 3).map((reason) => (
               <span key={reason} className="text-[10px] font-semibold text-emerald-600 flex items-center gap-0.5">
-                <CheckCircle size={10} /> {reason}
+                <CheckCircle size={10} /> {translate(reason)}
               </span>
             ))}
           </div>
@@ -192,15 +193,12 @@ export default function PropertyCard({
           <button
             onClick={handleBookVisit}
             className="flex-1 py-2.5 bg-[#FFC107] text-[#001F3F] font-black text-xs rounded-xl hover:shadow-lg hover:shadow-[#FFC107]/30 transition-shadow"
-          >
-            Book Visit
-          </button>
+          > {translate("Book Visit")} </button>
           <button
             onClick={handleViewDetails}
             className="px-3 py-2.5 bg-slate-50 text-[#001F3F] font-bold text-xs rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors flex items-center gap-1"
           >
-            <Eye size={14} /> Details
-          </button>
+            <Eye size={14} /> {translate("Details")} </button>
           <button
             onClick={(e) => e.stopPropagation()}
             className="px-3 py-2.5 bg-slate-50 text-[#001F3F] rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors"

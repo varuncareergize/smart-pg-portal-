@@ -1,8 +1,12 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../../i18n';
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Star, MapPin, Sparkles } from 'lucide-react';
 
 export default function CompareDrawer({ properties, onRemove, onClose, isOpen }) {
+  useTranslation();
+
   if (!isOpen || properties.length === 0) return null;
 
   const fields = [
@@ -29,8 +33,7 @@ export default function CompareDrawer({ properties, onRemove, onClose, isOpen })
         className="fixed bottom-0 left-0 right-0 z-[200] bg-white border-t border-slate-200 shadow-2xl max-h-[70vh] overflow-auto"
       >
         <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between z-10">
-          <h3 className="font-black text-[#001F3F]">
-            Compare Properties ({properties.length}/4)
+          <h3 className="font-black text-[#001F3F]"> {translate("Compare Properties (")}{properties.length}/4)
           </h3>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
             <X size={20} />
@@ -41,7 +44,7 @@ export default function CompareDrawer({ properties, onRemove, onClose, isOpen })
           <table className="w-full min-w-[600px]">
             <thead>
               <tr>
-                <th className="text-left text-xs font-black text-slate-400 uppercase p-3 w-32">Feature</th>
+                <th className="text-left text-xs font-black text-slate-400 uppercase p-3 w-32">{translate("Feature")}</th>
                 {properties.map((p) => (
                   <th key={p.id} className="p-3 text-left min-w-[160px]">
                     <div className="relative">
@@ -61,7 +64,7 @@ export default function CompareDrawer({ properties, onRemove, onClose, isOpen })
             <tbody>
               {fields.map((field) => (
                 <tr key={field.key} className="border-t border-slate-50">
-                  <td className="p-3 text-xs font-bold text-slate-500">{field.label}</td>
+                  <td className="p-3 text-xs font-bold text-slate-500">{translate(field.label)}</td>
                   {properties.map((p) => (
                     <td key={p.id} className="p-3 text-xs font-semibold text-[#001F3F]">
                       {field.render(p)}

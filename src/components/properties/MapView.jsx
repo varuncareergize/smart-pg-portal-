@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../../i18n';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AlertCircle, Building2, MapPin, X } from 'lucide-react';
 import { GoogleMap, OverlayView, useJsApiLoader } from '@react-google-maps/api';
@@ -16,10 +18,14 @@ function compactPrice(pricing) {
 }
 
 function MapState({ title, children }) {
-  return <div className="map-state" role="status"><AlertCircle aria-hidden="true" /><h3>{title}</h3>{children && <p>{children}</p>}</div>;
+  useTranslation();
+
+  return <div className="map-state" role="status"><AlertCircle aria-hidden="true" /><h3>{translate(title)}</h3>{children && <p>{translate(children)}</p>}</div>;
 }
 
 export default function MapView({ listings = [], highlightedId, onHighlight, single = false }) {
+  useTranslation();
+
   const plotted = useMemo(() => listings.filter((item) => item.hasCoordinates), [listings]);
   const [map, setMap] = useState(null);
   const [selected, setSelected] = useState(null);
@@ -35,10 +41,10 @@ export default function MapView({ listings = [], highlightedId, onHighlight, sin
   useEffect(() => { if (map) fit(map); }, [map, fit]);
   const visibleSelection = selected && plotted.some((item) => item.id === selected.id) ? selected : null;
 
-  if (!API_KEY) return <MapState title="Map unavailable">Google Maps is not configured. You can still browse every listing in List view.</MapState>;
-  if (loadError) return <MapState title="Map could not load">Please use List view while the map service is unavailable.</MapState>;
-  if (plotted.length === 0) return <MapState title="No mapped listings on this page">These results do not include valid coordinates. All listings remain available in List view.</MapState>;
-  if (!isLoaded) return <div className="map-state map-state--loading" role="status">Loading map…</div>;
+  if (!API_KEY) return <MapState title={translate("Map unavailable")}>{translate("Google Maps is not configured. You can still browse every listing in List view.")}</MapState>;
+  if (loadError) return <MapState title={translate("Map could not load")}>{translate("Please use List view while the map service is unavailable.")}</MapState>;
+  if (plotted.length === 0) return <MapState title={translate("No mapped listings on this page")}>{translate("These results do not include valid coordinates. All listings remain available in List view.")}</MapState>;
+  if (!isLoaded) return <div className="map-state map-state--loading" role="status">{translate("Loading map…")}</div>;
 
   return <div className="google-map-shell">
     <GoogleMap mapContainerStyle={containerStyle} center={plotted[0].coordinates} zoom={13} onLoad={(instance) => { setMap(instance); fit(instance); }} onUnmount={() => setMap(null)} options={options}>
@@ -52,12 +58,12 @@ export default function MapView({ listings = [], highlightedId, onHighlight, sin
         </OverlayView>;
       })}
     </GoogleMap>
-    {!single && <p className="map-page-note">Showing mapped listings from this results page ({plotted.length} of {listings.length}).</p>}
+    {!single && <p className="map-page-note">{translate("Showing mapped listings from this results page (")}{plotted.length} {translate("of")} {listings.length}).</p>}
     {visibleSelection && <article className="map-preview">
-      <button type="button" className="map-preview__close" onClick={() => setSelected(null)} aria-label="Close property preview"><X aria-hidden="true" /></button>
+      <button type="button" className="map-preview__close" onClick={() => setSelected(null)} aria-label={translate("Close property preview")}><X aria-hidden="true" /></button>
       <Link to={`/property/${visibleSelection.slug}`} className="map-preview__link">
-        {visibleSelection.primaryImage ? <img src={visibleSelection.primaryImage} alt="" /> : <span className="map-preview__placeholder"><Building2 aria-hidden="true" /></span>}
-        <span><small>{visibleSelection.categoryLabel}</small><strong>{visibleSelection.title}</strong>{visibleSelection.location && <span><MapPin aria-hidden="true" />{visibleSelection.location}</span>}<b>{visibleSelection.pricing?.display || 'Price on enquiry'}</b></span>
+        {translate(visibleSelection.primaryImage ? <img src={visibleSelection.primaryImage} alt="" /> : <span className="map-preview__placeholder"><Building2 aria-hidden="true" /></span>)}
+        <span><small>{translate(visibleSelection.categoryLabel)}</small><strong>{visibleSelection.title}</strong>{visibleSelection.location && <span><MapPin aria-hidden="true" />{visibleSelection.location}</span>}<b>{visibleSelection.pricing?.display || 'Price on enquiry'}</b></span>
       </Link>
     </article>}
   </div>;

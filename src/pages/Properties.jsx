@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Filter, Map, X, GitCompareArrows, SlidersHorizontal } from 'lucide-react';
@@ -27,6 +29,8 @@ const PAGE_SIZE = 6;
 const FETCH_TIMEOUT_MS = 12000; // hard ceiling so `loading` can never hang forever
 
 export default function Properties() {
+  useTranslation();
+
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
@@ -283,9 +287,9 @@ export default function Properties() {
         {/* Toolbar */}
         <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
           <p className="text-sm font-semibold text-slate-500">
-            {loading ? 'Discovering spaces...' : (
-              <><span className="font-black text-[#001F3F]">{filteredProperties.length}</span> properties found</>
-            )}
+            {translate(loading ? 'Discovering spaces...' : (
+              <><span className="font-black text-[#001F3F]">{filteredProperties.length}</span> {translate("properties found")}</>
+            ))}
           </p>
           <div className="flex items-center gap-2">
             {compareIds.length > 0 && (
@@ -293,8 +297,7 @@ export default function Properties() {
                 onClick={() => setShowCompare(true)}
                 className="flex items-center gap-1.5 px-3 py-2 bg-[#001F3F] text-[#FFC107] rounded-xl text-xs font-bold"
               >
-                <GitCompareArrows size={14} />
-                Compare ({compareIds.length})
+                <GitCompareArrows size={14} /> {translate("Compare (")}{compareIds.length})
               </button>
             )}
             {(isMobile || isTablet) && (
@@ -302,9 +305,7 @@ export default function Properties() {
                 onClick={() => setShowFilterDrawer(true)}
                 className="flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#001F3F]"
               >
-                <SlidersHorizontal size={14} />
-                Filters
-              </button>
+                <SlidersHorizontal size={14} /> {translate("Filters")} </button>
             )}
             {!isMobile && (
               <button
@@ -314,18 +315,14 @@ export default function Properties() {
                 }`}
               >
                 <Map size={14} />
-                {showMap ? 'Hide Map' : 'Show Map'}
+                {translate(showMap ? 'Hide Map' : 'Show Map')}
               </button>
             )}
           </div>
         </div>
 
         {loadError && !loading && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 font-semibold">
-            Couldn't load properties right now. Please refresh or try again shortly.
-            <span className="block text-xs font-normal mt-1 text-red-500">
-              (Check the browser console for the exact request URL and error — look for a message starting with "[Properties]".)
-            </span>
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 font-semibold"> {translate("Couldn't load properties right now. Please refresh or try again shortly.")} <span className="block text-xs font-normal mt-1 text-red-500"> {translate("(Check the browser console for the exact request URL and error — look for a message starting with \"[Properties]\".)")} </span>
           </div>
         )}
 
@@ -361,7 +358,7 @@ export default function Properties() {
 
           {/* Property Listings — Center */}
           <div className="min-w-0">
-            {loading ? (
+            {translate(loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {[1, 2, 3, 4].map((i) => <SkeletonCard key={i} />)}
               </div>
@@ -369,7 +366,7 @@ export default function Properties() {
               <>
                 <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <AnimatePresence mode="popLayout">
-                    {visibleProperties.length > 0 ? (
+                    {translate(visibleProperties.length > 0 ? (
                       visibleProperties.map((p) => (
                         <PropertyCard
                           key={p.id}
@@ -391,7 +388,7 @@ export default function Properties() {
                         onToggleSave={handleToggleSave}
                         onToggleCompare={handleToggleCompare}
                       />
-                    )}
+                    ))}
                   </AnimatePresence>
                 </motion.div>
 
@@ -401,7 +398,7 @@ export default function Properties() {
                   </div>
                 )}
               </>
-            )}
+            ))}
 
             {!loading && filteredProperties.length > 0 && (
               <AIRecommendation
@@ -476,8 +473,7 @@ export default function Properties() {
             >
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-black text-[#001F3F] flex items-center gap-2">
-                  <Filter size={18} className="text-[#FFC107]" /> Filters
-                </h3>
+                  <Filter size={18} className="text-[#FFC107]" /> {translate("Filters")} </h3>
                 <button onClick={() => setShowFilterDrawer(false)} className="p-2 hover:bg-slate-100 rounded-full">
                   <X size={20} />
                 </button>
@@ -509,9 +505,7 @@ export default function Properties() {
               <button
                 onClick={() => setShowFilterDrawer(false)}
                 className="w-full mt-4 py-3 bg-[#FFC107] text-[#001F3F] font-black rounded-xl"
-              >
-                Show {filteredProperties.length} Properties
-              </button>
+              > {translate("Show")} {filteredProperties.length} {translate("Properties")} </button>
             </motion.div>
           </>
         )}

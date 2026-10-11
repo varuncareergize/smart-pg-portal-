@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../api';
@@ -13,6 +15,8 @@ import {
 } from '@heroicons/react/24/outline';
 
 export default function Tenants() {
+  useTranslation();
+
   const navigate = useNavigate();
   const [tenants, setTenants] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,13 +57,13 @@ export default function Tenants() {
   });
 
   return (
-    <div className="container-custom space-y-8 py-10">
+    <div className="dashboard-page space-y-6">
       
       {/* --- HEADER --- */}
       <div className="flex justify-between items-center px-2">
         <div>
-          <h2 className="text-3xl font-black text-[#001D3D] italic tracking-tight uppercase leading-none">Residents</h2>
-          <p className="text-slate-500 font-medium mt-2">Database of all PG tenants and their status.</p>
+          <h2 className="text-3xl font-black text-[#001D3D] italic tracking-tight uppercase leading-none">{translate("Residents")}</h2>
+          <p className="text-slate-500 font-medium mt-2">{translate("Database of all PG tenants and their status.")}</p>
         </div>
         
         <div className="flex gap-3">
@@ -89,8 +93,8 @@ export default function Tenants() {
         >
           <div className="flex justify-between items-start">
             <div>
-              <p className={`text-[10px] font-black uppercase tracking-widest ${filter === 'Paid' ? 'text-white/80' : 'text-slate-400'}`}>Paid Residents</p>
-              <h3 className={`text-4xl font-black mt-1 ${filter === 'Paid' ? 'text-white' : 'text-[#001D3D]'}`}>{paidCount}</h3>
+              <p className={`text-[10px] font-black uppercase tracking-widest ${filter === 'Paid' ? 'text-white/80' : 'text-slate-400'}`}>{translate("Paid Residents")}</p>
+              <h3 className={`text-4xl font-black mt-1 ${filter === 'Paid' ? 'text-white' : 'text-[#001D3D]'}`}>{translate(paidCount)}</h3>
             </div>
             <div className={`p-4 rounded-2xl ${filter === 'Paid' ? 'bg-white/20 text-white' : 'bg-green-50 text-[#00C896]'}`}>
               <CheckCircleIcon className="w-8 h-8" />
@@ -106,8 +110,8 @@ export default function Tenants() {
         >
           <div className="flex justify-between items-start">
             <div>
-              <p className={`text-[10px] font-black uppercase tracking-widest ${filter === 'Unpaid' ? 'text-white/80' : 'text-slate-400'}`}>Pending Dues</p>
-              <h3 className={`text-4xl font-black mt-1 ${filter === 'Unpaid' ? 'text-white' : 'text-[#001D3D]'}`}>{unpaidCount}</h3>
+              <p className={`text-[10px] font-black uppercase tracking-widest ${filter === 'Unpaid' ? 'text-white/80' : 'text-slate-400'}`}>{translate("Pending Dues")}</p>
+              <h3 className={`text-4xl font-black mt-1 ${filter === 'Unpaid' ? 'text-white' : 'text-[#001D3D]'}`}>{translate(unpaidCount)}</h3>
             </div>
             <div className={`p-4 rounded-2xl ${filter === 'Unpaid' ? 'bg-white/20 text-white' : 'bg-red-50 text-red-500'}`}>
               <ExclamationCircleIcon className="w-8 h-8" />
@@ -121,7 +125,7 @@ export default function Tenants() {
         <MagnifyingGlassIcon className="absolute left-7 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#00C896] transition-colors" />
         <input 
           type="text"
-          placeholder="Search by resident name..."
+          placeholder={translate("Search by resident name...")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full bg-white border border-slate-100 rounded-[24px] py-4 pl-14 pr-6 text-sm font-bold text-[#001D3D] focus:outline-none focus:ring-2 focus:ring-[#00C896]/20 transition-all shadow-sm placeholder:text-slate-300"
@@ -132,19 +136,17 @@ export default function Tenants() {
       <div className="space-y-4">
         <div className="flex items-center justify-between px-4">
           <h4 className="text-[10px] font-black text-[#001D3D] uppercase tracking-widest">
-            {searchTerm ? `Results for "${searchTerm}"` : `Current View: ${filter}`}
+            {translate(searchTerm ? `Results for "${searchTerm}"` : `Current View: ${filter}`)}
           </h4>
           {(filter !== 'All' || searchTerm) && (
             <button 
               onClick={() => { setFilter('All'); setSearchTerm(''); }} 
               className="text-[10px] font-black text-red-500 hover:underline uppercase tracking-widest"
-            >
-              Clear Filters
-            </button>
+            > {translate("Clear Filters")} </button>
           )}
         </div>
 
-        {loading ? (
+        {translate(loading ? (
           [1,2,3].map(i => <div key={i} className="h-24 bg-slate-50 animate-pulse rounded-[32px]"></div>)
         ) : (
           displayTenants.map((tenant) => {
@@ -168,11 +170,9 @@ export default function Tenants() {
                       {tenant.full_name}
                     </p>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="bg-[#001D3D] text-white text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider">
-                        Room {tenant.room_number || 'NA'}
+                      <span className="bg-[#001D3D] text-white text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider"> {translate("Room")} {tenant.room_number || 'NA'}
                       </span>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase">
-                        Joined {new Date(tenant.join_date).toLocaleDateString()}
+                      <span className="text-[10px] font-bold text-slate-400 uppercase"> {translate("Joined")} {new Date(tenant.join_date).toLocaleDateString()}
                       </span>
                     </div>
                   </div>
@@ -183,7 +183,7 @@ export default function Tenants() {
                     <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
                       tenant.is_paid ? 'bg-green-50 text-[#00C896]' : 'bg-red-50 text-red-500'
                     }`}>
-                      {status}
+                      {translate(status)}
                     </span>
                     <p className="text-[10px] font-bold text-slate-400 mt-1">{tenant.phone}</p>
                   </div>
@@ -211,11 +211,11 @@ export default function Tenants() {
               </div>
             );
           })
-        )}
+        ))}
 
         {!loading && displayTenants.length === 0 && (
           <div className="py-20 text-center bg-slate-50/50 rounded-[40px] border-2 border-dashed border-slate-100">
-              <p className="text-slate-400 font-black uppercase text-xs tracking-widest">No matching residents found</p>
+              <p className="text-slate-400 font-black uppercase text-xs tracking-widest">{translate("No matching residents found")}</p>
           </div>
         )}
       </div>

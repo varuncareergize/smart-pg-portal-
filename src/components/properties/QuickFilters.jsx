@@ -1,8 +1,12 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../../i18n';
 import React from 'react';
 import { motion } from 'framer-motion';
 import { QUICK_FILTER_OPTIONS } from '../../utils/propertyHelpers';
 
 export default function QuickFilters({ activeFilters, onToggle }) {
+  useTranslation();
+
   return (
     <div className="sticky top-[120px] md:top-[128px] z-30 bg-slate-50/95 backdrop-blur-sm py-3 -mx-4 px-4 md:mx-0 md:px-0">
       <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -17,7 +21,7 @@ export default function QuickFilters({ activeFilters, onToggle }) {
                 isActive ? 'chip-active' : 'chip-inactive'
               }`}
             >
-              {filter.label}
+              {translate(filter.label)}
             </motion.button>
           );
         })}

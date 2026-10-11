@@ -30,6 +30,6 @@ export const getPGListings = (params, options) => getCategoryListings('pg', para
 export const getApartmentListings = (params, options) => getCategoryListings('apartments', params, options);
 export const getVillaListings = (params, options) => getCategoryListings('villas', params, options);
 export const getOfficeListings = (params, options) => getCategoryListings('office', params, options);
-export const getListingBySlug = (slug, options = {}) => publicApiGet(`${ROOT}/listings/${encodeURIComponent(slug)}/`, options);
+export const getListingBySlug = (slug, options = {}) => publicApiGet(`/properties/${encodeURIComponent(slug)}/`, options);
 
 export const categoryLoaders = { pg: getPGListings, apartments: getApartmentListings, villas: getVillaListings, office: getOfficeListings };

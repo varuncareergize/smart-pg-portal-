@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import { useEffect, useState } from 'react';
 import { ArrowRight, Building2, Home as HomeIcon, MapPin, Search } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -17,6 +19,8 @@ const categories = [
 ];
 
 export default function Home() {
+  useTranslation();
+
   const navigate = useNavigate();
   const [category, setCategory] = useState('pg');
   const [locality, setLocality] = useState('');
@@ -54,20 +58,17 @@ export default function Home() {
       <main>
         {/* Hero */}
         <section className="home-hero">
-          <img src={heroResidence} alt="Contemporary Bengaluru residence" fetchPriority="high" />
+          <img src={heroResidence} alt={translate("Contemporary Bengaluru residence")} fetchPriority="high" />
           <div className="home-hero__overlay" />
 
           <div className="market-container home-hero__content">
-            <p className="eyebrow eyebrow--light">Property discovery, made considered</p>
-            <h1 style={{ marginTop: '1rem' }}>Find a place that fits your life.</h1>
-            <p style={{ marginTop: '1rem' }}>
-              PG rooms, apartments, villas and offices across Bengaluru—one clear place to
-              explore them.
-            </p>
+            <p className="eyebrow eyebrow--light">{translate("Property discovery, made considered")}</p>
+            <h1 style={{ marginTop: '1rem' }}>{translate("Find a place that fits your life.")}</h1>
+            <p style={{ marginTop: '1rem' }}> {translate("PG rooms, apartments, villas and offices across Bengaluru—one clear place to explore them.")} </p>
 
             <form className="hero-search" onSubmit={search} style={{ marginTop: '2rem' }}>
               <fieldset>
-                <legend>What are you looking for?</legend>
+                <legend>{translate("What are you looking for?")}</legend>
                 <div className="category-tabs">
                   {categories.map(([key, label]) => (
                     <button
@@ -76,7 +77,7 @@ export default function Home() {
                       onClick={() => setCategory(key)}
                       key={key}
                     >
-                      {label}
+                      {translate(label)}
                     </button>
                   ))}
                 </div>
@@ -85,29 +86,28 @@ export default function Home() {
               <div className="search-row">
                 <label>
                   <MapPin />
-                  <span>Location or locality</span>
+                  <span>{translate("Location or locality")}</span>
                   <input
                     value={locality}
                     onChange={(e) => setLocality(e.target.value)}
-                    placeholder="Try Indiranagar"
+                    placeholder={translate("Try Indiranagar")}
                   />
                 </label>
 
                 <label>
                   <HomeIcon />
-                  <span>Property type</span>
+                  <span>{translate("Property type")}</span>
                   <select value={category} onChange={(e) => setCategory(e.target.value)}>
                     {categories.map(([key, label]) => (
                       <option value={key} key={key}>
-                        {label}
+                        {translate(label)}
                       </option>
                     ))}
                   </select>
                 </label>
 
                 <button className="button button--primary" type="submit">
-                  <Search /> Search
-                </button>
+                  <Search /> {translate("Search")} </button>
               </div>
             </form>
           </div>
@@ -117,17 +117,17 @@ export default function Home() {
         <section className="market-container home-section">
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Browse your way</p>
-              <h2>Spaces for every kind of city life</h2>
+              <p className="eyebrow">{translate("Browse your way")}</p>
+              <h2>{translate("Spaces for every kind of city life")}</h2>
             </div>
           </div>
 
           <div className="category-grid">
             {categories.map(([key, label, copy]) => (
               <Link to={categoryConfig[key].route} key={key}>
-                <span>{key === 'office' ? <Building2 /> : <HomeIcon />}</span>
-                <h3>{label}</h3>
-                <p>{copy}</p>
+                <span>{translate(key === 'office' ? <Building2 /> : <HomeIcon />)}</span>
+                <h3>{translate(label)}</h3>
+                <p>{translate(copy)}</p>
                 <ArrowRight />
               </Link>
             ))}
@@ -139,15 +139,14 @@ export default function Home() {
           <div className="market-container">
             <div className="section-heading">
               <div>
-                <p className="eyebrow">On LIVZZ now</p>
-                <h2>Explore places</h2>
+                <p className="eyebrow">{translate("On LIVZZ now")}</p>
+                <h2>{translate("Explore places")}</h2>
               </div>
-              <Link to="/pg">
-                Browse all <ArrowRight />
+              <Link to="/pg"> {translate("Browse all")} <ArrowRight />
               </Link>
             </div>
 
-            {state.loading ? (
+            {translate(state.loading ? (
               <ListingSkeletons count={3} />
             ) : state.error ? (
               <ErrorState onRetry={load} />
@@ -160,10 +159,10 @@ export default function Home() {
             ) : (
               <div className="quiet-empty">
                 <Building2 />
-                <h3>New places are on the way</h3>
-                <p>There are no published listings to show just yet. Check back soon.</p>
+                <h3>{translate("New places are on the way")}</h3>
+                <p>{translate("There are no published listings to show just yet. Check back soon.")}</p>
               </div>
-            )}
+            ))}
           </div>
         </section>
       </main>

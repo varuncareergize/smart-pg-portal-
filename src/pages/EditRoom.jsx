@@ -1,9 +1,13 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeftIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import { apiFetch } from '../api';
 
 export default function EditRoom() {
+  useTranslation();
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -41,16 +45,15 @@ export default function EditRoom() {
     setFormData({ ...formData, occupied_beds: 0 });
   };
 
-  if (loading) return <div className="p-10 text-center font-black">Loading Room Data...</div>;
+  if (loading) return <div className="p-10 text-center font-black">{translate("Loading Room Data...")}</div>;
 
   return (
-    <div className="container-custom max-w-2xl py-10">
+    <div className="dashboard-page dashboard-form-page">
       <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-slate-400 mb-8 font-black text-xs uppercase">
-        <ArrowLeftIcon className="w-4 h-4" /> Cancel Editing
-      </button>
+        <ArrowLeftIcon className="w-4 h-4" /> {translate("Cancel Editing")} </button>
 
       <div className="bg-white rounded-[40px] border border-slate-100 p-8 md:p-12 shadow-sm">
-        <h2 className="text-3xl font-black text-[#001D3D] italic mb-10">Edit Room {formData.room_number}</h2>
+        <h2 className="text-3xl font-black text-[#001D3D] italic mb-10">{translate("Edit Room")} {formData.room_number}</h2>
 
         {/* Quick Status Toggles */}
         <div className="grid grid-cols-2 gap-4 mb-8">
@@ -58,21 +61,17 @@ export default function EditRoom() {
             type="button"
             onClick={markAsAvailable}
             className="p-4 rounded-2xl border-2 border-dashed border-green-200 text-green-600 font-black text-xs uppercase hover:bg-green-50"
-          >
-            Quick Set: Available
-          </button>
+          > {translate("Quick Set: Available")} </button>
           <button 
             type="button"
             onClick={markAsFull}
             className="p-4 rounded-2xl border-2 border-dashed border-blue-200 text-blue-600 font-black text-xs uppercase hover:bg-blue-50"
-          >
-            Quick Set: Fully Occupied
-          </button>
+          > {translate("Quick Set: Fully Occupied")} </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase text-[#001D3D] ml-1">Monthly Rent (₹)</label>
+            <label className="text-[10px] font-black uppercase text-[#001D3D] ml-1">{translate("Monthly Rent (₹)")}</label>
             <input 
               type="number" 
               value={formData.rent}
@@ -83,7 +82,7 @@ export default function EditRoom() {
 
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-[#001D3D] ml-1">Total Beds</label>
+              <label className="text-[10px] font-black uppercase text-[#001D3D] ml-1">{translate("Total Beds")}</label>
               <input 
                 type="number" 
                 value={formData.total_beds}
@@ -92,7 +91,7 @@ export default function EditRoom() {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-[#001D3D] ml-1">Occupied Beds</label>
+              <label className="text-[10px] font-black uppercase text-[#001D3D] ml-1">{translate("Occupied Beds")}</label>
               <input 
                 type="number" 
                 value={formData.occupied_beds}
@@ -102,9 +101,7 @@ export default function EditRoom() {
             </div>
           </div>
 
-          <button type="submit" className="w-full bg-[#001D3D] text-white py-5 rounded-[24px] font-black text-lg shadow-xl">
-            Update Room Details
-          </button>
+          <button type="submit" className="w-full bg-[#001D3D] text-white py-5 rounded-[24px] font-black text-lg shadow-xl"> {translate("Update Room Details")} </button>
         </form>
       </div>
     </div>

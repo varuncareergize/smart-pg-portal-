@@ -1,8 +1,12 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React from 'react';
 import { ArrowUpRight, BedDouble, Building2, Home, Landmark, Warehouse } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const ExploreProperties = () => {
+  useTranslation();
+
   const navigate = useNavigate();
 
   const propertyCategories = [
@@ -52,10 +56,8 @@ const ExploreProperties = () => {
     <section className="bg-[#f3f5f7] px-4 py-12 sm:px-6 md:py-16 lg:px-12">
       <div className="mx-auto max-w-7xl rounded-[2rem] border border-slate-200/80 bg-[#faf9f7] px-5 py-12 shadow-[0_18px_55px_rgba(15,35,56,0.08)] sm:px-8 md:px-12 md:py-16">
         <div className="mb-10 text-center md:mb-12">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.24em] text-[#b57a45]">Explore our properties</p>
-          <h2 className="text-3xl font-semibold tracking-tight text-[#122238] sm:text-4xl md:text-5xl">
-            Every space, verified.
-          </h2>
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.24em] text-[#b57a45]">{translate("Explore our properties")}</p>
+          <h2 className="text-3xl font-semibold tracking-tight text-[#122238] sm:text-4xl md:text-5xl"> {translate("Every space, verified.")} </h2>
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 lg:gap-6">
@@ -83,8 +85,8 @@ const ExploreProperties = () => {
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <span>
-                  <span className="block text-xl font-semibold sm:text-2xl">{title}</span>
-                  <span className="mt-1 block text-sm text-white/75">{description}</span>
+                  <span className="block text-xl font-semibold sm:text-2xl">{translate(title)}</span>
+                  <span className="mt-1 block text-sm text-white/75">{translate(description)}</span>
                 </span>
               </div>
             </button>

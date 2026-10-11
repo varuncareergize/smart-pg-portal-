@@ -1,9 +1,13 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React, { useState } from 'react';
 import { Check, Phone, Mail, ArrowRight, Sparkles, ShieldCheck, Zap } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 export default function Contact() {
+  useTranslation();
+
   const [status, setStatus] = useState('');
 
   const handleSubmit = (e) => {
@@ -32,15 +36,10 @@ export default function Contact() {
               {/* Premium Pill Badge */}
              
               <div className="space-y-4">
-                <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-[1.15]">
-                  Scale Your <br />
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-violet-400 to-pink-400">
-                    Property Empire.
-                  </span>
+                <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-[1.15]"> {translate("Scale Your")} <br />
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-violet-400 to-pink-400"> {translate("Property Empire.")} </span>
                 </h1>
-                <p className="text-slate-400 text-sm md:text-base font-normal leading-relaxed">
-                  Ditch the notebooks. Automate operations, plug revenue leaks, and keep tenants delighted with Livzz.
-                </p>
+                <p className="text-slate-400 text-sm md:text-base font-normal leading-relaxed"> {translate("Ditch the notebooks. Automate operations, plug revenue leaks, and keep tenants delighted with Livzz.")} </p>
               </div>
 
               {/* Enhanced Visual Feature List */}
@@ -50,8 +49,8 @@ export default function Contact() {
                     <Zap size={14} />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-white">Smart Automated Rent Reminders</h4>
-                    <p className="text-xs text-slate-400 mt-0.5">Gentle WhatsApp prompts that clear dues without awkward calls.</p>
+                    <h4 className="text-sm font-semibold text-white">{translate("Smart Automated Rent Reminders")}</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">{translate("Gentle WhatsApp prompts that clear dues without awkward calls.")}</p>
                   </div>
                 </div>
 
@@ -60,8 +59,8 @@ export default function Contact() {
                     <Check size={14} />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-white">100% Tax & Digital Footprint Privacy</h4>
-                    <p className="text-xs text-slate-400 mt-0.5">A flexible ledger structured like your personal private diary.</p>
+                    <h4 className="text-sm font-semibold text-white">{translate("100% Tax & Digital Footprint Privacy")}</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">{translate("A flexible ledger structured like your personal private diary.")}</p>
                   </div>
                 </div>
 
@@ -70,8 +69,8 @@ export default function Contact() {
                     <ShieldCheck size={14} />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-white">Instant One-Click Onboarding</h4>
-                    <p className="text-xs text-slate-400 mt-0.5">Upload all your resident information in minutes hassle-free.</p>
+                    <h4 className="text-sm font-semibold text-white">{translate("Instant One-Click Onboarding")}</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">{translate("Upload all your resident information in minutes hassle-free.")}</p>
                   </div>
                 </div>
               </div>
@@ -86,7 +85,7 @@ export default function Contact() {
               <span className="text-white/20 hidden sm:inline">•</span>
               <a href="mailto:hello@livzzapp.com" className="flex items-center gap-2 text-xs font-medium text-slate-400 hover:text-white transition-colors">
                 <Mail size={14} className="text-indigo-400" />
-                <span>hello@livzzapp.com</span>
+                <span>{translate("hello@livzzapp.com")}</span>
               </a>
             </div>
           </div>
@@ -99,72 +98,68 @@ export default function Contact() {
               <div className="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-indigo-500 via-violet-500 to-pink-500" />
 
               <div className="mb-8">
-                <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-                  Experience Smarter Management
-                </h2>
-                <p className="text-sm text-slate-500 mt-1">
-                  Book a personalized walk-through with our product specialists.
-                </p>
+                <h2 className="text-2xl font-bold tracking-tight text-slate-900"> {translate("Experience Smarter Management")} </h2>
+                <p className="text-sm text-slate-500 mt-1"> {translate("Book a personalized walk-through with our product specialists.")} </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-700 ml-1">Your Name</label>
+                    <label className="text-xs font-semibold text-slate-700 ml-1">{translate("Your Name")}</label>
                     <input 
                       required
                       type="text" 
-                      placeholder="e.g., Rajesh Kumar"
+                      placeholder={translate("e.g., Rajesh Kumar")}
                       className="w-full bg-slate-50 border border-slate-200 focus:bg-white rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-700 ml-1">Company / PG Name</label>
+                    <label className="text-xs font-semibold text-slate-700 ml-1">{translate("Company / PG Name")}</label>
                     <input 
                       required
                       type="text" 
-                      placeholder="e.g., Stanza Living"
+                      placeholder={translate("e.g., Stanza Living")}
                       className="w-full bg-slate-50 border border-slate-200 focus:bg-white rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-slate-700 ml-1">Total Capacity (Beds)</label>
+                  <label className="text-xs font-semibold text-slate-700 ml-1">{translate("Total Capacity (Beds)")}</label>
                   <input 
                     required
                     type="number" 
-                    placeholder="How many tenants do you manage?"
+                    placeholder={translate("How many tenants do you manage?")}
                     className="w-full bg-slate-50 border border-slate-200 focus:bg-white rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-700 ml-1">City Location</label>
+                    <label className="text-xs font-semibold text-slate-700 ml-1">{translate("City Location")}</label>
                     <input 
                       required
                       type="text" 
-                      placeholder="e.g., Bengaluru"
+                      placeholder={translate("e.g., Bengaluru")}
                       className="w-full bg-slate-50 border border-slate-200 focus:bg-white rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-700 ml-1">Contact Number</label>
+                    <label className="text-xs font-semibold text-slate-700 ml-1">{translate("Contact Number")}</label>
                     <input 
                       required
                       type="tel" 
-                      placeholder="Ten-digit mobile number"
+                      placeholder={translate("Ten-digit mobile number")}
                       className="w-full bg-slate-50 border border-slate-200 focus:bg-white rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-slate-700 ml-1">Additional Requirements (Optional)</label>
+                  <label className="text-xs font-semibold text-slate-700 ml-1">{translate("Additional Requirements (Optional)")}</label>
                   <textarea 
                     rows="3" 
-                    placeholder="Tell us about any specific operational bottlenecks you face..."
+                    placeholder={translate("Tell us about any specific operational bottlenecks you face...")}
                     className="w-full bg-slate-50 border border-slate-200 focus:bg-white rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all resize-none"
                   />
                 </div>
@@ -174,16 +169,16 @@ export default function Contact() {
                   disabled={status === 'sending'}
                   className="w-full mt-3 bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-700 hover:opacity-95 text-white py-4 rounded-xl font-semibold text-sm tracking-wide flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.99] disabled:opacity-50 shadow-xl shadow-indigo-600/20 group"
                 >
-                  {status === 'sending' ? (
+                  {translate(status === 'sending' ? (
                     'Securing Your Demo slot...'
                   ) : status === 'success' ? (
                     'Awesome, Talk Soon!'
                   ) : (
                     <>
-                      <span>Secure Free Demo Access</span>
+                      <span>{translate("Secure Free Demo Access")}</span>
                       <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                     </>
-                  )}
+                  ))}
                 </button>
               </form>
             </div>

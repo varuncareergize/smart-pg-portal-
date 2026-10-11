@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Footer from '../components/Footer';
@@ -18,6 +20,8 @@ const COPY = {
 };
 
 export default function Marketplace({ category }) {
+  useTranslation();
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [state, setState] = useState({ loading: true, error: false, items: [], meta: {} });
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -43,9 +47,11 @@ export default function Marketplace({ category }) {
   const total = state.meta.count ?? state.meta.total;
 
   const results = state.items.length > 0 && <div className={`listing-grid${view === 'map' ? ' listing-grid--split' : ''}`}>{state.items.map((item) => <ListingCard listing={item} key={item.slug || item.id} highlighted={highlightedId === item.id} onFocus={() => setHighlightedId(item.id)} onBlur={() => setHighlightedId(null)} onMouseEnter={() => setHighlightedId(item.id)} onMouseLeave={() => setHighlightedId(null)} />)}</div>;
-  return <div className="site-shell"><Navbar /><main><header className="market-hero"><div className="market-container"><p className="eyebrow">Find your space</p><h1>{title}</h1><p>{subtitle}</p></div></header><section className={`market-container marketplace-layout${view === 'map' ? ' marketplace-layout--map' : ''}`}><MarketplaceFilters category={category} values={values} setValue={setValue} clear={clear} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} /><div className="market-results"><div className="results-heading"><div><p className="eyebrow">{config.label}</p><h2>{total === undefined ? 'Available places' : `${total} ${total === 1 ? 'place' : 'places'}`}</h2></div><div className="view-switcher" role="group" aria-label="Results view"><button type="button" aria-pressed={view === 'list'} onClick={() => setView('list')}>List</button><button type="button" aria-pressed={view === 'map'} onClick={() => setView('map')}>Map</button></div></div>{state.loading ? <ListingSkeletons /> : state.error ? <ErrorState onRetry={() => load()} /> : state.items.length === 0 ? <EmptyState categoryLabel={config.label} onClear={clear} /> : view === 'map' ? <div className="market-split"><div className="market-split__list">{results}{pages > 1 && <Pagination page={page} pages={pages} setValue={setValue} />}</div><div className="market-split__map"><Suspense fallback={<div className="map-state" role="status">Loading map…</div>}><MapView listings={state.items} highlightedId={highlightedId} onHighlight={setHighlightedId} /></Suspense></div></div> : results}{!state.loading && !state.error && view === 'list' && pages > 1 && <Pagination page={page} pages={pages} setValue={setValue} />}</div></section></main><Footer /></div>;
+  return <div className="site-shell"><Navbar /><main><header className="market-hero"><div className="market-container"><p className="eyebrow">{translate("Find your space")}</p><h1>{translate(title)}</h1><p>{translate(subtitle)}</p></div></header><section className={`market-container marketplace-layout${view === 'map' ? ' marketplace-layout--map' : ''}`}><MarketplaceFilters category={category} values={values} setValue={setValue} clear={clear} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} /><div className="market-results"><div className="results-heading"><div><p className="eyebrow">{translate(config.label)}</p><h2>{total === undefined ? translate('Available places') : translate('{{count}} places', { count: total })}</h2></div><div className="view-switcher" role="group" aria-label={translate("Results view")}><button type="button" aria-pressed={view === 'list'} onClick={() => setView('list')}>{translate("List")}</button><button type="button" aria-pressed={view === 'map'} onClick={() => setView('map')}>{translate("Map")}</button></div></div>{translate(state.loading ? <ListingSkeletons /> : state.error ? <ErrorState onRetry={() => load()} /> : state.items.length === 0 ? <EmptyState categoryLabel={config.label} onClear={clear} /> : view === 'map' ? <div className="market-split"><div className="market-split__list">{translate(results)}{pages > 1 && <Pagination page={page} pages={pages} setValue={setValue} />}</div><div className="market-split__map"><Suspense fallback={<div className="map-state" role="status">{translate("Loading map…")}</div>}><MapView listings={state.items} highlightedId={highlightedId} onHighlight={setHighlightedId} /></Suspense></div></div> : results)}{!state.loading && !state.error && view === 'list' && pages > 1 && <Pagination page={page} pages={pages} setValue={setValue} />}</div></section></main><Footer /></div>;
 }
 
 function Pagination({ page, pages, setValue }) {
-  return <nav className="pagination" aria-label="Listing pages"><button type="button" disabled={page <= 1} onClick={() => setValue('page', String(page - 1))}>Previous</button><span>Page {page} of {pages}</span><button type="button" disabled={page >= pages} onClick={() => setValue('page', String(page + 1))}>Next</button></nav>;
+  useTranslation();
+
+  return <nav className="pagination" aria-label={translate("Listing pages")}><button type="button" disabled={page <= 1} onClick={() => setValue('page', String(page - 1))}>{translate("Previous")}</button><span>{translate("Page {{page}} of {{pages}}", { page, pages })}</span><button type="button" disabled={page >= pages} onClick={() => setValue('page', String(page + 1))}>{translate("Next")}</button></nav>;
 }

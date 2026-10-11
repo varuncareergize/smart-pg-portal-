@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiAxios from '../api';
@@ -7,6 +9,8 @@ import {
 } from 'lucide-react';
 
 export default function Visitors() {
+  useTranslation();
+
   const navigate = useNavigate();
   const [visitorLogs, setVisitorLogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -85,12 +89,12 @@ export default function Visitors() {
   }, [activeFilter, visitorLogs, searchTerm]);
 
   return (
-    <div className="p-8 space-y-8 animate-in fade-in duration-500">
+    <div className="dashboard-page space-y-6 animate-in fade-in duration-500">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-[#001D3D] italic">Visitor Logs</h1>
-          <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Real-time Security Monitoring</p>
+          <h1 className="text-2xl font-black text-[#001D3D] italic">{translate("Visitor Logs")}</h1>
+          <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">{translate("Real-time Security Monitoring")}</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -98,7 +102,7 @@ export default function Visitors() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
             <input 
               type="text"
-              placeholder="Search name or room..."
+              placeholder={translate("Search name or room...")}
               className="pl-10 pr-4 py-2 bg-white border border-slate-100 rounded-xl text-xs font-bold focus:ring-2 focus:ring-[#00C896] outline-none transition-all w-64"
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -107,7 +111,7 @@ export default function Visitors() {
             onClick={fetchVisitors}
             className="p-2 bg-white border border-slate-100 rounded-xl text-slate-400 hover:text-[#00C896] transition-colors"
           >
-            {loading ? <Loader2 size={18} className="animate-spin" /> : <Clock size={18} />}
+            {translate(loading ? <Loader2 size={18} className="animate-spin" /> : <Clock size={18} />)}
           </button>
         </div>
       </div>
@@ -129,7 +133,7 @@ export default function Visitors() {
             }`}>
               {stat.icon}
             </div>
-            <p className="text-[10px] font-black uppercase tracking-widest opacity-60">{stat.label}</p>
+            <p className="text-[10px] font-black uppercase tracking-widest opacity-60">{translate(stat.label)}</p>
             <p className="text-3xl font-black mt-1">{stat.value}</p>
           </button>
         ))}
@@ -139,13 +143,13 @@ export default function Visitors() {
         {/* Table Section */}
         <div className="lg:col-span-3 bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden">
           <div className="overflow-x-auto p-6">
-            <table className="w-full">
+            <table className="w-full min-w-[640px]">
               <thead>
                 <tr className="text-[10px] font-black text-slate-300 uppercase tracking-widest border-b border-slate-50">
-                  <th className="px-4 pb-4 text-left">Visitor Profile</th>
-                  <th className="px-4 pb-4 text-left">Location</th>
-                  <th className="px-4 pb-4 text-left">Entry Time</th>
-                  <th className="px-4 pb-4 text-right">Status</th>
+                  <th className="px-4 pb-4 text-left">{translate("Visitor Profile")}</th>
+                  <th className="px-4 pb-4 text-left">{translate("Location")}</th>
+                  <th className="px-4 pb-4 text-left">{translate("Entry Time")}</th>
+                  <th className="px-4 pb-4 text-right">{translate("Status")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
@@ -174,7 +178,7 @@ export default function Visitors() {
                       <p className="text-sm font-black text-[#001D3D] flex items-center gap-2">
                         <Home size={14} className="text-slate-300" /> {log.room_number}
                       </p>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase italic">To: {log.resident_name}</p>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase italic">{translate("To:")} {log.resident_name}</p>
                     </td>
                     <td className="px-4 py-5 text-xs font-bold text-slate-500">
                         {log.entry_time_formatted}
@@ -185,7 +189,7 @@ export default function Visitors() {
                         ? 'bg-emerald-100 text-emerald-600' 
                         : 'bg-slate-100 text-slate-400'
                       }`}>
-                        {log.status}
+                        {translate(log.status)}
                       </span>
                     </td>
                   </tr>
@@ -195,7 +199,7 @@ export default function Visitors() {
             {filteredVisitors.length === 0 && !loading && (
               <div className="py-20 text-center space-y-3">
                 <Users className="mx-auto text-slate-200" size={48} />
-                <p className="text-slate-400 font-bold text-sm">No visitors found in this category.</p>
+                <p className="text-slate-400 font-bold text-sm">{translate("No visitors found in this category.")}</p>
               </div>
             )}
           </div>
@@ -205,18 +209,16 @@ export default function Visitors() {
         <div className="space-y-6">
           <div className="bg-[#001D3D] p-8 rounded-[40px] shadow-xl shadow-blue-900/20 text-white relative overflow-hidden">
             <div className="relative z-10 space-y-6">
-              <h4 className="text-white/40 font-black text-[10px] uppercase tracking-widest">
-                Control Panel
-              </h4>
+              <h4 className="text-white/40 font-black text-[10px] uppercase tracking-widest"> {translate("Control Panel")} </h4>
               
-              {selectedVisitor ? (
+              {translate(selectedVisitor ? (
                 <div className="space-y-3">
-                    <p className="text-xs font-bold text-white/60">Manage entry for <span className="text-[#00C896]">{visitorLogs.find(v => v.id === selectedVisitor)?.full_name}</span></p>
+                    <p className="text-xs font-bold text-white/60">{translate("Manage entry for")} <span className="text-[#00C896]">{visitorLogs.find(v => v.id === selectedVisitor)?.full_name}</span></p>
                     <button 
                         onClick={() => handleCheckOut(selectedVisitor)}
                         className="w-full flex items-center justify-between bg-orange-500 p-4 rounded-2xl font-black text-xs hover:bg-orange-600 transition-all group"
                     >
-                        <span>Force Check Out</span>
+                        <span>{translate("Force Check Out")}</span>
                         <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                 </div>
@@ -225,10 +227,10 @@ export default function Visitors() {
                   onClick={() => navigate('/visitors/add')} 
                   className="w-full flex items-center justify-between bg-[#00C896] p-4 rounded-2xl font-black text-xs hover:scale-[1.02] transition-all group shadow-lg shadow-emerald-500/20"
                 >
-                  <span>New Visitor Registration</span>
+                  <span>{translate("New Visitor Registration")}</span>
                   <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </button>
-              )}
+              ))}
             </div>
             {/* Decoration */}
             <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>

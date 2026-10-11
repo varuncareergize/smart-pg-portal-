@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiAxios from '../api';
@@ -11,6 +13,8 @@ import {
 } from '@heroicons/react/24/outline';
 
 export default function Maintenance() {
+  useTranslation();
+
   const navigate = useNavigate();
   const [tickets, setTickets] = useState([]);
   const [filter, setFilter] = useState('All');
@@ -36,10 +40,10 @@ export default function Maintenance() {
 
   const handleStatusUpdate = async (id, newStatus) => {
     try {
-      await apiAxios.patch(`/api/tickets/${id}/`, { status: newStatus });
+      await apiAxios.patch(`/tickets/${id}/`, { status: newStatus });
       fetchTickets(); 
     } catch (err) {
-      alert("Failed to update status");
+      alert(translate("Failed to update status"));
     }
   };
 
@@ -56,22 +60,21 @@ export default function Maintenance() {
     return t.status === filter;
   });
 
-  if (loading) return <div className="p-20 text-center font-black text-sg-navy animate-pulse uppercase tracking-widest">Loading Dashboard...</div>;
+  if (loading) return <div className="p-20 text-center font-black text-sg-navy animate-pulse uppercase tracking-widest">{translate("Loading Dashboard...")}</div>;
 
   return (
-    <div className="container-custom space-y-8 pb-10">
+    <div className="dashboard-page space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-black text-sg-navy tracking-tight">Maintenance</h2>
-          <p className="text-sg-text-muted font-medium mt-1">Real-time issue tracking for Mullavanam Group.</p>
+          <h2 className="text-3xl font-black text-sg-navy tracking-tight">{translate("Maintenance")}</h2>
+          <p className="text-sg-text-muted font-medium mt-1">{translate("Real-time issue tracking for Mullavanam Group.")}</p>
         </div>
         <button 
           onClick={() => navigate('/maintenance/new')}
           className="bg-sg-green text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-sg-green/20 flex items-center gap-2 hover:scale-105 transition-all active:scale-95"
         >
-          <PlusIcon className="w-5 h-5 stroke-[3px]" /> Add New Ticket
-        </button>
+          <PlusIcon className="w-5 h-5 stroke-[3px]" /> {translate("Add New Ticket")} </button>
       </div>
 
       {/* Stats Grid */}
@@ -85,14 +88,14 @@ export default function Maintenance() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Table Section */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-[32px] border border-sg-border overflow-hidden shadow-sm">
-            <table className="w-full text-left">
+          <div className="bg-white rounded-[32px] border border-sg-border overflow-x-auto shadow-sm">
+            <table className="w-full min-w-[600px] text-left">
               <thead className="bg-sg-bg/30 border-b border-sg-border">
                 <tr className="text-[9px] font-black text-sg-text-muted uppercase tracking-widest">
-                  <th className="px-6 py-4">Ticket</th>
-                  <th className="px-6 py-4">Details</th>
-                  <th className="px-6 py-4 text-center">Priority</th>
-                  <th className="px-6 py-4 text-right">Action</th>
+                  <th className="px-6 py-4">{translate("Ticket")}</th>
+                  <th className="px-6 py-4">{translate("Details")}</th>
+                  <th className="px-6 py-4 text-center">{translate("Priority")}</th>
+                  <th className="px-6 py-4 text-right">{translate("Action")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-sg-border">
@@ -109,13 +112,11 @@ export default function Maintenance() {
                       </span>
                     </td>
                     <td className="px-6 py-6 text-right">
-                      {ticket.status !== 'Resolved' ? (
-                        <button onClick={() => handleStatusUpdate(ticket.id, 'Resolved')} className="text-[10px] font-black text-sg-green border border-sg-green/30 px-3 py-1 rounded-lg hover:bg-sg-green hover:text-white transition-all">
-                          Resolve
-                        </button>
+                      {translate(ticket.status !== 'Resolved' ? (
+                        <button onClick={() => handleStatusUpdate(ticket.id, 'Resolved')} className="text-[10px] font-black text-sg-green border border-sg-green/30 px-3 py-1 rounded-lg hover:bg-sg-green hover:text-white transition-all"> {translate("Resolve")} </button>
                       ) : (
-                        <span className="text-[10px] font-black text-sg-text-muted uppercase">Closed</span>
-                      )}
+                        <span className="text-[10px] font-black text-sg-text-muted uppercase">{translate("Closed")}</span>
+                      ))}
                     </td>
                   </tr>
                 ))}
@@ -126,9 +127,7 @@ export default function Maintenance() {
 
         {/* --- THE SIDEBAR ACTIVITY LOG --- */}
         <div className="bg-white p-6 rounded-[32px] border border-sg-border shadow-sm h-fit">
-          <h4 className="text-lg font-black text-sg-navy mb-6 flex items-center gap-2">
-            Recent Activity
-            <span className="w-2 h-2 rounded-full bg-sg-green animate-pulse" />
+          <h4 className="text-lg font-black text-sg-navy mb-6 flex items-center gap-2"> {translate("Recent Activity")} <span className="w-2 h-2 rounded-full bg-sg-green animate-pulse" />
           </h4>
           
           <div className="space-y-8 relative before:absolute before:left-[15px] before:top-2 before:bottom-2 before:w-[1.5px] before:bg-sg-bg">
@@ -136,21 +135,20 @@ export default function Maintenance() {
               <div key={i} className="relative pl-10">
                 {/* Timeline Dot */}
                 <div className={`absolute left-0 top-1 w-8 h-8 rounded-full bg-white border-2 flex items-center justify-center z-10 ${t.status === 'Resolved' ? 'border-sg-green' : 'border-sg-border'}`}>
-                  {t.status === 'Resolved' ? (
+                  {translate(t.status === 'Resolved' ? (
                     <CheckBadgeIcon className="w-4 h-4 text-sg-green" />
                   ) : (
                     <UserCircleIcon className="w-4 h-4 text-sg-text-muted" />
-                  )}
+                  ))}
                 </div>
                 
                 {/* Log Content */}
                 <div>
                   <p className="text-[9px] font-black text-sg-text-muted uppercase tracking-tighter">
-                    {t.status === 'Resolved' ? 'Completed' : 'Active Ticket'}
+                    {translate(t.status === 'Resolved' ? 'Completed' : 'Active Ticket')}
                   </p>
                   <p className="text-xs font-black text-sg-navy mt-0.5">{t.issue}</p>
-                  <p className="text-[10px] font-medium text-sg-text-muted mt-1">
-                    Assigned to <span className="font-black text-sg-navy">{t.assigned_name || 'Technical Team'}</span>
+                  <p className="text-[10px] font-medium text-sg-text-muted mt-1"> {translate("Assigned to")} <span className="font-black text-sg-navy">{t.assigned_name || 'Technical Team'}</span>
                   </p>
                   <div className="mt-2 inline-block px-2 py-0.5 bg-sg-bg rounded text-[8px] font-black text-sg-navy uppercase">
                     {t.unit_details}
@@ -160,7 +158,7 @@ export default function Maintenance() {
             ))}
             
             {tickets.length === 0 && (
-              <p className="text-xs font-bold text-sg-text-muted text-center py-4">No recent logs available.</p>
+              <p className="text-xs font-bold text-sg-text-muted text-center py-4">{translate("No recent logs available.")}</p>
             )}
           </div>
         </div>
@@ -170,6 +168,8 @@ export default function Maintenance() {
 }
 
 function StatCard({ label, val, icon, active, onClick, color }) {
+  useTranslation();
+
   const colorMap = {
     green: active ? 'bg-white border-sg-green ring-2 ring-sg-green/20' : 'bg-white border-sg-border',
     blue: active ? 'bg-blue-500 text-white' : 'bg-white border-sg-border',
@@ -178,9 +178,9 @@ function StatCard({ label, val, icon, active, onClick, color }) {
   };
   return (
     <button onClick={onClick} className={`p-6 rounded-[28px] border transition-all text-left shadow-sm ${colorMap[color]}`}>
-      <div className={`p-2 rounded-xl w-fit ${active ? 'bg-white/20' : 'bg-slate-50'}`}>{icon}</div>
-      <h3 className="text-3xl font-black mt-4">{val}</h3>
-      <p className="text-[10px] font-black uppercase tracking-widest opacity-70">{label}</p>
+      <div className={`p-2 rounded-xl w-fit ${active ? 'bg-white/20' : 'bg-slate-50'}`}>{translate(icon)}</div>
+      <h3 className="text-3xl font-black mt-4">{translate(val)}</h3>
+      <p className="text-[10px] font-black uppercase tracking-widest opacity-70">{translate(label)}</p>
     </button>
   );
 }

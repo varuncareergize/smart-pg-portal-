@@ -1,4 +1,8 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
   import React, { useState, useEffect } from 'react';
+  import { apiFetch } from '../api';
+  import LanguageSelector from './LanguageSelector';
   import { useNavigate, Link, useLocation } from 'react-router-dom';
   import { 
     BellIcon, 
@@ -7,7 +11,9 @@
     HomeIcon
   } from '@heroicons/react/24/outline';
 
-  export default function NavbarInside() {
+  export default function NavbarInside({ onToggleMenu, isMenuOpen }) {
+  useTranslation();
+
     const navigate = useNavigate();
     const location = useLocation();
     const [unreadCount, setUnreadCount] = useState(0);
@@ -40,23 +46,24 @@
     };
 
     return (
-      <nav className="bg-white border-b border-slate-100 px-4 md:px-8 py-3 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+      <nav className="shrink-0 bg-white border-b border-slate-100 px-4 md:px-6 py-3 flex items-center justify-between gap-3 sticky top-0 z-30 shadow-sm">
         
         {/* --- LEFT: DYNAMIC BRANDING --- */}
         <div className="flex items-center gap-4">
+          <button type="button" onClick={onToggleMenu} aria-label={translate("Open dashboard navigation")} aria-expanded={isMenuOpen} className="lg:hidden px-3 py-2 rounded-xl border border-sg-border text-sg-navy">☰</button>
           <Link to="/dashboard" className="flex items-center gap-2 group">
           
-            <div className="hidden sm:block">
-            
-            </div>
+            <span className="font-bold text-sg-navy">{translate("LIVZZ")}</span>
           </Link>
         </div>
 
         {/* --- RIGHT: UTILITIES --- */}
         <div className="flex items-center gap-2 md:gap-5">
+          <LanguageSelector />
           
           {/* NOTIFICATION ICON */}
           <button 
+            aria-label={translate("Notifications")}
             onClick={() => navigate('/notifications')}
             className={`relative p-2 rounded-full transition-all duration-300 ${
               location.pathname === '/notifications' 
@@ -71,7 +78,7 @@
               <span className="absolute top-1.5 right-1.5 flex h-4 w-4">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 border-2 border-white text-[8px] font-bold text-white items-center justify-center">
-                  {unreadCount > 9 ? '9+' : unreadCount}
+                  {translate(unreadCount > 9 ? '9+' : unreadCount)}
                 </span>
               </span>
             )}
@@ -82,18 +89,17 @@
             <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
               <UserCircleIcon className="w-6 h-6 text-slate-400" />
             </div>
-            <span className="hidden lg:block text-xs font-black text-[#001D3D] uppercase tracking-tight">
-              Owner Panel
-            </span>
+            <span className="hidden lg:block text-xs font-black text-[#001D3D] uppercase tracking-tight"> {translate("Owner Panel")} </span>
           </div>
 
           {/* LOGOUT */}
           <button 
             onClick={handleLogout}
+            aria-label={translate("Logout")}
             className="flex items-center gap-2 px-3 py-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all group"
-            title="Logout"
+            title={translate("Logout")}
           >
-            <span className="hidden md:inline text-[10px] font-black uppercase tracking-widest">Logout</span>
+            <span className="hidden md:inline text-[10px] font-black uppercase tracking-widest">{translate("Logout")}</span>
             <ArrowRightOnRectangleIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
 

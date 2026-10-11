@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React, { useState, useRef, useEffect } from "react";
 import {
   Plane,
@@ -89,6 +91,8 @@ const HOTEL_RESULTS = [
 // needs to be hosted — it's fully self-contained.
 // ---------------------------------------------------------------------------
 function VoyoAvatar({ size = 44 }) {
+  useTranslation();
+
   const [blink, setBlink] = useState(false);
 
   useEffect(() => {
@@ -107,7 +111,7 @@ function VoyoAvatar({ size = 44 }) {
 
   return (
     <div style={{ width: size, height: size }} className="shrink-0">
-      <style>{`
+      <style>{translate(`
         @keyframes voyo-head-bob {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-2px); }
@@ -144,7 +148,7 @@ function VoyoAvatar({ size = 44 }) {
         .voyo-eye-blink {
           transform: scaleY(0.08);
         }
-      `}</style>
+      `)}</style>
       <svg
         viewBox="0 0 240 260"
         width="100%"
@@ -223,6 +227,8 @@ function VoyoAvatar({ size = 44 }) {
 }
 
 function TypingDots() {
+  useTranslation();
+
   return (
     <div className="flex items-center gap-1 px-4 py-3">
       <span className="w-1.5 h-1.5 rounded-full bg-[#8A8FB5] animate-bounce [animation-delay:-0.3s]" />
@@ -233,9 +239,11 @@ function TypingDots() {
 }
 
 function BoardingPassCard({ children, stubLabel, onSelect, footer }) {
+  useTranslation();
+
   return (
     <div className="flex rounded-xl overflow-hidden shadow-sm border border-[#E7E4DC] bg-white my-1 max-w-[280px]">
-      <div className="flex-1 p-3">{children}</div>
+      <div className="flex-1 p-3">{translate(children)}</div>
       <div className="relative w-14 shrink-0 flex flex-col items-center justify-center bg-[#FF6B35] text-white">
         {/* Perforation Notches */}
         <span className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-[#F7F5F2]" />
@@ -245,15 +253,17 @@ function BoardingPassCard({ children, stubLabel, onSelect, footer }) {
           onClick={onSelect}
           className="flex flex-col items-center gap-1 text-[10px] font-bold tracking-widest [writing-mode:vertical-rl] py-2 hover:opacity-90 transition"
         >
-          {stubLabel}
+          {translate(stubLabel)}
         </button>
       </div>
-      {footer}
+      {translate(footer)}
     </div>
   );
 }
 
 function FlightCard({ flight, onSelect }) {
+  useTranslation();
+
   return (
     <BoardingPassCard stubLabel="SELECT ↑" onSelect={() => onSelect(flight)}>
       <div className="flex items-center justify-between mb-1.5">
@@ -287,7 +297,7 @@ function FlightCard({ flight, onSelect }) {
       </div>
       <p className="text-base font-extrabold text-[#1B1F3B]">
         ₹{flight.price}
-        <span className="text-[10px] font-normal text-[#8A8FB5]"> /person</span>
+        <span className="text-[10px] font-normal text-[#8A8FB5]"> {translate("/person")}</span>
       </p>
     </BoardingPassCard>
   );
@@ -295,6 +305,8 @@ function FlightCard({ flight, onSelect }) {
 
 // Stays / Accommodation UI Component
 function HotelCard({ hotel, onSelect }) {
+  useTranslation();
+
   return (
     <BoardingPassCard stubLabel="BOOK ↑" onSelect={() => onSelect(hotel)}>
       <div className="flex items-center justify-between mb-1">
@@ -313,13 +325,15 @@ function HotelCard({ hotel, onSelect }) {
       </div>
       <p className="text-base font-extrabold text-[#1B1F3B]">
         ₹{hotel.price}
-        <span className="text-[10px] font-normal text-[#8A8FB5]"> total</span>
+        <span className="text-[10px] font-normal text-[#8A8FB5]"> {translate("total")}</span>
       </p>
     </BoardingPassCard>
   );
 }
 
 function QuickReplies({ options, onPick }) {
+  useTranslation();
+
   return (
     <div className="flex flex-wrap gap-2 mt-2">
       {options.map((opt) => (
@@ -329,7 +343,7 @@ function QuickReplies({ options, onPick }) {
           className="flex items-center gap-1.5 text-xs font-medium bg-white border border-[#E7E4DC] text-[#1B1F3B] px-3 py-1.5 rounded-full hover:border-[#FF6B35] hover:text-[#FF6B35] transition"
         >
           {opt.icon && <opt.icon className="w-3.5 h-3.5" />}
-          {opt.label}
+          {translate(opt.label)}
         </button>
       ))}
     </div>
@@ -340,6 +354,8 @@ let uid = 0;
 const nextId = () => `m${Date.now()}_${uid++}`;
 
 export default function TravelChatbot() {
+  useTranslation();
+
   const [isOpen, setIsOpen] = useState(true);
   const [messages, setMessages] = useState([
     {
@@ -488,18 +504,18 @@ export default function TravelChatbot() {
 
   return (
     <div className="fixed inset-0 pointer-events-none font-sans">
-      <style>{`
+      <style>{translate(`
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
         .font-sans { font-family: 'Inter', sans-serif; }
         .font-display { font-family: 'Sora', sans-serif; }
-      `}</style>
+      `)}</style>
 
       {/* Persistent App Launcher Switch — just the avatar itself, no circle backdrop */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
           className="pointer-events-auto absolute bottom-6 right-6 w-24 h-24 flex items-center justify-center hover:scale-105 transition drop-shadow-xl"
-          aria-label="Open Voyo chat"
+          aria-label={translate("Open Voyo chat")}
         >
           <VoyoAvatar size={96} />
           <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#FF6B35] flex items-center justify-center">
@@ -523,18 +539,14 @@ export default function TravelChatbot() {
             {/* Custom Modern Header Element — extra left padding clears space for the avatar poking out above it */}
             <div className="bg-[#1B1F3B] pl-24 pr-4 pt-7 pb-3 flex items-center gap-3 shrink-0">
               <div className="flex-1 min-w-0">
-                <p className="font-display font-bold text-white text-sm">
-                  Voyo
-                </p>
+                <p className="font-display font-bold text-white text-sm"> {translate("Voyo")} </p>
                 <p className="text-[11px] text-[#8A8FB5] flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#2EC4B6] animate-pulse" />
-                  Online · ready to plan your trip
-                </p>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#2EC4B6] animate-pulse" /> {translate("Online · ready to plan your trip")} </p>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
                 className="text-[#8A8FB5] hover:text-white transition"
-                aria-label="Close chat"
+                aria-label={translate("Close chat")}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -618,21 +630,21 @@ export default function TravelChatbot() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                placeholder="Ask about flights, hotels, trips…"
+                placeholder={translate("Ask about flights, hotels, trips…")}
                 className="flex-1 text-sm bg-[#F7F5F2] rounded-full px-4 py-2.5 outline-none focus:ring-2 focus:ring-[#FF6B35]/40 text-[#1B1F3B] placeholder:text-[#8A8FB5]"
               />
               <button
                 onClick={() => handleSend()}
                 disabled={!input.trim()}
                 className="w-9 h-9 rounded-full bg-[#FF6B35] text-white flex items-center justify-center disabled:opacity-40 hover:brightness-105 transition shrink-0"
-                aria-label="Send message"
+                aria-label={translate("Send message")}
               >
                 <Send className="w-4 h-4" />
               </button>
             </div>
             <div className="flex items-center gap-1 mt-2 text-[10px] text-[#8A8FB5]">
               <Calendar className="w-3 h-3" />
-              <span>Try “Bangalore to Goa” or “Hotels in Goa”</span>
+              <span>{translate("Try “Bangalore to Goa” or “Hotels in Goa”")}</span>
               <ArrowRight className="w-3 h-3 ml-auto opacity-0" />
             </div>
           </div>

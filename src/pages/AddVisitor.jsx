@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiAxios from '../api';
@@ -7,6 +9,8 @@ import {
 } from 'lucide-react';
 
 export default function AddVisitor() {
+  useTranslation();
+
   const navigate = useNavigate();
   const [rooms, setRooms] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,20 +51,20 @@ export default function AddVisitor() {
       navigate('/visitors'); 
     } catch (error) {
       console.error("Registration Error:", error.response?.data || error.message);
-      alert("Registration failed. Please check your inputs.");
+      alert(translate("Registration failed. Please check your inputs."));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="p-8 max-w-2xl mx-auto">
+    <div className="dashboard-page dashboard-form-page">
       <button 
         onClick={() => navigate(-1)}
         className="flex items-center gap-2 text-slate-400 hover:text-[#001D3D] transition-colors mb-6"
       >
         <ArrowLeft size={18} />
-        <span className="text-[10px] font-black uppercase tracking-widest">Back to Logs</span>
+        <span className="text-[10px] font-black uppercase tracking-widest">{translate("Back to Logs")}</span>
       </button>
 
       <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden">
@@ -71,18 +75,17 @@ export default function AddVisitor() {
             </div>
             <h1 className="text-2xl font-black italic">New Visitor</h1>
           </div> */}
-          <p className="text-white/60 text-xs font-bold uppercase tracking-widest">Security Gate Entry</p>
+          <p className="text-white/60 text-xs font-bold uppercase tracking-widest">{translate("Security Gate Entry")}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-              <FileText size={12} /> Full Name
-            </label>
+              <FileText size={12} /> {translate("Full Name")} </label>
             <input 
               required
               type="text"
-              placeholder="Enter visitor name"
+              placeholder={translate("Enter visitor name")}
               className="w-full bg-slate-50 border-none rounded-2xl p-4 font-bold text-[#001D3D] focus:ring-2 focus:ring-[#00C896] transition-all"
               onChange={(e) => setFormData({...formData, full_name: e.target.value})}
             />
@@ -91,8 +94,7 @@ export default function AddVisitor() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-                <Phone size={12} /> Phone Number
-              </label>
+                <Phone size={12} /> {translate("Phone Number")} </label>
               <input 
                 required
                 type="tel"
@@ -104,14 +106,13 @@ export default function AddVisitor() {
 
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-                <Home size={12} /> Target Room
-              </label>
+                <Home size={12} /> {translate("Target Room")} </label>
               <select 
                 required
                 className="w-full bg-slate-50 border-none rounded-2xl p-4 font-bold text-[#001D3D] focus:ring-2 focus:ring-[#00C896] transition-all appearance-none"
                 onChange={(e) => setFormData({...formData, room: e.target.value})}
               >
-                <option value="">Select Room</option>
+                <option value="">{translate("Select Room")}</option>
                 {rooms.map(r => (
                   <option key={r.id} value={r.id}>{r.room_number}</option>
                 ))}
@@ -120,20 +121,18 @@ export default function AddVisitor() {
           </div>
 
           <div className="space-y-2">
-            <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-              Resident To Visit
-            </label>
+            <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1"> {translate("Resident To Visit")} </label>
             <input 
               required
               type="text"
-              placeholder="Who are they visiting?"
+              placeholder={translate("Who are they visiting?")}
               className="w-full bg-slate-50 border-none rounded-2xl p-4 font-bold text-[#001D3D] focus:ring-2 focus:ring-[#00C896] transition-all"
               onChange={(e) => setFormData({...formData, resident_name: e.target.value})}
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Purpose of Visit</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">{translate("Purpose of Visit")}</label>
             <div className="flex flex-wrap gap-2">
               {['Relative', 'Delivery', 'Maintenance', 'Guest'].map((p) => (
                 <button
@@ -144,7 +143,7 @@ export default function AddVisitor() {
                     formData.purpose === p ? 'bg-[#001D3D] text-white' : 'bg-slate-100 text-slate-400'
                   }`}
                 >
-                  {p}
+                  {translate(p)}
                 </button>
               ))}
             </div>
@@ -156,8 +155,8 @@ export default function AddVisitor() {
               disabled={isSubmitting}
               className="w-full bg-[#00C896] text-white py-5 rounded-[24px] font-black text-lg shadow-lg shadow-emerald-500/20 hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-70"
             >
-              {isSubmitting ? <Loader2 className="animate-spin" /> : <ShieldCheck size={24} />}
-              {isSubmitting ? 'Registering...' : 'Verify & Check In'}
+              {translate(isSubmitting ? <Loader2 className="animate-spin" /> : <ShieldCheck size={24} />)}
+              {translate(isSubmitting ? 'Registering...' : 'Verify & Check In')}
             </button>
           </div>
         </form>

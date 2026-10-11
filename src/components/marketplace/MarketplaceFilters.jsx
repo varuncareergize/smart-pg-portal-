@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../../i18n';
 import { SlidersHorizontal, X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
@@ -22,6 +24,8 @@ const CATEGORY_FIELDS = {
 };
 
 export default function MarketplaceFilters({ category, values, setValue, clear, mobileOpen, setMobileOpen }) {
+  useTranslation();
+
   const fields = CATEGORY_FIELDS[category] || [];
   const active = Object.values(values).filter(Boolean).length;
   const closeButtonRef = useRef(null);
@@ -36,13 +40,13 @@ export default function MarketplaceFilters({ category, values, setValue, clear, 
     return () => { document.body.style.overflow = previousOverflow; document.removeEventListener('keydown', close); };
   }, [mobileOpen, setMobileOpen]);
   const content = <>
-    <div className="filter-heading"><strong>Filter properties</strong><button ref={closeButtonRef} type="button" className="icon-button mobile-only" onClick={() => { setMobileOpen(false); triggerRef.current?.focus(); }} aria-label="Close filters"><X aria-hidden="true" /></button></div>
-    <label>Locality<input value={values.locality || ''} onChange={(e) => setValue('locality', e.target.value)} placeholder="e.g. Indiranagar" /></label>
-    <div className="filter-pair"><label>Min price<input type="number" min="0" value={values.min_price || ''} onChange={(e) => setValue('min_price', e.target.value)} placeholder="₹ Min" /></label><label>Max price<input type="number" min="0" value={values.max_price || ''} onChange={(e) => setValue('max_price', e.target.value)} placeholder="₹ Max" /></label></div>
-    {fields.map(([name, label, options]) => <label key={name}>{label}<select value={values[name] || ''} onChange={(e) => setValue(name, e.target.value)}>{options.map(([optionValue, text]) => <option value={optionValue} key={optionValue}>{text}</option>)}</select></label>)}
-    <label>Sort by<select value={values.sort || ''} onChange={(e) => setValue('sort', e.target.value)}><option value="">Recommended order</option><option value="price">Price: low to high</option><option value="-price">Price: high to low</option><option value="-published_at">Newest</option></select></label>
-    {active > 0 && <button type="button" className="clear-button" onClick={clear}>Clear all filters</button>}
-    <button type="button" className="button button--primary mobile-only" onClick={() => { setMobileOpen(false); triggerRef.current?.focus(); }}>Show results</button>
+    <div className="filter-heading"><strong>{translate("Filter properties")}</strong><button ref={closeButtonRef} type="button" className="icon-button mobile-only" onClick={() => { setMobileOpen(false); triggerRef.current?.focus(); }} aria-label={translate("Close filters")}><X aria-hidden="true" /></button></div>
+    <label>{translate("Locality")}<input value={values.locality || ''} onChange={(e) => setValue('locality', e.target.value)} placeholder={translate("e.g. Indiranagar")} /></label>
+    <div className="filter-pair"><label>{translate("Min price")}<input type="number" min="0" value={values.min_price || ''} onChange={(e) => setValue('min_price', e.target.value)} placeholder={translate("₹ Min")} /></label><label>{translate("Max price")}<input type="number" min="0" value={values.max_price || ''} onChange={(e) => setValue('max_price', e.target.value)} placeholder={translate("₹ Max")} /></label></div>
+    {fields.map(([name, label, options]) => <label key={name}>{translate(label)}<select value={values[name] || ''} onChange={(e) => setValue(name, e.target.value)}>{options.map(([optionValue, text]) => <option value={optionValue} key={optionValue}>{translate(text)}</option>)}</select></label>)}
+    <label>{translate("Sort by")}<select value={values.sort || ''} onChange={(e) => setValue('sort', e.target.value)}><option value="">{translate("Recommended order")}</option><option value="price">{translate("Price: low to high")}</option><option value="-price">{translate("Price: high to low")}</option><option value="-published_at">{translate("Newest")}</option></select></label>
+    {active > 0 && <button type="button" className="clear-button" onClick={clear}>{translate("Clear all filters")}</button>}
+    <button type="button" className="button button--primary mobile-only" onClick={() => { setMobileOpen(false); triggerRef.current?.focus(); }}>{translate("Show results")}</button>
   </>;
-  return <><button ref={triggerRef} type="button" className="button button--secondary filter-trigger" onClick={() => setMobileOpen(true)} aria-expanded={mobileOpen} aria-controls="mobile-filters"><SlidersHorizontal aria-hidden="true" /> Filters {active > 0 && <span aria-label={`${active} active filters`}>{active}</span>}</button><aside className="filter-sidebar" aria-label="Property filters">{content}</aside>{mobileOpen && <div className="filter-backdrop" onMouseDown={() => setMobileOpen(false)}><aside id="mobile-filters" className="filter-drawer" role="dialog" aria-modal="true" aria-label="Property filters" onMouseDown={(e) => e.stopPropagation()}>{content}</aside></div>}</>;
+  return <><button ref={triggerRef} type="button" className="button button--secondary filter-trigger" onClick={() => setMobileOpen(true)} aria-expanded={mobileOpen} aria-controls="mobile-filters"><SlidersHorizontal aria-hidden="true" /> {translate("Filters")} {active > 0 && <span aria-label={`${active} active filters`}>{translate(active)}</span>}</button><aside className="filter-sidebar" aria-label={translate("Property filters")}>{translate(content)}</aside>{mobileOpen && <div className="filter-backdrop" onMouseDown={() => setMobileOpen(false)}><aside id="mobile-filters" className="filter-drawer" role="dialog" aria-modal="true" aria-label={translate("Property filters")} onMouseDown={(e) => e.stopPropagation()}>{translate(content)}</aside></div>}</>;
 }

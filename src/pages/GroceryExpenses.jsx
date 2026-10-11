@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { translate } from '../i18n';
 import React, { useState, useEffect } from 'react';
 import apiAxios from '../api';
 import { 
@@ -6,6 +8,8 @@ import {
 } from 'lucide-react';
 
 export default function GroceryExpenses() {
+  useTranslation();
+
   // 1. STATE MANAGEMENT
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,29 +56,28 @@ export default function GroceryExpenses() {
       await apiAxios.post('/expenses/', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      alert("Expense Recorded Successfully!");
+      alert(translate("Expense Recorded Successfully!"));
       fetchExpenses(); // Refresh list
       setFormData({ ...formData, amount: '', vendor: '' }); // Reset partial form
       setReceipt(null);
     } catch (err) {
-      alert("Error recording expense. Check console.");
+      alert(translate("Error recording expense. Check console."));
       console.error(err);
     }
   };
 
-  if (loading) return <div className="p-20 text-center font-black animate-pulse">LOADING MESS EXPENSES...</div>;
+  if (loading) return <div className="p-20 text-center font-black animate-pulse">{translate("LOADING MESS EXPENSES...")}</div>;
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="dashboard-page space-y-6">
       {/* Header Area */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-black text-[#001D3D]">Grocery Payments</h1>
-          <p className="text-slate-400 text-sm font-medium">Manage and track your mess and tiffin expenses.</p>
+          <h1 className="text-2xl font-black text-[#001D3D]">{translate("Grocery Payments")}</h1>
+          <p className="text-slate-400 text-sm font-medium">{translate("Manage and track your mess and tiffin expenses.")}</p>
         </div>
         <button className="bg-[#00C896] text-white px-6 py-3 rounded-xl flex items-center gap-2 font-black text-xs uppercase tracking-widest shadow-lg shadow-emerald-500/20 hover:scale-105 transition-all">
-          <Plus size={18} /> Export Report
-        </button>
+          <Plus size={18} /> {translate("Export Report")} </button>
       </div>
 
       {/* Stats Grid */}
@@ -89,7 +92,7 @@ export default function GroceryExpenses() {
         <section className="lg:col-span-2 bg-white rounded-[32px] p-8 shadow-sm border border-slate-100">
           <form onSubmit={handleRecordExpense}>
             <div className="flex items-center justify-between mb-8">
-              <h3 className="font-black text-lg text-[#001D3D]">New Expense Entry</h3>
+              <h3 className="font-black text-lg text-[#001D3D]">{translate("New Expense Entry")}</h3>
               <FileText size={20} className="text-slate-300" />
             </div>
             
@@ -99,7 +102,7 @@ export default function GroceryExpenses() {
             </div>
 
             <div className="space-y-1.5 mb-4">
-              <Input label="Vendor/Store Name" type="text" value={formData.vendor} onChange={e => setFormData({...formData, vendor: e.target.value})} placeholder="e.g. Local Market" />
+              <Input label="Vendor/Store Name" type="text" value={formData.vendor} onChange={e => setFormData({...formData, vendor: e.target.value})} placeholder={translate("e.g. Local Market")} />
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
@@ -111,28 +114,27 @@ export default function GroceryExpenses() {
               <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={e => setReceipt(e.target.files[0])} />
               <UploadCloud className={`mx-auto ${receipt ? 'text-[#00C896]' : 'text-slate-300'}`} size={32} />
               <div>
-                <p className="text-xs font-bold text-[#001D3D]">{receipt ? receipt.name : 'Click to upload receipt'}</p>
-                <p className="text-[10px] text-slate-400 mt-1 uppercase">PNG, JPG or PDF</p>
+                <p className="text-xs font-bold text-[#001D3D]">{translate(receipt ? receipt.name : 'Click to upload receipt')}</p>
+                <p className="text-[10px] text-slate-400 mt-1 uppercase">{translate("PNG, JPG or PDF")}</p>
               </div>
             </div>
 
             <button type="submit" className="w-full bg-[#001D3D] text-white py-4 rounded-xl font-black flex items-center justify-center gap-2 hover:bg-[#00C896] transition-all shadow-xl shadow-blue-900/10">
-              <ShieldCheck size={20} /> Record Expense
-            </button>
+              <ShieldCheck size={20} /> {translate("Record Expense")} </button>
           </form>
         </section>
 
         {/* Recent Bills Table */}
         <section className="lg:col-span-3 bg-white rounded-[32px] p-8 shadow-sm border border-slate-100">
-          <h3 className="font-black text-lg text-[#001D3D] mb-8">Recent Activity</h3>
+          <h3 className="font-black text-lg text-[#001D3D] mb-8">{translate("Recent Activity")}</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left min-w-[500px]">
               <thead>
                 <tr className="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
-                  <th className="pb-4">Date</th>
-                  <th className="pb-4">Vendor</th>
-                  <th className="pb-4">Amount</th>
-                  <th className="pb-4 text-center">Status</th>
+                  <th className="pb-4">{translate("Date")}</th>
+                  <th className="pb-4">{translate("Vendor")}</th>
+                  <th className="pb-4">{translate("Amount")}</th>
+                  <th className="pb-4 text-center">{translate("Status")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
@@ -162,28 +164,28 @@ export default function GroceryExpenses() {
 const StatCard = ({ label, value, icon, trend }) => (
   <div className="bg-white p-6 rounded-[24px] shadow-sm border border-slate-100 flex flex-col gap-4">
     <div className="flex justify-between items-start">
-      <div className="p-3 bg-slate-50 rounded-xl">{icon}</div>
-      {trend && <span className="text-[10px] font-black bg-emerald-50 text-emerald-600 px-2 py-1 rounded-full">{trend}</span>}
+      <div className="p-3 bg-slate-50 rounded-xl">{translate(icon)}</div>
+      {trend && <span className="text-[10px] font-black bg-emerald-50 text-emerald-600 px-2 py-1 rounded-full">{translate(trend)}</span>}
     </div>
     <div>
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{label}</p>
-      <p className="text-2xl font-black mt-1 text-[#001D3D]">{value}</p>
+      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{translate(label)}</p>
+      <p className="text-2xl font-black mt-1 text-[#001D3D]">{translate(value)}</p>
     </div>
   </div>
 );
 
 const Input = ({ label, ...props }) => (
   <div className="space-y-1.5 w-full">
-    <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider ml-1">{label}</label>
+    <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider ml-1">{translate(label)}</label>
     <input {...props} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00C896] outline-none transition-all" />
   </div>
 );
 
 const Select = ({ label, options, ...props }) => (
   <div className="space-y-1.5 w-full">
-    <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider ml-1">{label}</label>
+    <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider ml-1">{translate(label)}</label>
     <select {...props} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00C896] outline-none">
-      {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+      {options.map(opt => <option key={opt} value={opt}>{translate(opt)}</option>)}
     </select>
   </div>
 );
